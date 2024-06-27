@@ -1,0 +1,34 @@
+[08-May-2024 18:59:25 Asia/Kolkata] PHP Warning:  Undefined array key "HTTPS" in /home/aubadetech/public_html/gcmgroup/adminer.php on line 159
+[08-May-2024 18:59:25 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to undefined function get_magic_quotes_gpc() in /home/aubadetech/public_html/gcmgroup/adminer.php:22
+Stack trace:
+#0 /home/aubadetech/public_html/gcmgroup/adminer.php(159): remove_slashes(Array, false)
+#1 {main}
+  thrown in /home/aubadetech/public_html/gcmgroup/adminer.php on line 22
+[08-May-2024 18:59:30 Asia/Kolkata] PHP Warning:  Undefined array key "HTTPS" in /home/aubadetech/public_html/gcmgroup/adminer.php on line 159
+[08-May-2024 18:59:30 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to undefined function get_magic_quotes_gpc() in /home/aubadetech/public_html/gcmgroup/adminer.php:22
+Stack trace:
+#0 /home/aubadetech/public_html/gcmgroup/adminer.php(159): remove_slashes(Array, false)
+#1 {main}
+  thrown in /home/aubadetech/public_html/gcmgroup/adminer.php on line 22
+[08-May-2024 18:59:42 Asia/Kolkata] PHP Warning:  Undefined array key "HTTPS" in /home/aubadetech/public_html/gcmgroup/adminer.php on line 159
+[08-May-2024 18:59:42 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to undefined function get_magic_quotes_gpc() in /home/aubadetech/public_html/gcmgroup/adminer.php:22
+Stack trace:
+#0 /home/aubadetech/public_html/gcmgroup/adminer.php(159): remove_slashes(Array, false)
+#1 {main}
+  thrown in /home/aubadetech/public_html/gcmgroup/adminer.php on line 22
+[08-May-2024 19:00:28 Asia/Kolkata] PHP Warning:  Undefined array key "HTTPS" in /home/aubadetech/public_html/gcmgroup/adminer.php on line 159
+[08-May-2024 19:00:28 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to undefined function get_magic_quotes_gpc() in /home/aubadetech/public_html/gcmgroup/adminer.php:22
+Stack trace:
+#0 /home/aubadetech/public_html/gcmgroup/adminer.php(159): remove_slashes(Array, false)
+#1 {main}
+  thrown in /home/aubadetech/public_html/gcmgroup/adminer.php on line 22
+[09-May-2024 05:54:15 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to undefined function get_magic_quotes_gpc() in /home/aubadetech/public_html/gcmgroup/adminer.php:22
+Stack trace:
+#0 /home/aubadetech/public_html/gcmgroup/adminer.php(159): remove_slashes(Array, false)
+#1 {main}
+  thrown in /home/aubadetech/public_html/gcmgroup/adminer.php on line 22
+[09-May-2024 05:54:42 Asia/Kolkata] PHP Fatal error:  Uncaught Error: Call to undefined function get_magic_quotes_gpc() in /home/aubadetech/public_html/gcmgroup/adminer.php:22
+Stack trace:
+#0 /home/aubadetech/public_html/gcmgroup/adminer.php(159): remove_slashes(Array, false)
+#1 {main}
+  thrown in /home/aubadetech/public_html/gcmgroup/adminer.php on line 22
