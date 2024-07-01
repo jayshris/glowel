@@ -69,7 +69,8 @@ class Sales extends BaseController
                 'order_no' => $this->request->getPost('order_no'),
                 'customer_name' => $this->request->getPost('customer_name'),
                 'added_by' => $this->added_by,
-                'added_ip' => $this->added_ip
+                'added_ip' => $this->added_ip,
+                'added_date' => $this->request->getPost('order_date')
             ]) ? $this->SOModel->getInsertID() : '0';
             $this->session->setFlashdata('success', 'Order Created Successfully');
 
@@ -77,7 +78,38 @@ class Sales extends BaseController
         } else {
             $data['customers'] = $this->partyModel->select('id,party_name')->where('status', 'Active')->findAll();
             $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
-            return view('sales/create', $data);
+            return view('Sales/create', $data);
+        }
+    }
+
+    public function edit($id)
+    {
+        if ($this->access === 'false') {
+            $this->session->setFlashdata('error', 'You are not permitted to access this page');
+            return $this->response->redirect(base_url('/dashboard'));
+        } else if ($this->request->getPost()) {
+            // echo '<pre>';print_r($this->request->getPost());exit;
+            $this->SOModel->update($id, [
+                'customer_name' => $this->request->getPost('customer_name'),
+                'added_by' => $this->added_by,
+                'added_ip' => $this->added_ip,
+                'added_date' => $this->request->getPost('order_date')
+            ]);
+            $this->session->setFlashdata('success', 'Order Updated Successfully');
+
+            return $this->response->redirect(base_url('sales/add-products/' . $id));
+        } else {
+            $customers = $this->partyModel->select('party_name')->where('status', 'Active')->findAll();
+            $data['customers']  = array_column($customers,'party_name');
+            $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
+            $data['order_details'] = $this->SOModel->where('id', $id)->first();
+            $data['selected_customer'] = $data['order_details']['customer_name'];
+            if(!in_array($data['order_details']['customer_name'],$data['customers'])){
+                array_push($data['customers'],$data['order_details']['customer_name']);
+            }
+            // echo '<pre>';print_r($data);exit;
+            
+            return view('Sales/edit', $data);
         }
     }
 
@@ -85,8 +117,7 @@ class Sales extends BaseController
     {
         if ($this->request->getPost()) {
             // echo '<pre>';
-            // print_r($this->request->getPost());exit;
-            // http://localhost/glowel_dev/index.php/sales/add-products/18
+            // print_r($this->request->getPost());exit; 
             // user home branch
             $UModel = new UserModel();
             $u_home_branch = $UModel->where('id', $_SESSION['id'])->first()['home_branch'];
@@ -96,8 +127,7 @@ class Sales extends BaseController
             if ($u_home_branch > 0) {
                 foreach ($this->request->getPost('product_id') as $product) {
                     $sale_order_product = $this->SOPModel->where(['product_id'=>$product,'order_id'=>$id])->first();
-//  echo $product.'<pre>';
-//             print_r($this->request->getPost());exit;
+
                     // product rate at home branch warehouse
                     $res = $this->PWLModel->join('warehouses', 'warehouses.id = product_warehouse_link.warehouse_id')->where('product_id', $product)->where('office_id', $u_home_branch)->first();
                     if(isset($sale_order_product) && !empty($sale_order_product)){
@@ -122,22 +152,15 @@ class Sales extends BaseController
             } else {
                 $this->session->setFlashdata('danger', 'Home branch not set for user');
             }
-
-
-            // die;
-
-            // return $this->response->redirect(base_url('/sales/add-products/' . $id));
-
             return redirect()->to('/sales/add-products/' . $id);
         }
-
 
         $data['token'] = $id;
         $data['categories'] = $this->PCModel->orderBy('cat_name', 'asc')->findAll();
         $data['order_details'] = $this->SOModel->where('id', $id)->first();
         $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $id)->findAll();
 
-        return view('sales/addProducts', $data);
+        return view('Sales/addProducts', $data);
     }
 
     public function getProducts()
@@ -172,7 +195,7 @@ class Sales extends BaseController
         $data['token'] = $orderId;
         $data['order_details'] = $this->SOModel->where('id', $orderId)->first();
         $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $orderId)->findAll();
-        return view('sales/salesCheckout', $data);
+        return view('Sales/salesCheckout', $data);
     }
 
     function sendToInvoice($order_id){

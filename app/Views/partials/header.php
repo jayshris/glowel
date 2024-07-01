@@ -293,10 +293,10 @@
 							</li> -->
 						</ul>
 					</div>
-					<div class="topnav-dropdown-footer">
+					<!-- <div class="topnav-dropdown-footer">
 						<a href="<?php echo base_url(); ?>activities" class="view-link">View all</a>
 						<a href="javascript:void(0);" class="clear-link">Clear all</a>
-					</div>
+					</div> -->
 				</div>
 			</li>
 			<!-- /Notifications -->

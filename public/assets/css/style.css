@@ -31324,7 +31324,9 @@ table.table.dataTable > thead > tr th {
   z-index: unset;
 }
 .notification-dropdown .notif{
-  height: auto !important;
+  max-height: 400px;
+  overflow: auto;
+  height: auto;
 }
 /*# sourceMappingURL=style.css.map */
 

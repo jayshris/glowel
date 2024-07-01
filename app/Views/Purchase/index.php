@@ -169,7 +169,7 @@
     <script>
       function delete_data(id) {
         if (confirm("Are you sure you want to remove this product ?")) {
-          window.location.href = "<?php echo base_url('purchase/deleteSaleOrder/'); ?>" + id;
+          window.location.href = "<?php echo base_url('purchase/deletePurchaseOrder/'); ?>" + id;
         }
         return false;
       }

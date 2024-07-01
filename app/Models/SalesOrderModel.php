@@ -12,5 +12,5 @@ class SalesOrderModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['order_no', 'customer_name', 'status', 'added_date', 'added_by', 'added_ip', 'modify_date', 'modify_by', 'modify_ip', 'is_deleted'];
+    protected $allowedFields    = ['order_no', 'customer_name','status', 'added_date', 'added_by', 'added_ip', 'modify_date', 'modify_by', 'modify_ip', 'is_deleted'];
 }
