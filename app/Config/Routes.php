@@ -243,12 +243,17 @@ $routes->post('sales/getProducts', 'Sales::getProducts');
 $routes->get('sales/delete-product/(:num)/(:num)', 'Sales::deleteProd/$1/$2');
 
 $routes->match(['get', 'post'], 'sales/edit/(:num)', 'Sales::edit/$1');
-
+$routes->get('sales/getOrderProducts/(:num)', 'Sales::getOrderProducts/$1');
+$routes->get('sales/sendToInvoice/(:num)', 'Sales::sendToInvoice/$1');
+$routes->match(['get', 'post'], 'sales/sales-checkout/(:num)', 'Sales::salesCheckout/$1');
+$routes->get('sales/deleteSaleOrder/(:num)', 'Sales::deleteSaleOrder/$1');
 // Driver
 $routes->match(['get', 'post'], 'driver/assign-vehicle/(:num)', 'DriverVehicleAssign::create/$1');
 $routes->match(['get', 'post'], 'driver/unassign-vehicle/(:num)', 'DriverVehicleAssign::unassign/$1');
 $routes->get('driver/assigned-list', 'DriverVehicleAssign::list');
-
+//purchase
+$routes->match(['get', 'post'], 'purchase', 'Purchase::index');
+$routes->match(['get', 'post'], 'purchase/create', 'Purchase::create');
 
 
 

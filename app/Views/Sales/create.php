@@ -32,7 +32,7 @@
                 <div class="card">
                   <div class="card-body">
                     <div class="settings-form">
-
+                   
 
                       <form method="post" enctype="multipart/form-data" action="<?php echo base_url('sales/create'); ?>">
 
@@ -49,7 +49,14 @@
 
                             <div class="col-md-3">
                               <label class="col-form-label">Customer Name <span class="text-danger">*</span></label>
-                              <input type="text" required name="customer_name" class="form-control">
+                              <!-- <input type="text" required name="customer_name" class="form-control"> -->
+                              <select class="customer_name form-control"  required name="customer_name" >
+                                <?php if(!empty($customers)){ ?>
+                                  <?php foreach($customers as $key => $c){ ?>
+                                    <option <?php echo ($key == 0) ? 'selelected': '' ;?> value="<?php echo $c['party_name'];?>"><?php echo $c['party_name'];?></option>
+                                  <?php }?>
+                                <?php } ?>
+                              </select>
                             </div>
 
                             <div class="col-md-2">
@@ -83,9 +90,16 @@
 
   </div>
   <!-- /Main Wrapper -->
+  
+
 
   <?= $this->include('partials/vendor-scripts')  ?>
   <script>
+    $(document).ready(function() {
+        $(".customer_name").select2({
+      tags: true
+      });
+    });
     $.getCategory = function() {
 
       var type_id = $('#product_type').val();

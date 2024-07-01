@@ -31323,5 +31323,8 @@ table.table.dataTable > thead > tr th {
 .active > .page-link, .page-link.active {
   z-index: unset;
 }
-
+.notification-dropdown .notif{
+  height: auto !important;
+}
 /*# sourceMappingURL=style.css.map */
+

@@ -186,7 +186,6 @@ class Products extends BaseController
             $data['WModel'] = $this->WModel;
             $data['PWLModel'] = $this->PWLModel;
             $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-            // echo 'dd<pre>';print_r($data);exit;
             return view('Products/create', $data);
         }
     }

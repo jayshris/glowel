@@ -2,15 +2,17 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
-use App\Models\ProductCategoryModel;
+use App\Models\UserModel;
+use App\Models\PartyModel;
 use App\Models\ProductsModel;
-use App\Models\ProductWarehouseLinkModel;
 use App\Models\SalesOrderModel;
 use App\Models\SalesProductModel;
-use App\Models\UserModel;
+use App\Controllers\BaseController;
+use App\Models\NotificationModel;
+use App\Models\ProductCategoryModel;
 
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\ProductWarehouseLinkModel;
 
 class Sales extends BaseController
 {
@@ -23,7 +25,8 @@ class Sales extends BaseController
     public $access;
     public $added_by;
     public $added_ip;
-
+    public $partyModel;
+    public $NModel;
     public function __construct()
     {
         $this->session = \Config\Services::session();
@@ -33,8 +36,8 @@ class Sales extends BaseController
         $this->SOModel = new SalesOrderModel();
         $this->SOPModel = new SalesProductModel();
         $this->PWLModel = new ProductWarehouseLinkModel();
-
-
+        $this->partyModel = new PartyModel();
+        $this->NModel = new NotificationModel();
         $user = new UserModel();
         $this->access = $user->setPermission();
 
@@ -61,7 +64,7 @@ class Sales extends BaseController
             $this->session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(base_url('/dashboard'));
         } else if ($this->request->getPost()) {
-
+            // echo '<pre>';print_r($this->request->getPost());exit;
             $insert_id = $this->SOModel->save([
                 'order_no' => $this->request->getPost('order_no'),
                 'customer_name' => $this->request->getPost('customer_name'),
@@ -72,6 +75,7 @@ class Sales extends BaseController
 
             return $this->response->redirect(base_url('sales/add-products/' . $insert_id));
         } else {
+            $data['customers'] = $this->partyModel->select('id,party_name')->where('status', 'Active')->findAll();
             $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
             return view('sales/create', $data);
         }
@@ -81,28 +85,38 @@ class Sales extends BaseController
     {
         if ($this->request->getPost()) {
             // echo '<pre>';
-            // print_r($this->request->getPost());//exit;
-
+            // print_r($this->request->getPost());exit;
+            // http://localhost/glowel_dev/index.php/sales/add-products/18
             // user home branch
             $UModel = new UserModel();
             $u_home_branch = $UModel->where('id', $_SESSION['id'])->first()['home_branch'];
-
+            
             // echo 'u_home_branch <pre>';
             // print_r($u_home_branch);exit;
             if ($u_home_branch > 0) {
                 foreach ($this->request->getPost('product_id') as $product) {
-
+                    $sale_order_product = $this->SOPModel->where(['product_id'=>$product,'order_id'=>$id])->first();
+//  echo $product.'<pre>';
+//             print_r($this->request->getPost());exit;
                     // product rate at home branch warehouse
                     $res = $this->PWLModel->join('warehouses', 'warehouses.id = product_warehouse_link.warehouse_id')->where('product_id', $product)->where('office_id', $u_home_branch)->first();
-
-                    $arr = [
-                        'order_id' => $id,
-                        'product_id' => $product,
-                        'quantity' => $this->request->getPost('qty_' . $product),
-                        'rate' => $res['rate'],
-                        'amount' => $this->request->getPost('qty_' . $product) *  $res['rate']
-                    ];
-                    $this->SOPModel->insert($arr);
+                    if(isset($sale_order_product) && !empty($sale_order_product)){
+                        //edit sales order product 
+                        $qty= $this->request->getPost('qty_' . $product) + $sale_order_product['quantity'];
+                        $this->SOPModel->update($sale_order_product['id'], [
+                            'quantity' => $qty,
+                            'amount' =>$qty *  $res['rate']
+                        ]);
+                    }else{
+                        $arr = [
+                            'order_id' => $id,
+                            'product_id' => $product,
+                            'quantity' => $this->request->getPost('qty_' . $product),
+                            'rate' => $res['rate'],
+                            'amount' => $this->request->getPost('qty_' . $product) *  $res['rate']
+                        ];
+                        $this->SOPModel->insert($arr);
+                    }
                 }
                 $this->session->setFlashdata('success', 'Selected Products Added To Order');
             } else {
@@ -144,4 +158,51 @@ class Sales extends BaseController
 
         return $this->response->redirect(base_url('sales/add-products/' . $id));
     }
+
+    function getOrderProducts($order_id){
+        $sale_order_product = $this->SOPModel->where(['order_id'=>$order_id])->first();
+        if(!empty($sale_order_product)){
+            echo 1;exit;
+        }else{
+            echo 0;exit;
+        }
+    }
+
+    function salesCheckout($orderId){
+        $data['token'] = $orderId;
+        $data['order_details'] = $this->SOModel->where('id', $orderId)->first();
+        $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $orderId)->findAll();
+        return view('sales/salesCheckout', $data);
+    }
+
+    function sendToInvoice($order_id){
+        $order = $this->SOModel->where('id', $order_id)->first();
+        
+        $result = $this->SOModel->update($order_id, [
+            'status' => 1
+        ]);
+//  echo $order_id.'<pre>'; print_r($sale_order_product );exit;
+        if($result){
+            $this->NModel->save([
+                'order_id' => $order_id,
+                'message' => $order['order_no'].' order has been placed succefully'
+            ]);
+            $this->session->setFlashdata('success', 'Order has been placed succefully');
+            echo 1;exit;
+        }else{
+            echo 0;exit;
+        }
+    }
+
+    public function deleteSaleOrder($id)
+    {
+        //delete order product first 
+        $this->SOPModel->where('order_id', $id)->delete();
+        //delete order
+        $this->SOModel->delete($id);
+        $this->session->setFlashdata('danger', 'Order deleted succefully.');
+
+        return $this->response->redirect(base_url('sales'));
+    }
+
 }

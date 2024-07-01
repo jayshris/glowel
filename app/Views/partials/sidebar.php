@@ -69,7 +69,13 @@ $page = $controller;
                         </li>
                         <!-- Pankaj sales modules  -->
 
-
+                        <li class="submenu">
+                            <a href="javascript:void(0);" class="<?php echo ($page == 'Purchase') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Purchase</span><span class="menu-arrow"></span></a>
+                            <ul>
+                                <!-- purchase Orders  -->
+                                <li><a class="<?php echo ($page == 'Purchase') ? 'active' : ''; ?>" href="<?php echo base_url('purchase'); ?>">Purchase Orders</a></li>
+                            </ul>
+                        </li>
 
                         <li class="submenu">
                             <a href="javascript:void(0);" class="<?php echo ($page == 'Company' || $page == 'Office' || $page == 'Warehouses') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Setup</span><span class="menu-arrow"></span></a>

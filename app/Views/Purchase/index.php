@@ -25,11 +25,11 @@
             <div class="page-header">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h4 class="page-title">Sales Orders</h4>
+                  <h4 class="page-title">Purchase Orders</h4>
                 </div>
                 <div class="col-4 text-end">
                   <div class="head-icons">
-                    <a href="<?= base_url('sales') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
+                    <a href="<?= base_url('purchase') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header"><i class="ti ti-chevrons-up"></i></a>
                   </div>
                 </div>
@@ -37,7 +37,7 @@
             </div>
             <!-- /Page Header -->
 
-            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('sales'); ?>">
+            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('purchase'); ?>">
               <div class="card main-card">
                 <div class="card-body">
                   <h4>Search / Filter</h4>
@@ -57,8 +57,8 @@
 
                     <div class="col-md-7">
                       <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
-                      <a href="./sales" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
-                      <a href="<?= base_url('sales/create') ?>" class="btn btn-danger mt-4">Add Order</a>
+                      <a href="./purchase" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
+                      <a href="<?= base_url('purchase/create') ?>" class="btn btn-danger mt-4">Add Order</a>
                     </div>
                   </div>
                 </div>
@@ -120,7 +120,7 @@
                           <td><?= $i++; ?>.</td>
                           <td>
                             <?php if (!$pc['status']) {?>
-                              <a href="<?= base_url('sales/add-products/' . $pc['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
+                              <a href="<?= base_url('purchase/add-products/' . $pc['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
                             <?php } ?>
                             <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                           </td>
@@ -169,7 +169,7 @@
     <script>
       function delete_data(id) {
         if (confirm("Are you sure you want to remove this product ?")) {
-          window.location.href = "<?php echo base_url('sales/deleteSaleOrder/'); ?>" + id;
+          window.location.href = "<?php echo base_url('purchase/deleteSaleOrder/'); ?>" + id;
         }
         return false;
       }
