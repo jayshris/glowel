@@ -38,7 +38,7 @@
                       <form method="post" enctype="multipart/form-data" action="<?php echo base_url('warehouses/edit/' . $warehouse_details['id']); ?>">
 
                         <div class="settings-sub-header">
-                          <h6>Edit Product </h6>
+                          <h6>Edit Warehouse </h6>
                         </div>
 
                         <div class="profile-details">
@@ -65,7 +65,7 @@
                             </div>
 
                             <div class="col-md-3">
-                              <label class="col-form-label">Product Name <span class="text-danger">*</span></label>
+                              <label class="col-form-label">Warehouse Name <span class="text-danger">*</span></label>
                               <?php
                               if ($validation->getError('warehouse_name')) {
                                 echo '<br><span class="text-danger mt-2">' . $validation->getError('warehouse_name') . '</span>';
