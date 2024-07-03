@@ -254,6 +254,7 @@ $routes->get('driver/assigned-list', 'DriverVehicleAssign::list');
 //purchase
 $routes->match(['get', 'post'], 'purchase', 'Purchase::index');
 $routes->match(['get', 'post'], 'purchase/create', 'Purchase::create');
+$routes->match(['get', 'post'], 'purchase/edit/(:num)', 'Purchase::edit/$1');
 $routes->match(['get', 'post'], 'purchase/add-products/(:num)', 'Purchase::addProducts/$1');
 $routes->post('purchase/getProducts', 'Purchase::getProducts');
 $routes->get('purchase/delete-product/(:num)/(:num)', 'Purchase::deleteProd/$1/$2');
@@ -263,7 +264,7 @@ $routes->get('purchase/getOrderProducts/(:num)', 'Purchase::getOrderProducts/$1'
 $routes->get('purchase/sendToInvoice/(:num)', 'Purchase::sendToInvoice/$1');
 $routes->match(['get', 'post'], 'purchase/purchase-checkout/(:num)', 'Purchase::purchaseCheckout/$1');
 $routes->get('purchase/deletePurchaseOrder/(:num)', 'Purchase::deletePurchaseOrder/$1');
-
+$routes->post('purchase/showWebCam', 'Purchase::showWebCam');
 
 
 // auto routes must be set false... for security reasons

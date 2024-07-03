@@ -119,8 +119,9 @@
                         <tr>
                           <td><?= $i++; ?>.</td>
                           <td>
-                            <?php if (!$pc['status']) {?>
-                              <a href="<?= base_url('purchase/add-products/' . $pc['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
+                            <?php 
+                            if (in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS)) { ?>
+                              <a href="<?= base_url('purchase/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if($pc['edit_count'] >1){ ?> disabled<?php }?>" role="button"><i class="ti ti-pencil"></i></a>
                             <?php } ?>
                             <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                           </td>
@@ -130,8 +131,8 @@
                           <td><?= $pc['modify_date'] != '' ? date('d M Y', strtotime($pc['modify_date'])) : '' ?></td>
                           <td>
                             <?php if ($pc['status']) {
-                              echo '<span class="badge badge-pill bg-success">Ready For Invoicing</span>';
-                            } else echo '<span class="badge badge-pill bg-danger">Open</span>';
+                              echo '<span class="badge badge-pill bg-success">'.PURCHASE_STATUS_DETAILS[$pc['status']].'</span>';
+                            } else echo '<span class="badge badge-pill bg-danger">'.PURCHASE_STATUS_DETAILS[$pc['status']].'</span>';
                             ?>
                           </td>
                         </tr>

@@ -12,7 +12,7 @@ class NotificationModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name','order_id','message','status','user_id'];
+    protected $allowedFields    = ['name','order_id','message','status','user_id','flag'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

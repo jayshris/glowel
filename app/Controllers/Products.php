@@ -102,6 +102,18 @@ class Products extends BaseController
                         'mime_in' => 'Image must be in jpeg/png format',
                         'max_size' => 'Image must be under 100KB'
                     ]
+                ],
+                'summary'=>[
+                    'rules' => 'max_length[70]',
+                    'errors' => [ 
+                        'max_size' => 'Summary length must be under 70 characters'
+                    ]
+                ],
+                'description'=>[
+                    'rules' => 'max_length[100]',
+                    'errors' => [ 
+                        'max_size' => 'Summary length must be under 100 characters'
+                    ]
                 ]
             ]);
 
@@ -151,7 +163,9 @@ class Products extends BaseController
                     'product_image_1' => $newName1,
                     'product_image_2' => $newName2,
                     'added_by' => $this->added_by,
-                    'added_ip' => $this->added_ip
+                    'added_ip' => $this->added_ip,
+                    'summary' => $this->request->getVar('summary'),
+                    'description' => $this->request->getVar('description')
                 ]) ? $this->PModel->getInsertID() : '0';
 
 
@@ -232,6 +246,18 @@ class Products extends BaseController
                         'mime_in' => 'Image must be in jpeg/png format',
                         'max_size' => 'Image must be under 100KB'
                     ]
+                ],
+                'summary'=>[
+                    'rules' => 'max_length[70]',
+                    'errors' => [ 
+                        'max_size' => 'Summary length must be under 70 characters'
+                    ]
+                ],
+                'description'=>[
+                    'rules' => 'max_length[100]',
+                    'errors' => [ 
+                        'max_size' => 'Summary length must be under 100 characters'
+                    ]
                 ]
             ]);
 
@@ -278,7 +304,9 @@ class Products extends BaseController
                     'status' => $this->request->getVar('status'),
                     'modify_by' => $this->added_by,
                     'modify_date' => date('Y-m-d h:i:s'),
-                    'modify_ip' => $this->added_ip
+                    'modify_ip' => $this->added_ip,
+                    'summary' => $this->request->getVar('summary'),
+                    'description' => $this->request->getVar('description')
                 ]);
 
                 // update image1 if found

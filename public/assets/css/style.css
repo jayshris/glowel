@@ -31328,5 +31328,8 @@ table.table.dataTable > thead > tr th {
   overflow: auto;
   height: auto;
 }
+.resize-none{
+  resize: none;
+}
 /*# sourceMappingURL=style.css.map */
 

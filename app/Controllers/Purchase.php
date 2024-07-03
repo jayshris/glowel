@@ -11,6 +11,7 @@ use App\Models\ProductCategoryModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\ProductWarehouseLinkModel;
 use App\Models\PurchaseOrderProductModel;
+use App\Models\InventoryModel;
 
 class Purchase extends BaseController
 {
@@ -25,6 +26,7 @@ class Purchase extends BaseController
     public $NModel;
     public $POModel;
     public $POPModel;
+    public $InventoryModel;
     public function __construct()
     {
         $this->session = \Config\Services::session();
@@ -36,6 +38,7 @@ class Purchase extends BaseController
         $this->NModel = new NotificationModel();
         $this->POModel = new PurchaseOrderModel();
         $this->POPModel = new PurchaseOrderProductModel();
+        $this->InventoryModel = new InventoryModel();
         $user = new UserModel();
         $this->access = $user->setPermission();
 
@@ -49,6 +52,10 @@ class Purchase extends BaseController
             $this->session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(base_url('/dashboard'));
         } else {
+            // echo '<pre>';print_r($this->request->getPost());exit;
+            if ($this->request->getPost('status') != '') {
+                $this->POModel->where('status', $this->request->getPost('status'));
+            }
 
             $data['orders'] = $this->POModel->orderBy('id', 'desc')->findAll();
 
@@ -57,30 +64,196 @@ class Purchase extends BaseController
     }
 
     public function create()
+    {   
+        if ($this->access === 'false') {
+            $this->session->setFlashdata('error', 'You are not permitted to access this page');
+            return $this->response->redirect(base_url('/dashboard'));
+        } else if ($this->request->getPost()) {
+            $error = $this->validate([
+                'customer_name' => [
+                    // 'rules' => 'trim|regex_match[/^[a-z\d\s]+$/i]', 
+                    'rules' => 'trim|regex_match[^[a-zA-Z0-9\s]*$]', 
+                    'errors' => [
+                        'regex_match' => 'The customer  field only contain alphanumeric characters.',
+                    ],
+                ]
+            ]);
+            $validation = \Config\Services::validation();
+            // echo 'error<pre>';print_r($this->request->getPost());
+            // echo 'error<pre>';print_r($validation->getErrors());exit;
+            if (!empty($validation->getErrors())) {
+                $data['error'] = $this->validator;
+            } else {
+                $insert_id = $this->POModel->save([
+                    'order_no' => $this->request->getPost('order_no'),
+                    'customer_name' => $this->request->getPost('customer_name'),
+                    'added_by' => $this->added_by,
+                    'added_ip' => $this->added_ip,
+                    'added_date' => $this->request->getPost('order_date')
+                ]) ? $this->POModel->getInsertID() : '0';
+                $this->session->setFlashdata('success', 'Order Created Successfully');
+
+                return $this->response->redirect(base_url('purchase/add-products/' . $insert_id));
+            }
+           
+        } 
+        $data['customers'] = $this->partyModel->select('party.id,party.party_name')
+        ->join('party_type_party_map', ' party.id = party_type_party_map.party_id')
+        ->join('party_type', ' party_type.id = party_type_party_map.party_type_id')
+        ->where(['party_type.name'=> 'Vendor','party.status'=> 'Active'])
+        ->where('party.status', 'Active')->findAll();
+        $data['last_order'] = $this->POModel->orderBy('id', 'desc')->first();
+        return view('Purchase/create', $data);
+        
+    } 
+    public function edit($id)
     {
         if ($this->access === 'false') {
             $this->session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(base_url('/dashboard'));
         } else if ($this->request->getPost()) {
-            // echo '<pre>';print_r($this->request->getPost());exit;
-            $insert_id = $this->POModel->save([
-                'order_no' => $this->request->getPost('order_no'),
-                'customer_name' => $this->request->getPost('customer_name'),
-                'added_by' => $this->added_by,
-                'added_ip' => $this->added_ip
-            ]) ? $this->POModel->getInsertID() : '0';
-            $this->session->setFlashdata('success', 'Order Created Successfully');
+            $error = $this->validate([
+                'customer_name' => [
+                    // 'rules' => 'trim|regex_match[/^[a-z\d\s]+$/i]', 
+                    'rules' => 'trim|regex_match[^[a-zA-Z0-9\s]*$]', 
+                    'errors' => [
+                        'regex_match' => 'The customer  field only contain alphanumeric characters.',
+                    ],
+                ],
+            ]); 
+            //as per discussed max size validation not required
+            if($this->request->getFile('img_1')->getSize() > 0) {
+                $this->validateData([], [
+                    'img_1' => 'uploaded[img_1]|mime_in[img_1,application/pdf,image/jpg,image/jpeg,image/JPEG]',
+                ]); 
+            }
+            if($this->request->getFile('img_2')->getSize() > 0) {
+                $this->validateData([], [
+                    'img_2' => 'uploaded[img_2]|mime_in[img_2,application/pdf,image/jpg,image/jpeg,image/JPEG]',
+                ]); 
+            }
+            if($this->request->getFile('img_3')->getSize() > 0) {
+                $this->validateData([], [
+                    'img_3' => 'uploaded[img_3]|mime_in[img_3,application/pdf,image/jpg,image/jpeg,image/JPEG]',
+                ]); 
+            }
+            if($this->request->getFile('img_4')->getSize() > 0) {
+                $this->validateData([], [
+                    'img_4' => 'uploaded[img_4]|mime_in[img_4,application/pdf,image/jpg,image/jpeg,image/JPEG]',
+                ]); 
+            }
+            $validation = \Config\Services::validation();
+             
+            // echo 'Files<pre>';print_r($_FILES);
+            // echo 'POst dt<pre>';print_r($this->request->getPost());
+            // echo 'getErrors<pre>';print_r($validation->getErrors());//exit;
 
-            return $this->response->redirect(base_url('purchase/add-products/' . $insert_id));
-        } else {
-            $data['customers'] = $this->partyModel->select('party.id,party.party_name')
+            if (!empty($validation->getErrors())) {
+                $data['error'] = $this->validator;
+            } else {   
+                $po_data = ['customer_name' => $this->request->getPost('customer_name'),
+                            'added_by' => $this->added_by,
+                            'added_ip' => $this->added_ip,
+                            'added_date' => $this->request->getPost('order_date') 
+                            ];
+                  // update image if found or either upload with webcam
+                if ($this->request->getFile('img_1')->getSize() > 0) {
+                   $po_data['image_1'] = $this->uploadPurchaseOrderImages($id,$this->request->getPost(),$this->request->getFile('img_1'),'image_1');
+                }else if($this->request->getPost('image_1')){
+                   $po_data['image_1'] = $this->uploadFileWithCam($id,$this->request->getPost(),'image_1');
+                }
+                if ($this->request->getFile('img_2')->getSize() > 0) {
+                    $po_data['image_2'] = $this->uploadPurchaseOrderImages($id,$this->request->getPost(),$this->request->getFile('img_2'),'image_2');
+                }else if($this->request->getPost('image_2')){
+                    $po_data['image_2'] = $this->uploadFileWithCam($id,$this->request->getPost(),'image_2');
+                 }
+                if ($this->request->getFile('img_3')->getSize() > 0) {
+                    $po_data['image_3'] = $this->uploadPurchaseOrderImages($id,$this->request->getPost(),$this->request->getFile('img_3'),'image_3');
+                }else if($this->request->getPost('image_3')){
+                    $po_data['image_3'] = $this->uploadFileWithCam($id,$this->request->getPost(),'image_3');
+                 }
+                if ($this->request->getFile('img_4')->getSize() > 0) {
+                    $po_data['image_4'] = $this->uploadPurchaseOrderImages($id,$this->request->getPost(),$this->request->getFile('img_4'),'image_4');
+                }else if($this->request->getPost('image_4')){
+                    $po_data['image_4'] = $this->uploadFileWithCam($id,$this->request->getPost(),'image_4');
+                 }
+                // echo 'customers<pre>';print_r($po_data);exit;
+                $this->POModel->update($id, $po_data);
+                $this->session->setFlashdata('success', 'Order Updated Successfully');
+
+                return $this->response->redirect(base_url('purchase/add-products/' . $id));
+            }
+           
+        } 
+        //order can be edited only 2 times as per doc
+        $data['order_details'] = $this->POModel->where('id', $id)->first();
+        if (!in_array($data['order_details']['status'],PURCHASE_STATUS_EDIT_PERMITIONS)) {
+             $this->session->setFlashdata('danger', 'Order can not be editable!!!'); 
+            return $this->response->redirect(base_url('purchase/index'));
+        }
+        if(isset($data['order_details']['edit_count']) && $data['order_details']['edit_count'] < 2){
+            $this->POModel->update($id, [ 
+                'edit_count' => ( $data['order_details']['edit_count']+1)
+            ]);
+
+            $customers = $this->partyModel->select('party.id,party.party_name')
             ->join('party_type_party_map', ' party.id = party_type_party_map.party_id')
             ->join('party_type', ' party_type.id = party_type_party_map.party_type_id')
             ->where(['party_type.name'=> 'Vendor','party.status'=> 'Active'])
             ->where('party.status', 'Active')->findAll();
+
+            $data['customers']  = array_column($customers,'party_name');
+
             $data['last_order'] = $this->POModel->orderBy('id', 'desc')->first();
-            return view('purchase/create', $data);
+
+            $data['selected_customer'] = $data['order_details']['customer_name'];
+            if(!empty($data['order_details']['customer_name'])){
+                if(!in_array($data['order_details']['customer_name'],$data['customers'])){
+                    array_push($data['customers'],$data['order_details']['customer_name']);
+                }
+            } 
+          
+            return view('Purchase/edit', $data);
+        }else{
+            $this->session->setFlashdata('danger', 'Order can be edited only 2 times!!!');
+            return $this->response->redirect(base_url('purchase/index'));
         }
+        
+    }
+    function uploadFileWithCam($id,$postdata,$flag){ 
+        $path ='public/uploads/purchase/';
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+        //delete old image
+        $purchaase_details = $this->POModel->where('id', $id)->first();
+        if (!empty($purchaase_details[$flag]) && file_exists($path.$purchaase_details[$flag])) {
+            unlink( $path. $purchaase_details[$flag]);
+        }
+        $image_parts = explode(";base64,", $postdata[$flag]);  
+        $fileName = uniqid().strtotime(date('Y-m-d')). '.jpg'; 
+        $file = $path . $fileName;
+        file_put_contents($file, base64_decode($image_parts[1]));
+        return $fileName;
+    }
+    function uploadPurchaseOrderImages($id,$postdata,$image,$flag){
+        $path ='public/uploads/purchase/';
+        //delete old image
+        $purchaase_details = $this->POModel->where('id', $id)->first();
+        if (!empty($purchaase_details[$flag]) && file_exists($path.$purchaase_details[$flag])) {
+            unlink( $path. $purchaase_details[$flag]);
+        }
+        // process image
+        $newName ='';
+        if ($image->isValid() && !$image->hasMoved()) {
+            $newName = $image->getRandomName();
+            $imgpath = 'public/uploads/purchase';
+            if (!is_dir($imgpath)) {
+                mkdir($imgpath, 0777, true);
+            }
+            $image->move($imgpath, $newName);
+        }
+        return $newName;
     }
     public function addProducts($id)
     {
@@ -112,14 +285,29 @@ class Purchase extends BaseController
                             'amount' =>$qty *  $res['rate']
                         ]);
                     }else{
+                        $qty = $this->request->getPost('qty_' . $product);
                         $arr = [
                             'order_id' => $id,
                             'product_id' => $product,
-                            'quantity' => $this->request->getPost('qty_' . $product),
+                            'quantity' => $qty,
                             'rate' => $res['rate'],
                             'amount' => $this->request->getPost('qty_' . $product) *  $res['rate']
                         ];
                         $this->POPModel->insert($arr);
+                    }
+
+                    //Check inventory for this purchase or product is available or not
+                    $inventory = $this->InventoryModel->where(['product_id'=>$product,'purchase_order_id'=>$id])->first();
+
+                    //insert to inventory data
+                    $inventoryData['product_id'] = $product;
+                    $inventoryData['warehouse_id'] = $res['warehouse_id'];
+                    $inventoryData['qty_in'] =  $qty; 
+                    $inventoryData['purchase_order_id'] = $id;
+                    if(!empty($inventory)){
+                        $this->InventoryModel->update($inventory['id'],$inventoryData);
+                    }else{
+                        $this->InventoryModel->insert($inventoryData);
                     }
                 }
                 $this->session->setFlashdata('success', 'Selected Products Added To Order');
@@ -133,18 +321,26 @@ class Purchase extends BaseController
         $data['order_details'] = $this->POModel->where('id', $id)->first();
         $data['added_products'] = $this->POPModel->select('*,purchase_order_products.id as sp_id')->join('products', 'products.id = purchase_order_products.product_id')->where('order_id', $id)->findAll();
 
-        return view('purchase/addProducts', $data);
+        return view('Purchase/addProducts', $data);
     }
 
     public function getProducts()
     {
         $category_id = $this->request->getPost('category_id');
         $data['products'] = $this->PModel->where('category_id', $category_id)->where('status', '1')->where('is_deleted', '0')->findAll();
-        return view('purchase/productTable', $data);
+        return view('Purchase/productTable', $data);
+    }
+
+    public function showWebCam()
+    { 
+        $data['data'] =  $this->request->getPost(); 
+        return view('Purchase/webCam',$data);
     }
 
     public function deleteProd($id, $sp_id)
     {
+        $purchase_order_product = $this->POPModel->where(['id'=>$sp_id])->first();
+        $this->InventoryModel->where(['product_id'=>$purchase_order_product['product_id'],'purchase_order_id'=>$id,])->delete();
         $this->POPModel->delete($sp_id);
         $this->session->setFlashdata('danger', 'Product removed from order');
         return $this->response->redirect(base_url('purchase/add-products/' . $id));
@@ -163,7 +359,7 @@ class Purchase extends BaseController
         $data['token'] = $orderId;
         $data['order_details'] = $this->POModel->where('id', $orderId)->first();
         $data['added_products'] = $this->POPModel->select('*,purchase_order_products.id as sp_id')->join('products', 'products.id = purchase_order_products.product_id')->where('order_id', $orderId)->findAll();
-        return view('purchase/purchaseCheckout', $data);
+        return view('Purchase/purchaseCheckout', $data);
     }
 
     function sendToInvoice($order_id){
@@ -174,6 +370,7 @@ class Purchase extends BaseController
         if($result){
             $this->NModel->save([
                 'order_id' => $order_id,
+                'user_id'=>$_SESSION['id'],
                 'message' => $order['order_no'].' order has been placed succefully'
             ]);
             $this->session->setFlashdata('success', 'Order has been placed succefully');
@@ -185,8 +382,12 @@ class Purchase extends BaseController
 
     public function deletePurchaseOrder($id)
     {
+        //delete inventory
+        $this->InventoryModel->where('purchase_order_id', $id)->delete();
+        
         //delete order product first 
         $this->POPModel->where('order_id', $id)->delete();
+        
         //delete order
         $this->POModel->delete($id);
         $this->session->setFlashdata('danger', 'Order deleted succefully.');

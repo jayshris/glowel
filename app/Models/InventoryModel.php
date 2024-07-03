@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class PurchaseOrderModel extends Model
+class InventoryModel extends Model
 {
-    protected $table            = 'purchase_orders';
+    protected $table            = 'inventories';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['order_no', 'customer_name', 'status','edit_count', 'added_date','image_1','image_2','image_3','image_4', 'added_by', 'added_ip', 'modify_date', 'modify_by', 'modify_ip', 'is_deleted'];
+    protected $allowedFields    = ['product_id','warehouse_id','qty_in','qty_out','purchase_order_id','sales_order_id','is_deleted'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

@@ -105,10 +105,10 @@
               </div>
             </div>
 
-
-            <button type="button" class="btn btn-primary mt-4 noprint" onclick="$.confirm()">Proceed To Checkout</button>
-
-
+            <div class="submit-button">            
+              <button type="button" class="btn btn-primary noprint" onclick="$.confirm()">Proceed To Checkout</button>
+              <a href="<?php echo base_url('purchase/add-products/' . $order_details['id']); ?>" class="btn btn-light noprint">Back</a>
+            </div>
           </div>
 
         </div>

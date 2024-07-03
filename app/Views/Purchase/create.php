@@ -20,7 +20,7 @@
           <div class="col-md-12">
 
             <?= $this->include('partials/page-title') ?>
-
+             
             <?php
             $validation = \Config\Services::validation();
             $order_number = $last_order ? 'PO/' . date('m/y/') .  ($last_order['id'] + 1) : 'PO/' . date('m/y/1');
@@ -48,15 +48,23 @@
                             </div>
 
                             <div class="col-md-3">
-                              <label class="col-form-label">Customer Name <span class="text-danger">*</span></label>
+                              <label class="col-form-label">Customer Name</label>
                               <!-- <input type="text" required name="customer_name" class="form-control"> -->
-                              <select class="customer_name form-control"  required name="customer_name" >
+                              
+                              <select class="customer_name form-control" id="customer_name"  name="customer_name" >
+                                <option value="">Not selected value</option>
+                                <!-- <option value=""></option> -->
                                 <?php if(!empty($customers)){ ?>
                                   <?php foreach($customers as $key => $c){ ?>
                                     <option <?php echo ($key == 0) ? 'selelected': '' ;?> value="<?php echo $c['party_name'];?>"><?php echo $c['party_name'];?></option>
                                   <?php }?>
                                 <?php } ?>
                               </select>
+                              <?php
+                              if ($validation->getError('customer_name')) {
+                                echo '<br><label class="text-danger mt-2">' . $validation->getError('customer_name') . '</label>';
+                              }
+                              ?>
                             </div>
 
                             <div class="col-md-2">
@@ -96,10 +104,22 @@
   <?= $this->include('partials/vendor-scripts')  ?>
   <script>
     $(document).ready(function() {
-        $(".customer_name").select2({
+      var select2 =  $("#customer_name").select2({
       tags: true
       });
+     
+      $(document.body).on("change","#customer_name",function(){
+          var regex = new RegExp("^[a-zA-Z0-9]+$");
+          if (!regex.test(this.value)) {
+            console.log(this.value);
+            // $("#customer_name").val('');
+            // $(".select2-selection__rendered").text('');
+          }
+      });
+
+     
     });
+     
     $.getCategory = function() {
 
       var type_id = $('#product_type').val();

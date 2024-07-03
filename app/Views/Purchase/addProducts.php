@@ -160,7 +160,7 @@
             </div>
 
 
-            <button type="button" class="btn btn-primary mt-4" onclick="$.confirm()">Proceed To Checkout</button>
+            <button type="button" class="btn btn-primary mt-4" onclick="$.confirm()">Save Purchase</button>
 
 
           </div>
