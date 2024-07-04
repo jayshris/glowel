@@ -55,7 +55,7 @@
                                   Fuel Name <span class="text-danger">*</span>
                                 </label>
 
-                                <input required type="text" name="fuel_name" class="form-control"  value="<?= set_value('fuel_name') ?>" required>
+                                <input type="text" name="fuel_name" class="form-control"  value="<?= set_value('fuel_name') ?>">
                                 <?php
                                   if($validation->getError('fuel_name'))
                                   {

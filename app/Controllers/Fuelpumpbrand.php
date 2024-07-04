@@ -65,7 +65,7 @@ class Fuelpumpbrand extends BaseController {
                 ->where('fuel_pump_brand.status', 'Active')
 
                 ->groupBy('fuel_pump_brand.id')
-                ->orderBy('fuel_pump_brand.id', 'DESC')
+
                 ->paginate(10);
 
           $data['pagination_link'] = $this->fuelpumpbrandModel->pager;
@@ -90,6 +90,8 @@ class Fuelpumpbrand extends BaseController {
 
         {
 
+
+
         $access = $this->_access; 
 
         if($access === 'false'){
@@ -111,6 +113,7 @@ class Fuelpumpbrand extends BaseController {
             ];
 
             
+
             $fueltypeModel = new FueltypeModel();
 
             $data['fueltype_data'] = $fueltypeModel->where(['status'=>'Active'])->orderBy('fuel_name')->findAll();
@@ -118,42 +121,28 @@ class Fuelpumpbrand extends BaseController {
             $request = service('request');
 
             if($this->request->getMethod()=='POST'){
-              
+
               $error = $this->validate([
 
                 'brand_name'   =>  'required|min_length[2]|max_length[50]|alpha_numeric_space',
 
                 'abbreviation'   =>  'required|min_length[2]|max_length[50]|alpha_numeric_space',
 
+                'fuel_name'   =>  'required',
+
               ]);
 
               if(!$error)
-              {
-                $data['error'] 	= $this->validator;
-              }else {
-                $normalizedStr = strtolower(str_replace(' ', '', $this->request->getVar('brand_name')));
-                $normalizedStrr = strtolower(str_replace(' ', '', $this->request->getVar('abbreviation')));
-                $fuelpumpbrandbdcnt = $this->fuelpumpbrandModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(brand_name, " ", ""))',$normalizedStr)
-                ->orderBy('id')->countAllResults();
-                $fuelpumpbrandabbcnt = $this->fuelpumpbrandModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(abbreviation, " ", ""))',$normalizedStrr)
-                ->orderBy('id')->countAllResults();
-                $selectedFuelNameId = $this->request->getPost('fuel_types');
-                if(empty($selectedFuelNameId)){
-                  $this->validator->setError('fuel_types', 'Selection of minimum 1 Fuel Type is Mandatory.');
-                  $data['error']  = $this->validator;
-                  return view('FuelPumpBrand/create',$data);
-                  return false;
-                }else{
-                if($fuelpumpbrandbdcnt==0 && $fuelpumpbrandabbcnt==0){
-                   $this->fuelpumpbrandModel->save([
 
-                  'brand_name'  =>  $this->request->getVar('brand_name'),
+              {
+
+                $data['error'] 	= $this->validator;
+
+              }else {
+
+                $this->fuelpumpbrandModel->save([
+
+                  'brand_name'	=>	$this->request->getVar('brand_name'),
 
                   'abbreviation'  =>  $this->request->getVar('abbreviation'),
 
@@ -161,39 +150,30 @@ class Fuelpumpbrand extends BaseController {
 
                   'created_at'  =>  date("Y-m-d h:i:sa"),
 
-                  ]);
+                ]);
 
-                  $fuel_pump_brand_id = $this->fuelpumpbrandModel->getInsertID();
+                $fuel_pump_brand_id = $this->fuelpumpbrandModel->getInsertID();
 
-                  
+                $selectedFuelNameId = $this->request->getPost('fuel_name');
 
-                  foreach ($selectedFuelNameId as $fuelTypeId) {
+                foreach ($selectedFuelNameId as $fuelTypeId) {
 
-                      $this->fuelpumpbrandtypeModel->save([
+                    $this->fuelpumpbrandtypeModel->save([
 
-                          'fuel_pump_brand_id' => $fuel_pump_brand_id,
+                        'fuel_pump_brand_id' => $fuel_pump_brand_id,
 
-                          'fuel_type_id' => $fuelTypeId,
+                        'fuel_type_id' => $fuelTypeId,
 
-                          'status'  => 'Active',
+                        'status'  => 'Active',
 
-                          'created_at'  =>  date("Y-m-d h:i:sa"),
+                        'created_at'  =>  date("Y-m-d h:i:sa"),
 
-                      ]);
+                    ]);
 
-                  }
-                }else{
-                  if($fuelpumpbrandbdcnt>0){
-                    $this->validator->setError('brand_name', 'The field must contain a unique value.');
-                  }
-                  if($fuelpumpbrandabbcnt>0){
-                    $this->validator->setError('abbreviation', 'The field must contain a unique value.');
-                  }
-                  $data['error']  = $this->validator;
-                  return view( 'FuelPumpBrand/create',$data );
-                  return false;
                 }
-                }
+
+                
+
                 $session = \Config\Services::session();
 
     
@@ -203,6 +183,10 @@ class Fuelpumpbrand extends BaseController {
                 return $this->response->redirect(site_url('/fuelpumpbrand'));
 
               }
+
+    
+
+              
 
             }
 
@@ -276,7 +260,10 @@ class Fuelpumpbrand extends BaseController {
 
               'brand_name'   =>  'required|min_length[2]|max_length[50]|alpha_numeric_space',
 
-              'abbreviation'   =>  'required|min_length[2]|max_length[50]|alpha_numeric_space',
+                'abbreviation'   =>  'required|min_length[2]|max_length[50]|alpha_numeric_space',
+
+                'fuel_name'   =>  'required',
+
             ]);
 
             if(!$error)
@@ -285,82 +272,61 @@ class Fuelpumpbrand extends BaseController {
 
               $data['error'] 	= $this->validator;
 
+              
+
             }else {
 
-                $normalizedStr = strtolower(str_replace(' ', '', $this->request->getVar('brand_name')));
-                $normalizedStrr = strtolower(str_replace(' ', '', $this->request->getVar('abbreviation')));
-                $fuelpumpbrandbdcnt = $this->fuelpumpbrandModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(brand_name, " ", ""))',$normalizedStr)
-                ->where('id!=',$id)
-                ->orderBy('id')->countAllResults();
-                $fuelpumpbrandabbcnt = $this->fuelpumpbrandModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(abbreviation, " ", ""))',$normalizedStrr)
-                ->where('id!=',$id)
-                ->orderBy('id')->countAllResults();
-                $selectedFuelNameId = $this->request->getPost('fuel_types');
-                if(empty($selectedFuelNameId)){
-                  $this->validator->setError('fuel_types', 'Selection of minimum 1 Fuel Type is Mandatory.');
-                  $data['error']  = $this->validator;
-                  return view( 'FuelPumpBrand/edit_fuelpumpbrand',$data );
-                  return false;
-                }else{
-                  if($fuelpumpbrandbdcnt==0 && $fuelpumpbrandabbcnt==0){
-                     $this->fuelpumpbrandModel->update($id,[
+              
 
-                    'brand_name'  =>  $this->request->getVar('brand_name'),
+              $this->fuelpumpbrandModel->update($id,[
 
-                    'abbreviation'  =>  $this->request->getVar('abbreviation'),
+                'brand_name'  =>  $this->request->getVar('brand_name'),
 
-                    'status'  => 'Active',
+                'abbreviation'  =>  $this->request->getVar('abbreviation'),
 
-                    'updated_at'  =>  date("Y-m-d h:i:sa"),
+                'status'  => 'Active',
 
-                  ]);
+                'updated_at'  =>  date("Y-m-d h:i:sa"),
 
-                  // First delete existing records
+              ]);
 
-                  $this->fuelpumpbrandtypeModel->where('fuel_pump_brand_id', $id)->delete();
+              // First delete existing records
 
-                    foreach ($selectedFuelNameId as $fuelTypeId) {
+              $this->fuelpumpbrandtypeModel->where('fuel_pump_brand_id', $id)->delete();
 
-                        $this->fuelpumpbrandtypeModel->save([
+              $selectedFuelNameId = $this->request->getPost('fuel_name');
 
-                            'fuel_pump_brand_id' => $id,
+                foreach ($selectedFuelNameId as $fuelTypeId) {
 
-                            'fuel_type_id' => $fuelTypeId,
+                    $this->fuelpumpbrandtypeModel->save([
 
-                            'status'  => 'Active',
+                        'fuel_pump_brand_id' => $id,
 
-                            'created_at'  =>  date("Y-m-d h:i:sa"),
+                        'fuel_type_id' => $fuelTypeId,
 
-                        ]);
+                        'status'  => 'Active',
 
-                    }
-                  }else{
-                    if($fuelpumpbrandbdcnt>0){
-                      $this->validator->setError('brand_name', 'The field must contain a unique value.');
-                    }
-                    if($fuelpumpbrandabbcnt>0){
-                      $this->validator->setError('abbreviation', 'The field must contain a unique value.');
-                    }
-                    $data['error']  = $this->validator;
-                    return view( 'FuelPumpBrand/edit_fuelpumpbrand',$data );
-                    return false;
-                  }
+                        'created_at'  =>  date("Y-m-d h:i:sa"),
+
+                    ]);
+
                 }
+
+
+
               $session = \Config\Services::session();
 
   
 
-              $session->setFlashdata('success', 'Fuel Pump Brand updated');
+              $session->setFlashdata('success', 'Fuel Type updated');
 
               return $this->response->redirect(site_url('/fuelpumpbrand'));
 
             }
+
+  
+
+            
 
           }
 
@@ -387,7 +353,6 @@ class Fuelpumpbrand extends BaseController {
             }else{
 
             $this->fuelpumpbrandModel->where('id', $id)->delete($id);
-            $this->fuelpumpbrandtypeModel->where('fuel_pump_brand_id', $id)->delete($id);
 
             $session = \Config\Services::session();
 

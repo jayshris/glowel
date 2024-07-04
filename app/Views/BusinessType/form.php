@@ -28,7 +28,7 @@ use App\Models\UserTypePermissionModel;
                                 <label class="col-form-label">
                                 Company Structure Type <span class="text-danger">*</span>
                                 </label>
-                                <input type="text" required name="company_structure_name" class="form-control" pattern="[A-Za-z0-9 ]+"  title="Only letters, numbers, and spaces are allowed." value="<?php
+                                <input type="text" required name="company_structure_name" class="form-control" value="<?php
                                 if(isset($business_data)){
                                   echo $business_data['company_structure_name'];
                                 }else{

@@ -30,7 +30,7 @@
               <div class="settings-sub-header">
                 <h6>Add Business Type</h6>
               </div>
-              <?= $this->include('BusinessType/form.php') ?>
+              <?= $this->include('Businesstype/form.php') ?>
               </div>
             </div>
 

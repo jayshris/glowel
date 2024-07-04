@@ -26,7 +26,11 @@
             <?= $this->include('partials/page-title') ?>
             <div class="row">
               <div class="col-xl-12 col-lg-12">
+
+
               <?= $this->include('Driver/form.php') ?>
+
+              
               </div>
             </div>
 
@@ -40,25 +44,7 @@
   <!-- /Main Wrapper -->
 
   <?= $this->include('partials/vendor-scripts') ?>
-  <script >
-  jQuery(document).ready(function($) {
-  $("#party_id").on('change', function() {
-      $("#target").empty();
-      $('#driverform').reset();
-      var level = $(this).val();
-      if(level){
-             $.ajax ({
-              type: 'POST',
-              url: 'populate_fields_data',
-              data: { party_id: '' + level + '' },
-              success : function(htmlresponse) {
-                  $('#target').append(htmlresponse);
-               }
-          });
-      }
-  });
-});
-</script>
+
   <!-- Profile Upload JS -->
   <script src="<?php echo base_url(); ?>assets/js/profile-upload.js"></script>
 

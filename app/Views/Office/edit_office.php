@@ -7,20 +7,7 @@
   <!-- Feathericon CSS -->
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/feather.css">
 </head>
-<style>
-.dropdown{
-  border-color: #E8E8E8;
-  color: #6F6F6F;
-  background-color: #ffffff;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.6;
-  border-radius: 5px;
-  padding: 0.5rem 0.85rem;
-  box-shadow: 0px 4px 4px 0px rgba(219, 219, 219, 0.2509803922);
-  min-height: 42px;
-}
-</style>
+
 <body>
 
   <!-- Main Wrapper -->
@@ -56,11 +43,11 @@
                                 if(isset($office_data)){
                                   echo $office_data['id'];
                                 }
-                                ?>">
+                                ?>>
                                 <label class="col-form-label">
                                   Company Name <span class="text-danger">*</span>
-                                </label><br>
-                                <select class="dropdown selectopt" name = "company_name">
+                                </label>
+                                <select class="select" name = "company_name">
                                   <option>Select</option>
                                   <?php
                                   if(isset($company)){
@@ -68,6 +55,7 @@
                                     foreach($company as $row)
                                     {
                                       ?>
+
                                       <option value="<?php echo $row['id'] ?>" <?php
                                       if(isset($office_data)){
                                         if($office_data['company_id'] == $row['id']){
@@ -99,8 +87,6 @@
                                 <input type="text" name="office_name" class="form-control"  value="<?php
                                 if(isset($office_data)){
                                   echo $office_data['name'];
-                                }else{
-                                  echo set_value('name'); 
                                 }
                                 ?>">
                                 <?php
@@ -119,8 +105,6 @@
                                 <input type="text" name="gst" class="form-control" value="<?php
                                 if(isset($office_data)){
                                   echo $office_data['gst'];
-                                }else{
-                                  echo set_value('gst'); 
                                 }
                                 ?>">
                                 <?php
@@ -134,13 +118,11 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                  Office Code<span class="text-danger">*</span>
+                                  Office code<span class="text-danger">*</span>
                                 </label>
                                 <input type="text" name="office_code" class="form-control"  value="<?php
                                 if(isset($office_data)){
                                   echo $office_data['office_code'];
-                                }else{
-                                  echo set_value('office_code'); 
                                 }
                                 ?>">
                                 <?php
@@ -160,8 +142,6 @@
                                 <input type="text" name="address" class="form-control" value="<?php
                                 if(isset($office_data)){
                                   echo $office_data['address'];
-                                }else{
-                                  echo set_value('address'); 
                                 }
                                 ?>">
                                 <?php
@@ -190,8 +170,6 @@
                                 <input type="text" name="city" class="form-control" value="<?php
                                 if(isset($office_data)){
                                   echo $office_data['city'];
-                                }else{
-                                  echo set_value('city'); 
                                 }
                                 ?>">
                                 <?php
@@ -207,8 +185,8 @@
                               <div class="form-wrap">
                                 <label class="col-form-label">
                                   State<span class="text-danger">*</span>
-                                </label><br>
-                                <select class="dropdown selectopt" name="state">
+                                </label>
+                                <select class="select" name="state">
                                   <option>Select</option>
                                 <?php
                                 if (isset($state)) {
@@ -242,8 +220,6 @@
                                 <input type="text" name="postcode" class="form-control" value="<?php
                                 if(isset($office_data)){
                                   echo $office_data['postcode'];
-                                }else{
-                                  echo set_value('postcode'); 
                                 }
                                 ?>">
                                 <?php
@@ -264,8 +240,6 @@
                                 <input type="text" name="book_prefix" class="form-control" value="<?php
                                 if(isset($office_data)){
                                   echo $office_data['booking_prefix'];
-                                }else{
-                                  echo set_value('booking_prefix'); 
                                 }
                                 ?>">
                                 <?php
@@ -284,7 +258,6 @@
                           <button type="submit" name="add_profile" class="btn btn-primary">Save Changes</button>
                           <button type="reset" class="btn btn-light">Reset</button>
                           <a href="<?php echo base_url();?>office" class="btn btn-light">Cancel</a>
-                          <a href="<?php echo base_url();?>office" class="btn btn-light">Back To List</a>
                         </div>
                       </form>
                     </div>

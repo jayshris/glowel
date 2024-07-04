@@ -1,6 +1,5 @@
 <?php $validation = \Config\Services::validation(); 
 use App\Models\UserTypePermissionModel;
-use App\Models\PartyModel;
 ?>
                 <!-- Settings Info -->
                 <div class="card">
@@ -15,13 +14,18 @@ use App\Models\PartyModel;
                       $action = 'foreman/edit';
                     }
 
+                    //print_r($validation->getError()); die;
+
+
                     $userPermissions = new UserTypePermissionModel();
                     ?>
                       <form method="post" action="<?php echo base_url().$action; ?>" enctype="multipart/form-data">
-                        
+                        <div class="settings-sub-header">
+                          <h6>Add New Foreman</h6>
+                        </div>
                         <div class="profile-details">
                           <div class="row">
-                              <input type="hidden" name="id" id="foreman_id"  value="<?php
+                              <input type="hidden" name="id" value="<?php
                                 if(isset($foreman_data)){
                                   echo $foreman_data['id'];
                                 }
@@ -31,34 +35,13 @@ use App\Models\PartyModel;
                                 <label class="col-form-label">
                                   Foreman Name <span class="text-danger">*</span>
                                 </label>
-                                <?php 
-                                if(isset($partytpe)){ ?>
-                                <select class="dropdown selectopt" name ="name" id="party_id">
-                                  <option>Select</option>
-                                <?php
-                                  foreach ($party_map_data as $key => $value) {
-                                    $party = new PartyModel();
-                                    $partydata = $party->where('id',$value['party_id'])->where(['status'=> 'Active'])->first();
-                                    if(isset($partydata)){
-                                ?>
-                                  <option value="<?php echo $partydata["id"];?>" 
-                                  <?php 
-                                      if(isset($foreman_data)){
-                                        if($foreman_data['name'] == $partydata["id"] ){
-                                          echo "selected";
-                                        }
-                                      }
-                                  ?>
-                                  ><?php echo ucwords($partydata["party_name"]); ?></option>
-                                <?php
-                                    }
-                                  }
-                                ?>
-                                </select>
-                                <?php 
-                                  } else {?>
-                                  <p style="color:blue;font-size: 12px;">(Please create a party with party type as Driver)</p>
-                                 <?php  }?>
+                                <input type="text" required name="name" class="form-control" value="<?php
+                                if(isset($foreman_data)){
+                                  echo $foreman_data['name'];
+                                }else{
+                                  echo set_value('name'); 
+                                }
+                                ?>">
                                 <?php
                                 if($validation->getError('name'))
                                 {
@@ -67,7 +50,66 @@ use App\Models\PartyModel;
                                 ?>
                               </div>
                             </div>
-                            <div class="target" id="target">
+                            
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                  Email 
+                                </label>
+                                <input type="email" required name="email" class="form-control" value="<?php if(isset($foreman_data)){
+                                  echo $foreman_data['email']; }else{ echo set_value('email'); 
+                                } ?>">
+                                <?php
+                                if($validation->getError('email'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('email').'</div>';
+                                }
+                                ?>
+                              </div>
+                            </div>
+
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                  Phone number<span class="text-danger">*</span>
+                                </label>
+                                <input type="text" required name="mobile" class="form-control" value="<?php
+                                if(isset($foreman_data)){
+                                  echo $foreman_data['mobile'];
+                                }else{
+                                  echo set_value('mobile'); 
+                                }
+                                ?>">
+                                <?php
+                                if($validation->getError('mobile'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('mobile').'</div>';
+                                }
+                                ?>
+                              </div>
+                            </div>
+                              
+                            
+                            
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                  Aadhaar number<span class="text-danger">*</span>
+                                </label>
+                                <input type="text" required name="adhaar_number" class="form-control" value="<?php
+                                if(isset($foreman_data)){
+                                  echo $foreman_data['adhaar_number'];
+                                }else{
+                                  echo set_value('adhaar_number'); 
+                                }
+                                ?>">
+                                <?php
+                                if($validation->getError('adhaar_number'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('adhaar_number').'</div>';
+                                }
+                                ?>
+                              </div>
                             </div>
                             
                             <div class="col-md-6">
@@ -75,7 +117,7 @@ use App\Models\PartyModel;
                                 <label class="col-form-label">
                                 Bank A/C No:
                                 </label> 
-                                <input type="text"   name="bank_account_number" class="form-control" value ="<?php
+                                <input type="text" required name="bank_account_number" class="form-control" value ="<?php
                                 if(isset($foreman_data)){
                                   echo $foreman_data['bank_account_number'];
                                 }else{
@@ -96,7 +138,7 @@ use App\Models\PartyModel;
                                 <label class="col-form-label">
                                 Bank IFSC: 
                                 </label>
-                                <input type="text"   name="bank_ifsc_code" class="form-control" value="<?php
+                                <input type="text" required name="bank_ifsc_code" class="form-control" value="<?php
                                 if(isset($foreman_data)){
                                   echo $foreman_data['bank_ifsc_code'];
                                 }else{
@@ -135,9 +177,12 @@ use App\Models\PartyModel;
                                 <label class="col-form-label">
                                 Aadhaar Image - Back
                                 </label>
-                                <input type="file" name="adhaar_image_back" class="form-control" >
+                                <input type="file"  name="adhaar_image_back" class="form-control" >
                                 <?php  if(isset($aadhaar_data)){ ?>
-                                
+                                <img  src="<?php
+                                if(isset($aadhaar_data)){
+                                   echo WRITEPATH.$aadhaar_data['adhaar_image_back'];
+                                } ?>" style="width:50px; height:50px">
                                 <?php } ?>
                                 <?php
                                 if($validation->getError('adhaar_image_back'))
@@ -157,7 +202,10 @@ use App\Models\PartyModel;
                                 </label>
                                 <input type="file"  name="profile_image1" class="form-control" >
                                 <?php  if(isset($foreman_data)){ ?>
-                                
+                                <img src="<?php
+                                if(isset($foreman_data)){
+                                  echo $foreman_data['profile_image1'];
+                                } ?>" style="width:50px; height:50px"> 
                                 <?php }
                                 if($validation->getError('profile_image1'))
                                 {
@@ -180,7 +228,11 @@ use App\Models\PartyModel;
                                 ?>
                                 <input type="file"  name="profile_image2" class="form-control"  >
                                 <?php  if(isset($foreman_data)){ ?>
-                                
+                                <img src="<?php
+                                if(isset($foreman_data)){
+                                  echo $foreman_data['profile_image2'];
+                                }
+                                ?>" style="width:50px; height:50px">
                                 <?php } ?>
                               </div>
                             </div>
@@ -198,22 +250,29 @@ use App\Models\PartyModel;
                               </div>
                             </div>
 
-                            
+                            <div class="col-md-4">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                  Status:
+                                </label>
+                                <select class="select" name="status">
+                                  <option>Select</option>
+                                  <option value="Active" <?php if(isset($foreman_data) && $foreman_data['status'] == "Active"){echo "selected"; } ?>>Active</option>
+                                  <option value="Inactive" <?php if(isset($foreman_data) && $foreman_data['status'] == "Inactive"){echo "selected"; } ?>>Inactive</option>
+                                </select>
+                                <?php
+                                if($validation->getError('status')){
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('status').'</div>';
+                                }
+                                ?>
+                              </div>
+                            </div>
 
                           </div>
                         </div>
-                        <?php if($last != 'create'){ ?>
-                            
-                        <div>
-                            <input type = "checkbox" id="approve" class="form-check-input"  name="approve" <?php if(isset($foreman_data)){
-                              if($foreman_data['approved'] == 1){
-                                    echo 'checked';
-                              } } ?> value="1"> <label for="approve"> Approved</label> 
-                        </div>
-                       <?php } ?>
                         <div class="submit-button">
                           <button type="submit" class="btn btn-primary">Save Changes</button>
-                          <a href="<?php echo base_url();?>foreman" class="btn btn-light">Cancel</a>
+                          <a href="<?php echo base_url();?>driver" class="btn btn-light">Cancel</a>
                         </div>
                       </form>
                     </div>

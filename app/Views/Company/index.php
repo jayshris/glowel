@@ -575,40 +575,10 @@
                   </div>
                 </div>
                  /Filter -->
-                <div class="row">
-                  <div class="col-md-9">
-                    <form method="post" action="<?php echo base_url() ?>company/searchByStatus" >
-                          <!-- Search -->
-                          <div class="search-section">
-                            <div class="row">
-                              <div class="col-md-2 col-sm-3">
-                                  <label class="col-form-label">
-                                    Search By Status
-                                  </label>
-                              </div>
-                              <div class="col-md-3 col-sm-3">
-                                  <div class="form-wrap">
-                                        <select class="form-control" name="status">
-                                        <option>Select</option>
-                                          <option value="Active">Active</option>
-                                          <option value="Inactive">Inactive</option>
-                                        </select>
-                                  </div>
-                              </div>
-                              <div class="col-md-3 col-sm-3">
-                                <input type="submit" value="Submit" class="btn btn-primary">
-                              </div>
-                            </div>
-                          </div>
-                    </form>
-                  </div>
-                  <div class="col-md-3">
-                      <a href="<?php echo base_url();?>company/create" class="btn btn-dark " role="button">Add New Company</a>
-                  </div>
-                </div>
+
                 <!-- Contact List -->
                 <div class="table-responsive custom-table">
-                  <table class="table">
+                  <table class="table" id="deal_list">
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
@@ -616,7 +586,6 @@
                         <th>Added</th>
                         <th>Updated</th>
                         <th>Status</th>
-                        <th>Added IP Address</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -640,17 +609,9 @@
                                 $updated_at_str = strtotime($company["updated_at"]);
                                 $updated_at_str = date('d-m-Y',$updated_at_str);
                               }
-
-                              if($company['status'] == 'Active'){
-                                $bun = '<a href="company/status/'.$company['id'].'" class="btn btn-danger btn-sm" role="button">Inactive</a>';
-                              }else{
-                                $bun = '<a href="company/status/'.$company['id'].'" class="btn btn-success btn-sm" role="button">Active</a>';
-                              }
-
                                 echo '
                                 <tr>
                                 <td>
-                                '.$bun .'
                                 <a href="'.base_url().'company/edit/'.$company['id'].'" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
 
                                 <button type="button" onclick="delete_data('.$company["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></>
@@ -659,7 +620,6 @@
                                     <td>'.$created_at_str.'</td>
                                     <td>'.$updated_at_str.'</td>
                                     <td>'.$status.'</td>
-                                    <td>'.$company["creator_ip_address"].'</td>
                                 </tr>';
                             }
                         }

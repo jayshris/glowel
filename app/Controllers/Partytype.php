@@ -24,7 +24,7 @@ class Partytype extends BaseController
             return $this->response->redirect(site_url('/dashboard'));
         }else{
             $partyModel = new PartytypeModel();
-            $data['partytype_data'] = $partyModel->where(['status'=>'Active'])->orderBy('id', 'DESC')->paginate(50);
+            $data['partytype_data'] = $partyModel->orderBy('id', 'DESC')->paginate(50);
             $data['pagination_link'] = $partyModel->pager;
             $data['page_data'] = [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Party Type','li_1' => '123','li_2' => 'deals' ] )
@@ -48,7 +48,7 @@ class Partytype extends BaseController
                 $request = service('request');
                 if($this->request->getMethod()=='POST'){
                   $error = $this->validate([
-                    'name' =>  'required|trim|regex_match[/^[a-z\d\-_\s]+$/i]|is_unique[party_type.name]',
+                    'name'	                    =>  'required|regex_match[/^[a-z\d\-_\s]+$/i]|is_unique[party_type.name]',
                   ]);
 
                   if(!$error){
@@ -85,7 +85,7 @@ class Partytype extends BaseController
             if($this->request->getMethod()=='POST'){
               $id = $this->request->getVar('id');
               $error = $this->validate([
-                'name'	=>	'required|trim|regex_match[/^[a-z\d\-_\s]+$/i]|is_unique[party_type.name]',
+                'name'	=>	'required',
               ]);
               if(!$error)
               {
@@ -120,42 +120,5 @@ class Partytype extends BaseController
             $session->setFlashdata('success', 'Party type Deleted');
             return $this->response->redirect(site_url('/partytype'));
         }
-    }
-
-    public function statusupdate($id=null){
-      $access = $this->_access; 
-        if($access === 'false'){
-                $session = \Config\Services::session();
-                $session->setFlashdata('error', 'You are not permitted to access this page');
-                return $this->response->redirect(site_url('/dashboard'));
-        }else{  
-                $partytypeModel = new PartytypeModel();
-                $model= $partytypeModel->where('id', $id)->first();
-                if($model['status'] == 'Active'){
-                  $status = 'Inactive';
-                }elseif($model['status'] == 'Inactive'){
-                  $status = 'Active';
-                }
-                $partytypeModel->update($id,[
-                  'status'	=>	$status,
-                  'updated_at'  =>  date("Y-m-d h:i:sa"),
-                ]);
-                $session = \Config\Services::session();
-                $session->setFlashdata('success', 'Party type status changed');
-                return $this->response->redirect(site_url('/partytype')); 
-        } 
-    }
-
-    public function searchByStatus(){
-      if($this->request->getMethod()=='POST'){
-        $status = $this->request->getVar('status');
-        $partyModel = new PartytypeModel();
-        $data['partyModel'] = $partyModel->where('status', $status)->orderBy('id', 'DESC')->findAll();
-        
-            $data['page_data'] = [
-            'page_title' => view( 'partials/page-title', [ 'title' => 'Party Type','li_1' => '123','li_2' => 'deals' ] )
-            ];
-            return view('Partytype/search',$data);
-      }
     }
 }

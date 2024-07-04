@@ -63,27 +63,14 @@ class Fueltype extends BaseController {
               {
                 $data['error'] 	= $this->validator;
               }else {
-                $normalizedStr = strtolower(str_replace(' ', '', $this->request->getVar('fuel_name')));
                 $fueltypeModel = new FueltypeModel();
-                $flags_data = $fueltypeModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(fuel_name, " ", ""))',$normalizedStr)
-                ->orderBy('id')->countAllResults();
-                if($flags_data==0){
-                  $fueltypeModel = new FueltypeModel();
-                  $fueltypeModel->save([
-                    'fuel_name'	=>	$this->request->getVar('fuel_name'),
-                    'status'  => 'Active',
-                    'created_at'  =>  date("Y-m-d h:i:sa"),
+                $fueltypeModel->save([
+                  'fuel_name'	=>	$this->request->getVar('fuel_name'),
+                  'status'  => 'Active',
+                  'created_at'  =>  date("Y-m-d h:i:sa"),
 
-                  ]);
-                }else{
-                  $this->validator->setError('fuel_name', 'The field must contain a unique value.');
-                  $data['error']  = $this->validator;
-                  return view( 'FuelType/create',$data );
-                  return false;
-                }
+                ]);
+                
                 $session = \Config\Services::session();
     
                 $session->setFlashdata('success', 'Fuel Type Added');
@@ -121,28 +108,13 @@ class Fueltype extends BaseController {
               $data['error'] 	= $this->validator;
               
             }else {
-              $normalizedStr = strtolower(str_replace(' ', '', $this->request->getVar('fuel_name')));
-                $fueltypeModel = new FueltypeModel();
-                $flags_data = $fueltypeModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(fuel_name, " ", ""))',$normalizedStr)
-                ->where('id!=',$id)
-                ->orderBy('id')->countAllResults();
-                if($flags_data==0){
-                  $fueltypeModel = new FueltypeModel();
-                  $fueltypeModel->update($id,[
-                    'fuel_name'  =>  $this->request->getVar('fuel_name'),
-                    'status'  => 'Active',
-                    'updated_at'  =>  date("Y-m-d h:i:sa"),
-                  ]);
-                }else{
-                  $this->validator->setError('fuel_name', 'The field must contain a unique value.');
-                  $data['error']  = $this->validator;
-                  return view( 'FuelType/edit_fueltype',$data );
-                  return false;
-                }
               
+              $fueltypeModel = new FueltypeModel();
+              $fueltypeModel->update($id,[
+                'fuel_name'  =>  $this->request->getVar('fuel_name'),
+                'status'  => 'Active',
+                'updated_at'  =>  date("Y-m-d h:i:sa"),
+              ]);
               $session = \Config\Services::session();
   
               $session->setFlashdata('success', 'Fuel Type updated');

@@ -1,7 +1,5 @@
 <?php $validation = \Config\Services::validation(); 
 use App\Models\UserTypePermissionModel;
-use App\Models\PartyModel;
-
 ?>
                 <!-- Settings Info -->
                 <div class="card">
@@ -18,14 +16,14 @@ use App\Models\PartyModel;
 
                     $userPermissions = new UserTypePermissionModel();
                     ?>
-                      <form method="post" id="driverform" action="<?php echo base_url().$action; ?>" enctype="multipart/form-data">
+                      <form method="post" action="<?php echo base_url().$action; ?>" enctype="multipart/form-data">
                         <div class="settings-sub-header">
                           <h6>Add New Driver</h6>
                         </div>
                         <div class="profile-details">
                           <div class="row">
                             <div class="col-md-6">
-                              <input type="hidden" name="id" id="driver_id" value="<?php
+                              <input type="hidden" name="id" value="<?php
                                 if(isset($driver_data)){
                                   echo $driver_data['id'];
                                 }
@@ -39,33 +37,11 @@ use App\Models\PartyModel;
                                 {
                                     echo '<div class="alert alert-danger mt-2">'.$validation->getError('name').'</div>';
                                 }
-                                if(isset($partytpe)){
                                 ?>
-                                <select class="dropdown selectopt" name ="name" id="party_id">
-                                  <option>Select</option>
-                                  <?php
-                                    foreach ($party_map_data as $key => $value) {
-                                      $party = new PartyModel();
-                                      $partydata = $party->where('id',$value['party_id'])->where(['status'=> 'Active'])->first();
-                                      if(isset($partydata)){
-                                  ?>
-                                  <option value="<?php echo $partydata["id"];?>" <?php 
-                                      if(isset($driver_data)){
-                                        if($driver_data['name'] == $partydata["id"] ){
-                                          echo "selected";
-                                        }
-                                      }
-                                  ?>>
-                                  <?php echo ucwords($partydata["party_name"]); ?></option>
-                                <?php
-                                    }
-                                  }
-                                ?>
-                                </select>
-                                <?php 
-                                  } else {?>
-                                  <p style="color:blue;font-size: 12px;">(Please create a party with party type as Driver)</p>
-                                 <?php  }?>
+                                <input type="text" required name="name"  class="form-control" value="<?php if(isset($driver_data)){  echo $driver_data['name'];  }else{
+                                  echo set_value('name'); 
+                                }
+                                ?>">
                               </div>
                             </div>
                             <div class="col-md-6">
@@ -73,24 +49,16 @@ use App\Models\PartyModel;
                                 <label class="col-form-label">
                                   Foreman Name <span class="text-danger">*</span>
                                 </label>
-                                <select class="dropdown selectopt" id="forman_name" name="foreman_id">
+                                <select class="select" name="foreman_id">
                                   <option>Select</option>
                                 <?php
                                 if (isset($foreman)) {
                                   foreach($foreman as $row)
-                                  { 
-                                    $party = new PartyModel();
-                                    $partydata = $party->where('id',$row["name"])->first();
-                                    if($partydata){
-                                      $name = $partydata['party_name'];
-                                    }else{
-                                      $name = '';
-                                    }
-                                    ?>
+                                  { ?>
                                     <option value="<?php echo $row["id"] ?>" 
                                     <?php echo set_select('foreman_id', $row['id'], False);
                                     if(isset($driver_data) && $driver_data['foreman_id'] == $row["id"]){ echo 'selected';  }
-                                    ?> ><?php echo $name ?></option>  
+                                    ?> ><?php echo $row["name"] ?></option>  
                                   <?php
                                   }
                                 }
@@ -108,9 +76,9 @@ use App\Models\PartyModel;
                                 <label class="col-form-label">
                                 Driver Type <span class="text-danger">*</span>
                                 </label>
-                                <input type="radio" class="radio" id="Employee" value="Employee" name="driver_type" <?php if(isset($driver_data) && $driver_data['driver_type'] == "Employee") {echo "checked"; } ?>> 
+                                <input type="radio" id="Employee" value="Employee" name="driver_type" <?php if(isset($driver_data) && $driver_data['driver_type'] == "Employee") {echo "checked"; } ?>> 
                                 <label for="Employee">Employee</label>
-                                <input type="radio" class="radio" id="Contractor" value="Contractor" name="driver_type" <?php if(isset($driver_data) && $driver_data['driver_type'] == "Contractor") {echo "checked"; } ?> > 
+                                <input type="radio" id="Contractor" value="Contractor" name="driver_type" <?php if(isset($driver_data) && $driver_data['driver_type'] == "Contractor") {echo "checked"; } ?>> 
                                 <label for="Contractor">Contractor</label><br>
                                 <?php
                                 if($validation->getError('driver_type'))
@@ -140,7 +108,73 @@ use App\Models\PartyModel;
                               </div>
                             </div>
 
-                            <div class="target" id="target">
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                  Phone number<span class="text-danger">*</span>
+                                </label>
+                                <input type="text" required name="mobile" class="form-control" value="<?php
+                                if(isset($driver_data)){
+                                  echo $driver_data['mobile'];
+                                }else{
+                                  echo set_value('mobile'); 
+                                }
+                                ?>">
+                                <?php
+                                if($validation->getError('mobile'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('mobile').'</div>';
+                                }
+                                ?>
+                              </div>
+                            </div>
+                            
+                            
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                  Alternate number
+                                </label>
+                                <input type="text"  name="alternate_number" class="form-control" value="<?php
+                                if(isset($driver_data)){
+                                  echo $driver_data['alternate_number'];
+                                }else{
+                                  echo set_value('alternate_number'); 
+                                }
+                                ?>">
+                                <?php
+                                if($validation->getError('alternate_number'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('alternate_number').'</div>';
+                                }
+                                ?>
+                              </div>
+                            </div>
+
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                  Aadhaar number<span class="text-danger">*</span>
+                                </label>
+                                <input type="text" required name="adhaar_number" class="form-control" value="<?php
+                                if(isset($driver_data)){
+                                  echo $driver_data['adhaar_number'];
+                                }else{
+                                  echo set_value('adhaar_number'); 
+                                }
+                                ?>">
+                                <input type="hidden" required name="adhaar_id" class="form-control" value="<?php
+                                if(isset($aadhaar_data)){
+                                  echo $aadhaar_data['id'];
+                                }
+                                ?>">
+                                <?php
+                                if($validation->getError('adhaar_number'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('adhaar_number').'</div>';
+                                }
+                                ?>
+                              </div>
                             </div>
 
                             
@@ -150,6 +184,11 @@ use App\Models\PartyModel;
                                   Aadhaar Image - Front
                                 </label>
                                 <input type="file"  name="adhaar_image_front" class="form-control" >
+                                <img src="<?php
+                                if(isset($aadhaar_data)){
+                                  echo $aadhaar_data['adhaar_image_front'];
+                                }
+                                ?>" style="width:50px; height:50px">
                                 <?php
                                 if($validation->getError('adhaar_image_front'))
                                 {
@@ -165,6 +204,10 @@ use App\Models\PartyModel;
                                 Aadhaar Image - Back
                                 </label>
                                 <input type="file"  name="adhaar_image_back" class="form-control" >
+                                <img  src="<?php
+                                if(isset($aadhaar_data)){
+                                   echo WRITEPATH.$aadhaar_data['adhaar_image_back'];
+                                } ?>" style="width:50px; height:50px">
                                 <?php
                                 if($validation->getError('adhaar_image_back'))
                                 {
@@ -182,6 +225,11 @@ use App\Models\PartyModel;
                                   Image 1
                                 </label>
                                 <input type="file"  name="profile_image1" class="form-control" >
+                                <img src="<?php
+                                if(isset($driver_data)){
+                                  echo $driver_data['profile_image1'];
+                                }
+                                ?>" style="width:50px; height:50px">
                                 <?php
                                 if($validation->getError('profile_image1'))
                                 {
@@ -203,6 +251,11 @@ use App\Models\PartyModel;
                                 }
                                 ?>
                                 <input type="file"  name="profile_image2" class="form-control"  >
+                                <img src="<?php
+                                if(isset($driver_data)){
+                                  echo $driver_data['profile_image2'];
+                                }
+                                ?>" style="width:50px; height:50px">
                               </div>
                             </div>
                             
@@ -266,8 +319,8 @@ use App\Models\PartyModel;
                               <div class="form-wrap">
                                 <label class="col-form-label">
                                   State<span class="text-danger">*</span>
-                                </label><br>
-                                <select class="dropdown selectopt" name="state">
+                                </label>
+                                <select class="select" name="state">
                                   <option>Select</option>
                                 <?php
                                 if (isset($state)) {
@@ -314,45 +367,44 @@ use App\Models\PartyModel;
                               </div>
                             </div>
 
-                            
-
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                               <div class="form-wrap">
-                                  <label class="col-form-label">
-                                  Vehicle Type  
-                                  </label><br>
-                                  <?php
-                                  $vehicletypesitem =[];
-                                      if(isset($vehicletypes)){
-                                        foreach($vehicletypes as $row => $type) {
-                                          if(isset($vehicletypesdriver)){
-                                            foreach ($vehicletypesdriver as $key => $value) {
-                                              $vehicletypesitem[] = $value['vehicle_type_id'];
-                                            }
-                                          }
-                                           ?>
-                                          <input class="form-check-input" type="checkbox" name="vehicle_types[]" id="id_<?php echo $type["id"]; ?>" value="<?php echo $type["id"]; ?>"
-                                          <?php  if(in_array($type['id'], $vehicletypesitem)){
-                                            echo "checked";} 
-                                          ?>><label for="id_<?php echo $type["id"]; ?>" class="col-form-label" style=" margin: 0px 20px 0px 3px;">
-                                          <?php echo ucwords($type["name"]); ?></label>
-                                          <?php
-                                        }
-                                      }
-                                      if($validation->getError('vehicle_type')){
-                                          echo '<div class="alert alert-danger mt-2">'.$validation->getError('vehicle_type').'</div>';
-                                      }
-                                      ?>
+                                <label class="col-form-label">
+                                Vehicle Type:
+                                </label>
+                                <select class="select" name="vehicle_type">
+                                  <option>Select</option>
+                                  <option value="Box truck" <?php if(isset($driver_data) && $driver_data['vehicle_type'] == "Box truck"){echo "selected"; } ?>>Box truck</option>
+                                  <option value="" <?php if(isset($driver_data) && $driver_data['vehicle_type'] == "Bus"){echo "selected"; } ?>>Bus</option>
+                                  <option value="Dump truck" <?php if(isset($driver_data) && $driver_data['vehicle_type'] == "Dump truck"){echo "selected"; } ?>>Dump truck</option>
+                                  <option value="Pickups" <?php if(isset($driver_data) && $driver_data['vehicle_type'] == "Pickups"){echo "selected"; } ?>>Pickups</option>
+                                  <option value="Rigid trucks" <?php if(isset($driver_data) && $driver_data['vehicle_type'] == "Rigid trucks"){echo "selected"; } ?>>Rigid trucks</option>
+                                </select>
+                                <?php
+                                if($validation->getError('vehicle_type')){
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('vehicle_type').'</div>';
+                                }
+                                ?>
                               </div>
                             </div>
-                            <?php if($last != 'create'){ ?>
-                            <div>
-                                <input type = "checkbox" id="approve" class="form-check-input"  name="approve" <?php if(isset($driver_data)){
-                                  if($driver_data['approved'] == 1){
-                                        echo 'checked';
-                                  } } ?> value="1"> <label for="approve"> Approved</label> 
+                            
+                            <div class="col-md-4">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                  Status:
+                                </label>
+                                <select class="select" name="status">
+                                  <option>Select</option>
+                                  <option value="Active" <?php if(isset($driver_data) && $driver_data['status'] == "Active"){echo "selected"; } ?>>Active</option>
+                                  <option value="Inactive" <?php if(isset($driver_data) && $driver_data['status'] == "Inactive"){echo "selected"; } ?>>Inactive</option>
+                                </select>
+                                <?php
+                                if($validation->getError('status')){
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('status').'</div>';
+                                }
+                                ?>
+                              </div>
                             </div>
-                           <?php } ?>
 
                           </div>
                         </div>

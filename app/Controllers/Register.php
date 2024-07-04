@@ -22,7 +22,6 @@ class Register extends BaseController
    
     public function register()
     {
-        
         $rules = [
             'email' => ['rules' => 'required|min_length[4]|max_length[255]|valid_email|is_unique[users.email]'],
             'password' => ['rules' => 'required|min_length[8]|max_length[255]'],
@@ -31,7 +30,6 @@ class Register extends BaseController
            
 
         if($this->validate($rules)){
-            // echo 'dfsdf';exit;
             $model = new UserModel();
             $data = [
                 'email'         => $this->request->getVar('email'),
@@ -41,16 +39,11 @@ class Register extends BaseController
             ];
             $model->save($data);
             $user_id = $model->getInsertID();
-            // echo 'user_id '.$user_id;exit;
             $session = \Config\Services::session();
             $session->setFlashdata('success', 'Company Added');
             return redirect()->to('/login');
         }else{
-            
             $data['validation'] = $this->validator;
-            // echo \Config\Services::validation()->listErrors();
-            // echo '<pre>dd </pre>';print_r($data);
-            // exit;
             return view('register', $data);
         }
            

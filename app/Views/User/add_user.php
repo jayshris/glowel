@@ -42,7 +42,7 @@
                 <div class="card">
                   <div class="card-body">
                     <div class="settings-form">
-                      <form method="post" action="<?php echo base_url(); ?>user/create">
+                      <form method="post" action="<?php echo base_url(); ?>user/add_user">
                         <div class="settings-sub-header">
                           <h6>Add User</h6>
                         </div>
@@ -53,7 +53,7 @@
                                   <label class="col-form-label">
                                     User Type <span class="text-danger">*</span>
                                   </label>
-                                  <select class="dropdown" name = "user_type">
+                                  <select class="select" name = "user_type">
                                     <option>Select</option>
                                     <?php
                                     if(isset($user_type)){
@@ -132,7 +132,47 @@
                                   }
                                   ?>
                                 </div>
+                            </div>
+
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                Password <span class="text-danger">*</span>
+                                </label>
+                                <?php
+                                if($validation->getError('password'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('password').'</div>';
+                                }
+                                ?>
+                                <input type="text" required value="<?php echo uniqid(); ?>" name="password" class="form-control">
                               </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-wrap">
+                                  <label class="col-form-label">
+                                      Company <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="select" name="company_id" id="company_id" onchange="$.getBranch();">
+                                      <option>Select Company</option>
+                                      <?php
+                                      if(isset($company)){
+                                        foreach($company as $row)
+                                        {
+                                            echo '<option value="'.$row["id"].'" "'.set_select('company_id', $row['id']).'">'.ucwords($row["name"]).'</option>';
+                                        }
+                                      }
+                                      ?>
+                                    </select>
+                                    <?php
+                                      if($validation->getError('company_id'))
+                                      {
+                                          echo '<div class="alert alert-danger mt-2">'.$validation->getError('company_id').'</div>';
+                                      }
+                                    ?>
+                                </div>
+                            </div>
 
                             <div class="col-md-6">
                               <div class="form-wrap">
@@ -147,65 +187,34 @@
                                       echo '<div class="alert alert-danger mt-2">'.$validation->getError('mobile').'</div>';
                                   }
                                   ?>
-                                </div>
                               </div>
+                            </div>
 
-                              <div class="col-md-6">
-                                  <div class="form-wrap">
-                                    <label class="col-form-label">
-                                        Branch/Office <span class="text-danger">*</span>
-                                      </label>
-                                      <select class="select" name="home_branch">
-                                        <option>Select</option>
-                                        <?php
-                                        if(isset($office)){
-                                          foreach($office as $row)
-                                          {
-                                              echo '<option value="'.$row["id"].'" "'.set_select('home_branch', $row['id']).'">'.ucwords($row["name"]).'</option>';
-                                          }
-                                        }
-                                        ?>
-                                      </select>
-                                      <?php
-                                        if($validation->getError('home_branch'))
-                                        {
-                                            echo '<div class="alert alert-danger mt-2">'.$validation->getError('user_type').'</div>';
-                                        }
-                                      ?>
-                                  </div>
-                              </div>
-
-                              <div class="col-md-6">
+                            <div class="col-md-6">
                                 <div class="form-wrap">
                                   <label class="col-form-label">
-                                  Password <span class="text-danger">*</span>
-                                  </label>
-                                  <?php
-                                  if($validation->getError('password'))
-                                  {
-                                      echo '<div class="alert alert-danger mt-2">'.$validation->getError('password').'</div>';
-                                  }
-                                  ?>
-                                  <input type="text" required value="<?php echo uniqid(); ?>" name="password" class="form-control">
-                                </div>
-                              </div>
-
-                              <div class="col-md-12">
-                                <div class="form-wrap">
-
-                                    <label class="col-form-label">
-                                        Branches <span class="text-danger"></span>
-                                    </label><br>
+                                      Home Branch/Office <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="select" name="home_branch" id="home_branch" onchange="$.chkdBranch();">
+                                      <option>Select Home Branch/Office</option>
+                                    </select>
                                     <?php
-                                      if(isset($office)){
-                                        foreach($office as $row)
-                                        {
-                                          echo '<input class="form-check-input" type="checkbox" name="branch[]" id="id_'.$row["id"].'" value="'.$row["id"].'"><label for="id_'.$row["id"].'" class="col-form-label" style=" margin: 0px 20px 0px 3px;">'.ucwords($row["name"]).'</label>';
-                                        }
+                                      if($validation->getError('home_branch'))
+                                      {
+                                          echo '<div class="alert alert-danger mt-2">'.$validation->getError('user_type').'</div>';
                                       }
-                                      ?>
+                                    ?>
                                 </div>
-                              </div>    
+                            </div>
+
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                  <label class="col-form-label">
+                                      Branches <span class="text-danger"></span>
+                                  </label><br>
+                                  <span id="branches"></span>
+                              </div>
+                            </div>   
 
                           </div>
                         </div>
@@ -240,6 +249,46 @@
   <!-- Sticky Sidebar JS -->
   <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
   <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+
+  <script type="text/javascript">
+    $.getBranch = function() {
+      $('#home_branch').html('<option>Select Home Branch/Office</option>');
+      $('#branches').html('');
+
+      var company_id = $('#company_id').val();
+      if(company_id>0){
+        $.ajax({
+          method: "POST",
+          url: '<?php echo base_url('user/getHomeBranch');?>',
+          data: {
+            company_id: company_id
+          },
+          success: function(resp) {
+            $('#home_branch').html(resp);
+          }
+        });
+
+        $.ajax({
+          method: "POST",
+          url: '<?php echo base_url('user/getBranches');?>',
+          data: {
+            company_id: company_id
+          },
+          success: function(resp) {
+            $('#branches').html(resp);
+          }
+        });
+      }
+    }
+
+    $.chkdBranch = function() {
+      $('input:checkbox').removeAttr('checked');
+      var home_branch = $('#home_branch').val();
+      if(home_branch>0){
+        $('#id_'+home_branch).attr('checked','checked');
+      }
+    }
+  </script>
 </body>
 
 </html>

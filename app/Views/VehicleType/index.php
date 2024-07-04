@@ -85,7 +85,7 @@
                                 $created_at_str = strtotime($row["created_at"]) ;
                                 $strtime = date('d-m-Y',$created_at_str);
                               }
-                              if(isset($row["updated_at"]) && ($row["updated_at"]!='0000-00-00 00:00:00')){
+                              if(isset($row["updated_at"])){
                                 $updated_at_str = strtotime($row["updated_at"]);
                                 $strtime1 = date('d-m-Y',$updated_at_str);
                               }else{

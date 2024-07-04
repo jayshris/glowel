@@ -160,7 +160,7 @@
             </div>
 
 
-            <button type="button" class="btn btn-primary mt-4" onclick="$.confirm()">Proceed To Checkout</button>
+            <button type="button" class="btn btn-primary mt-4"  onclick="$.confirm()">Proceed To Checkout</button>
 
 
           </div>
@@ -218,6 +218,7 @@
           window.location.replace("<?= base_url('sales/delete-product/' . $token . '/') ?>" + index);
         }
       }
+
       $.confirm = function() {
         $.ajax({
           type: "GET",

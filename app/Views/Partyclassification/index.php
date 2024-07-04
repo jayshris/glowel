@@ -47,7 +47,7 @@
 
                 <!-- Contact List -->
                 <div class="table-responsive custom-table">
-                  <table class="table">
+                  <table class="table" id="deal_list">
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>

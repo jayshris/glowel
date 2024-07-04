@@ -63,7 +63,7 @@
                                 if(isset($fueltype_data)){
                                   echo $fueltype_data['fuel_name'];
                                 }
-                                ?>" required>
+                                ?>">
                                 <?php
                                   if($validation->getError('fuel_name'))
                                   {

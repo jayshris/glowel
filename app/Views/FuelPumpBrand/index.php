@@ -79,18 +79,8 @@
                               }else{
                                 $status ='<span class="badge badge-pill bg-success">Active</span>';
                               }
-                              $created_at_str = '';
-                              $updated_at_str='';
-                              if(isset($fuelpumpbrand["created_at"])){
-                                $created_at_str = strtotime($fuelpumpbrand["created_at"]) ;
-                                $strtime = date('d-m-Y',$created_at_str);
-                              }
-                              if(isset($fuelpumpbrand["updated_at"]) && ($fuelpumpbrand["updated_at"]!='0000-00-00 00:00:00')){
-                                $updated_at_str = strtotime($fuelpumpbrand["updated_at"]);
-                                $strtime1 = date('d-m-Y',$updated_at_str);
-                              }else{
-                                $strtime1 = '-';
-                              }
+                              $strtime = strtotime($fuelpumpbrand["created_at"]);
+                              $strtime1 = strtotime($fuelpumpbrand["updated_at"]);
                                 echo '
                                 <tr>
                                     <td>
@@ -100,9 +90,9 @@
                                     </td>
                                     <td>'.ucwords($fuelpumpbrand["brand_name"]).'</td>
                                     <td>'.ucwords($fuelpumpbrand["abbreviation"]).'</td>
-                                    <td>'.ucwords(($fuelpumpbrand["fuel_type_names"]), '\',. ').'</td>
-                                    <td>'.$strtime.'</td>
-                                    <td>'.$strtime1.'</td>
+                                    <td>'.ucwords(strtolower($fuelpumpbrand["fuel_type_names"]), '\',. ').'</td>
+                                    <td>'.date('d-m-Y',$strtime).'</td>
+                                    <td>'.date('d-m-Y',$strtime1).'</td>
                                     <td>'.$status.'</td>
                                 </tr>';
                             }

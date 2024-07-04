@@ -55,7 +55,7 @@
                                   Brand Name <span class="text-danger">*</span>
                                 </label>
 
-                                <input type="text" name="brand_name" class="form-control"  value="<?= set_value('brand_name') ?>" required>
+                                <input type="text" name="brand_name" class="form-control"  value="<?= set_value('brand_name') ?>">
                                 <?php
                                   if($validation->getError('brand_name'))
                                   {
@@ -71,7 +71,7 @@
                                   Abbreviation <span class="text-danger">*</span>
                                 </label>
 
-                                <input type="text" name="abbreviation" class="form-control"  value="<?= set_value('abbreviation') ?>" required>
+                                <input type="text" name="abbreviation" class="form-control"  value="<?= set_value('abbreviation') ?>">
                                 <?php
                                   if($validation->getError('abbreviation'))
                                   {
@@ -84,19 +84,23 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                  Fuel Type <span class="text-danger">*</span>
+                                  Select Fuel Type <span class="text-danger">*</span>
                                 </label>
+                                <select class="select" name = "fuel_name[]" multiple>
                                   
                                   <?php
-                                  if(!empty($fueltype_data)){
+                                  if(isset($fueltype_data)){
                                     foreach($fueltype_data as $row)
-                                    { ?>
-                                        <input  type="checkbox" name="fuel_types[]" value="<?=$row["id"]?>"> <label style="padding-right: 15px;"><?=ucwords($row["fuel_name"])?></label>
-                                  <?php  }
+                                    {
+                                        echo '<option value="'.$row["id"].'" "'.set_select('fuel_name[]', $row['id']).'">'.ucwords($row["fuel_name"]).'</option>';
+                                    }
                                   }
-                                  if($validation->getError('fuel_types'))
+                                  ?>
+                                </select>
+                                <?php
+                                  if($validation->getError('fuel_name'))
                                   {
-                                      echo '<div class="alert alert-danger mt-2">'.$validation->getError('fuel_types').'</div>';
+                                      echo '<div class="alert alert-danger mt-2">'.$validation->getError('fuel_name').'</div>';
                                   }
                                  ?>
                               </div>

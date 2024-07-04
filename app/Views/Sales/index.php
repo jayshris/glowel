@@ -119,9 +119,8 @@
                         <tr>
                           <td><?= $i++; ?>.</td>
                           <td>
-                            <?php if (!$pc['status']) {?>
-                              <a href="<?= base_url('sales/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
-                            <?php } ?>
+                            <a href="<?= base_url('sales/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
+
                             <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                           </td>
                           <td><?= $pc['order_no'] ?></td>

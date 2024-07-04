@@ -27,7 +27,7 @@
             <div class="row">
               <div class="col-xl-12 col-lg-12">
                   <div class="settings-sub-header">
-                    <h6>Add Party Classification</h6>
+                    <h6>Add Vehicle Certificates</h6>
                   </div>
                   <?= $this->include('Partyclassification/form.php') ?>
               </div>

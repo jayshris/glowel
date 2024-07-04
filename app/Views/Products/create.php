@@ -158,7 +158,7 @@
                               ?>
                               <textarea name="summary" id="summary" class="form-control resize-none" maxlength="70"></textarea> 
                             </div>
-                            
+
                             <div class="col-md-6">
                               <label class="col-form-label">Description</label>
                               <?php
@@ -168,6 +168,7 @@
                               ?>
                               <textarea name="description" id="description" class="form-control resize-none" maxlength="100"></textarea> 
                             </div>
+
                           </div>
                           <br>
                         </div>

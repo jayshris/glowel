@@ -55,7 +55,7 @@
                                   Flag Name <span class="text-danger">*</span>
                                 </label>
 
-                                <input type="text" name="title" class="form-control"  value="<?= set_value('title') ?>" required >
+                                <input type="text" name="title" class="form-control"  value="<?= set_value('title') ?>">
                                 <?php
                                   if($validation->getError('title'))
                                   {

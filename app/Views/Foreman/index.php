@@ -1,7 +1,3 @@
-<?php
-use App\Models\PartyModel;
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -49,10 +45,9 @@ use App\Models\PartyModel;
                   </div>
                 </div>
 
-                <a href="<?php echo base_url();?>foreman/create" class="btn btn-dark add-driver" role="button">Add New Foreman</a>
                 <!-- Contact List -->
                 <div class="table-responsive custom-table">
-                  <table class="table">
+                  <table class="table" id="deal_list">
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
@@ -90,21 +85,17 @@ use App\Models\PartyModel;
                               }else{
                                 $bun = '<strong>Approved</strong>';
                               }
-
-                              $party = new PartyModel();
-                              $partydata = $party->where('id',$foreman["name"])->first();
-                              if($partydata){
-                                $name = $partydata['party_name'];
-                              }else{
-                                $name = '';
-                              }
                                 echo '
                                 <tr>
                                     <td>
+                                    '.$bun .'
+
                                     <a href="'.base_url().'foreman/edit/'.$foreman['id'].'"  class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
+
                                     <button type="button"   onclick="delete_data('.$foreman["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                                     </td>
-                                    <td>'. $name.'</td>
+                                    
+                                    <td>'.$foreman["name"].'</td>
                                     <td>'.$foreman['mobile'].'</td>
                                     <td>'.$foreman['email'].'</td>
                                     <td>'.$status.'</td>

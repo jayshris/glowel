@@ -19,7 +19,6 @@
 
 <!-- Select2 CSS -->
 <link rel="stylesheet" href="<?php echo base_url(); ?>public/assets/plugins/select2/css/select2.min.css">
-<!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
 
 <!-- Daterangepicker CSS -->
 <link rel="stylesheet" href="<?php echo base_url(); ?>public/assets/plugins/daterangepicker/daterangepicker.css">
@@ -35,13 +34,3 @@
 
 <!-- Feathericon CSS -->
 <link rel="stylesheet" href="<?php echo base_url(); ?>public/assets/css/feather.css">
-
-<style>
-    @media print {
-
-        .no-print,
-        .no-print * {
-            display: none !important;
-        }
-    }
-</style>

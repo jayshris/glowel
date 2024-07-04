@@ -6,8 +6,6 @@
   <?= $this->include('partials/head-css') ?>
   <!-- Feathericon CSS -->
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/feather.css">
-
-
 </head>
 
 <body>
@@ -145,8 +143,50 @@
                                       echo '<div class="alert alert-danger mt-2">'.$validation->getError('email').'</div>';
                                   }
                                   ?>
-                                </div>
                               </div>
+                            </div>
+
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                Password 
+                                </label>
+                                <?php
+                                if($validation->getError('password'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('password').'</div>';
+                                }
+                                ?>
+                                <input type="text" name="password" class="form-control">
+                                <p>Enter password only if you wish to change</p>
+                              </div>
+                            </div> 
+
+                            <div class="col-md-6">
+                                <div class="form-wrap">
+                                  <label class="col-form-label">
+                                      Company <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="select" name="company_id" id="company_id" onchange="$.getBranch();">
+                                      <option>Select Company</option>
+                                      <?php
+                                      if(isset($company)){
+                                        foreach($company as $row)
+                                        {
+                                          $sel = (isset($userdata) && $userdata['company_id'] == $row['id']) ? 'selected' : '';
+                                          echo '<option value="'.$row["id"].'" "'.set_select('company_id', $row['id']).'" '.$sel.'>'.ucwords($row["name"]).'</option>';
+                                        }
+                                      }
+                                      ?>
+                                    </select>
+                                    <?php
+                                      if($validation->getError('company_id'))
+                                      {
+                                          echo '<div class="alert alert-danger mt-2">'.$validation->getError('company_id').'</div>';
+                                      }
+                                    ?>
+                                </div>
+                            </div>
 
                             <div class="col-md-6">
                               <div class="form-wrap">
@@ -161,65 +201,49 @@
                                       echo '<div class="alert alert-danger mt-2">'.$validation->getError('mobile').'</div>';
                                   }
                                   ?>
-                                </div>
                               </div>
+                            </div>
 
-                              <div class="col-md-6">
-                                  <div class="form-wrap">
-                                    <label class="col-form-label">
-                                        Branch/Office <span class="text-danger">*</span>
-                                      </label>
-                                      <select class="select" name="home_branch">
-                                        <option>Select</option>
-                                        <?php
-                                        if(isset($office)){
-                                          foreach($office as $row)
-                                          { ?>
-                                              <option value="<?php echo $row["id"]; ?>" <?php
-                                              if(isset($userdata)){
-                                                if($userdata['home_branch'] == $row['id']){
-                                                  echo 'selected';
-                                                }
-                                              }
-                                              ?>>
-                                                <?php echo ucwords($row["name"]); ?>
-                                              </option>
-                                          <?php
-                                          }
-                                        }
-                                        ?>
-                                      </select>
-                                      <?php
-                                        if($validation->getError('home_branch'))
-                                        {
-                                            echo '<div class="alert alert-danger mt-2">'.$validation->getError('user_type').'</div>';
-                                        }
-                                      ?>
-                                  </div>
-                              </div>
-
-                               <div class="col-md-6">
-                                <div class="form-wrap">
-                                  <label class="col-form-label">
-                                  Password 
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                    Home Branch/Office <span class="text-danger">*</span>
                                   </label>
+                                  <select class="select" name="home_branch" id="home_branch" onchange="$.chkdBranch();">
+                                    <option>Select Home Branch/Office</option>
+                                    <?php
+                                    if(isset($office)){
+                                      foreach($office as $row)
+                                      { ?>
+                                          <option value="<?php echo $row["id"]; ?>" <?php
+                                          if(isset($userdata)){
+                                            if($userdata['home_branch'] == $row['id']){
+                                              echo 'selected';
+                                            }
+                                          }
+                                          ?>>
+                                            <?php echo ucwords($row["name"]); ?>
+                                          </option>
+                                      <?php
+                                      }
+                                    }
+                                    ?>
+                                  </select>
                                   <?php
-                                  if($validation->getError('password'))
-                                  {
-                                      echo '<div class="alert alert-danger mt-2">'.$validation->getError('password').'</div>';
-                                  }
+                                    if($validation->getError('home_branch'))
+                                    {
+                                        echo '<div class="alert alert-danger mt-2">'.$validation->getError('user_type').'</div>';
+                                    }
                                   ?>
-                                  <input type="text" name="password" class="form-control">
-                                  <p>Enter password only if you wish to change</p>
-                                </div>
-                              </div> 
+                              </div>
+                            </div>
 
-                              <div class="col-md-12">
-                                <div class="form-wrap">
-
-                                    <label class="col-form-label">
-                                        Branches <span class="text-danger"></span>
-                                    </label><br>
+                            <div class="col-md-6">
+                              <div class="form-wrap">
+                                  <label class="col-form-label">
+                                      Branches <span class="text-danger"></span>
+                                  </label><br>
+                                  <span id="branches">
                                     <?php
                                       if(isset($office)){
                                         foreach($office as $row)
@@ -231,16 +255,17 @@
                                         
                                     ?>
 
-                                        <input class="form-check-input" type="checkbox" name="branch[]" id="id_<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" 
-                                        <?php if(in_array($row['id'], $offices)){
-                                            echo "checked";} ?>>
-                                        <label for="id_<?php echo $row["id"]; ?>" class="col-form-label" style=" margin: 0px 20px 0px 3px;"><?php echo ucwords($row["name"]); ?></label>
+                                    <input class="form-check-input" type="checkbox" name="branch[]" id="id_<?php echo $row["id"]; ?>" value="<?php echo $row["id"]; ?>" 
+                                    <?php if(in_array($row['id'], $offices)){
+                                          echo "checked";} ?>>
+                                    <label for="id_<?php echo $row["id"]; ?>" class="col-form-label" style=" margin: 0px 20px 0px 3px;"><?php echo ucwords($row["name"]); ?></label>
                                     <?php
-                                        }
                                       }
-                                      ?>
-                                </div>
-                              </div>    
+                                    }
+                                    ?>
+                                  </span>
+                              </div>
+                            </div>    
 
                           </div>
                         </div>
@@ -275,6 +300,45 @@
   <!-- Sticky Sidebar JS -->
   <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
   <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
-</body>
 
+  <script type="text/javascript">
+    $.getBranch = function() {
+      $('#home_branch').html('<option>Select Home Branch/Office</option>');
+      $('#branches').html('');
+
+      var company_id = $('#company_id').val();
+      if(company_id>0){
+        $.ajax({
+          method: "POST",
+          url: '<?php echo base_url('user/getHomeBranch');?>',
+          data: {
+            company_id: company_id
+          },
+          success: function(resp) {
+            $('#home_branch').html(resp);
+          }
+        });
+
+        $.ajax({
+          method: "POST",
+          url: '<?php echo base_url('user/getBranches');?>',
+          data: {
+            company_id: company_id
+          },
+          success: function(resp) {
+            $('#branches').html(resp);
+          }
+        });
+      }
+    }
+
+    $.chkdBranch = function() {
+      $('input:checkbox').removeAttr('checked');
+      var home_branch = $('#home_branch').val();
+      if(home_branch>0){
+        $('#id_'+home_branch).attr('checked','checked');
+      }
+    }
+  </script>
+</body>
 </html>

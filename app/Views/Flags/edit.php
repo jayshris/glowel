@@ -63,7 +63,7 @@
                                 if(isset($flags_data)){
                                   echo $flags_data['title'];
                                 }
-                                ?>" required>
+                                ?>">
                                 <?php
                                   if($validation->getError('title'))
                                   {

@@ -64,6 +64,7 @@
                         </div>
                         <div class="submit-button">
                           <button type="submit" class="btn btn-primary">Save Changes</button>
+                          <button type="reset" class="btn btn-light">Reset</button>
                           <a href="<?php echo base_url();?>company" class="btn btn-light">Cancel</a>
                         </div>
                       </form>

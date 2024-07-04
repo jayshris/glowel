@@ -24,49 +24,30 @@
             <div class="card main-card">
               <div class="card-body">
 
-                <?php
+                <!-- Search -->
+                <div class="search-section">
+                  <div class="row">
+                    <div class="col-md-5 col-sm-4">
+                      <div class="form-wrap icon-form">
+                        <span class="form-icon"><i class="ti ti-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Search Deals">
+                      </div>
+                    </div>
+                    <?php
 
-$session = \Config\Services::session();
-if($session->getFlashdata('success')) {
-    echo '
-    <div class="alert alert-success">'.$session->getFlashdata("success").'</div>
-    ';
-}
-?>
-                <div class="row">
-                  <div class="col-md-9">
-                    <form method="post" action="<?php echo base_url() ?>partytype/searchByStatus" >
-                        <!-- Search -->
-                        <div class="search-section">
-                          <div class="row">
-                            <div class="col-md-1 col-sm-3">
-                                <label class="col-form-label">
-                                  Status
-                                </label>
-                            </div>
-                            <div class="col-md-3 col-sm-3">
-                                <div class="form-wrap">
-                                      <select class="form-control" name="status">
-                                      <option>Select</option>
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                      </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-3">
-                              <input type="submit" value="Submit" class="btn btn-primary">
-                            </div>
-                          </div>
-                        </div>
-                    </form>
+        $session = \Config\Services::session();
+        if($session->getFlashdata('success')) {
+            echo '
+            <div class="alert alert-success">'.$session->getFlashdata("success").'</div>
+            ';
+        }
+        ?>
                   </div>
-                  <div class="col-md-3">
-                      <a href="<?php echo base_url();?>partytype/create" class="btn btn-dark " role="button">Add New Party Type</a>
-                  </div>  
                 </div>
+
                 <!-- Contact List -->
                 <div class="table-responsive custom-table">
-                  <table class="table" >
+                  <table class="table" id="deal_list">
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
@@ -86,16 +67,9 @@ if($session->getFlashdata('success')) {
                                 $status ='<span class="badge badge-pill bg-success">Active</span>';
                               }
 
-                              $btn ='';
-                              if($partytype["status"] == 'Active'){
-                                $btn = 'Inactive';
-                              }elseif($partytype['status'] == 'Inactive'){
-                                $btn = 'Active';
-                              }
                                 echo '
                                 <tr>
                                     <td>
-                                    <a href="'.base_url().'partytype/statusupdate/'.$partytype['id'].'" title="Click here to '.$btn.' " class="btn btn-success btn-sm" role="button">'.$btn.'</a>
                                     <a href="'.base_url().'partytype/edit/'.$partytype['id'].'"  class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
 
                                     <button type="button"   onclick="delete_data('.$partytype["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>

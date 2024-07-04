@@ -63,7 +63,7 @@
                                 if(isset($fuelpumpbrand_data)){
                                   echo $fuelpumpbrand_data['brand_name'];
                                 }
-                                ?>" required>
+                                ?>">
                                 <?php
                                   if($validation->getError('brand_name'))
                                   {
@@ -82,7 +82,7 @@
                                 if(isset($fuelpumpbrand_data)){
                                   echo $fuelpumpbrand_data['abbreviation'];
                                 }
-                                ?>" required>
+                                ?>">
                                 <?php
                                   if($validation->getError('abbreviation'))
                                   {
@@ -94,9 +94,10 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Fuel Type <span class="text-danger">*</span>
+                                Select Fuel Type <span class="text-danger">*</span>
                                 </label>
-                                
+                                <select class="select" name = "fuel_name[]" multiple>
+                                  
                                   <?php
                                   if(isset($fueltype_data)){
                                     if(isset($fuelpumpbrand_data)){
@@ -105,15 +106,16 @@
                                     }
                                     foreach($fueltype_data as $row)
                                     { ?>
-                                         <input type="checkbox" name="fuel_types[]" value="<?=$row["id"]?>" <?= in_array($row['id'], $abc) ? 'checked' : '' ?>> <label style="padding-right: 15px;"><?=ucwords($row["fuel_name"])?></label>
+                                         <option value="<?= $row['id'] ?>" <?= in_array($row['id'], $abc) ? 'selected' : '' ?>><?= $row['fuel_name'] ?></option>
                                     <?php 
                                     }
                                   }
                                   ?>
+                                </select>
                                 <?php
-                                  if($validation->getError('fuel_types'))
+                                  if($validation->getError('fuel_name'))
                                   {
-                                      echo '<div class="alert alert-danger mt-2">'.$validation->getError('fuel_types').'</div>';
+                                      echo '<div class="alert alert-danger mt-2">'.$validation->getError('fuel_name').'</div>';
                                   }
                                  ?>
                               </div>

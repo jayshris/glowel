@@ -12,7 +12,7 @@ class PartyModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['party_classification_id','party_name','business_owner_name',	'contact_person','accounts_person' ,'business_address',	'city',	'state_id',	'postcode'	,'primary_phone', 'other_phone', 'email' ,'business_type_id' ,'gstnumber',	'itpan', 'tanno',	'aadhaar', 'msmenumber',	'otherid',	'created_at', 'updated_at' ,'deleted_at','approved','approval_user_id','approval_user_type','approval_date','approval_ip_address','status' ];
+    protected $allowedFields    = ['party_name', 'business_owner_name', 'contact_person', 'accounts_person', 'business_address',    'city',    'state_id',    'postcode', 'primary_phone', 'other_phone', 'email', 'business_type_id', 'gstnumber',    'itpan', 'tanno',    'aadhaar', 'msmenumber',    'otherid', 'pan_img_1', 'pan_img_2', 'aadhar_img_1', 'aadhar_img_2', 'gst_img_1', 'gst_img_2', 'created_at', 'updated_at', 'deleted_at', 'approved', 'approval_user_id', 'approval_user_type', 'approval_date', 'approval_ip_address', 'status'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

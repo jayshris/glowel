@@ -205,10 +205,7 @@ $routes->post('company/save', 'Company::add_validation');
 $routes->get('office', 'Office::index');
 $routes->get('office/create', 'Office::create');
 
-
-
-
-// pankaj routes added from 05 june 24
+// pankaj routes from 05 june 24
 // Product Types
 $routes->get('product-types', 'ProductType::index');
 $routes->match(['get', 'post'], 'product-types/create', 'ProductType::create');
@@ -243,29 +240,24 @@ $routes->post('sales/getProducts', 'Sales::getProducts');
 $routes->get('sales/delete-product/(:num)/(:num)', 'Sales::deleteProd/$1/$2');
 
 $routes->match(['get', 'post'], 'sales/edit/(:num)', 'Sales::edit/$1');
+
 $routes->get('sales/getOrderProducts/(:num)', 'Sales::getOrderProducts/$1');
 $routes->get('sales/sendToInvoice/(:num)', 'Sales::sendToInvoice/$1');
 $routes->match(['get', 'post'], 'sales/sales-checkout/(:num)', 'Sales::salesCheckout/$1');
 $routes->get('sales/deleteSaleOrder/(:num)', 'Sales::deleteSaleOrder/$1');
-// Driver
-$routes->match(['get', 'post'], 'driver/assign-vehicle/(:num)', 'DriverVehicleAssign::create/$1');
-$routes->match(['get', 'post'], 'driver/unassign-vehicle/(:num)', 'DriverVehicleAssign::unassign/$1');
-$routes->get('driver/assigned-list', 'DriverVehicleAssign::list');
+
 //purchase
 $routes->match(['get', 'post'], 'purchase', 'Purchase::index');
 $routes->match(['get', 'post'], 'purchase/create', 'Purchase::create');
 $routes->match(['get', 'post'], 'purchase/edit/(:num)', 'Purchase::edit/$1');
 $routes->match(['get', 'post'], 'purchase/add-products/(:num)', 'Purchase::addProducts/$1');
 $routes->post('purchase/getProducts', 'Purchase::getProducts');
-$routes->get('purchase/delete-product/(:num)/(:num)', 'Purchase::deleteProd/$1/$2');
-
-// $routes->match(['get', 'post'], 'purchase/edit/(:num)', 'Purchase::edit/$1');
+$routes->get('purchase/delete-product/(:num)/(:num)', 'Purchase::deleteProd/$1/$2'); 
 $routes->get('purchase/getOrderProducts/(:num)', 'Purchase::getOrderProducts/$1');
 $routes->get('purchase/sendToInvoice/(:num)', 'Purchase::sendToInvoice/$1');
 $routes->match(['get', 'post'], 'purchase/purchase-checkout/(:num)', 'Purchase::purchaseCheckout/$1');
 $routes->get('purchase/deletePurchaseOrder/(:num)', 'Purchase::deletePurchaseOrder/$1');
 $routes->post('purchase/showWebCam', 'Purchase::showWebCam');
 
-
-// auto routes must be set false... for security reasons
+// auto routes must be set false... for security
 $routes->setAutoRoute(true);

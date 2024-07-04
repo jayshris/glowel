@@ -2,18 +2,18 @@
 
 namespace App\Controllers;
 
-use App\Models\UserModel;
-use App\Models\PartyModel;
+use App\Controllers\BaseController;
+use App\Models\ProductCategoryModel;
 use App\Models\ProductsModel;
+use App\Models\ProductWarehouseLinkModel;
 use App\Models\SalesOrderModel;
 use App\Models\SalesProductModel;
-use App\Controllers\BaseController;
+use App\Models\UserModel;
+use App\Models\PartyModel;
 use App\Models\NotificationModel;
-use App\Models\ProductCategoryModel;
+use App\Models\InventoryModel;
 
 use CodeIgniter\HTTP\ResponseInterface;
-use App\Models\ProductWarehouseLinkModel;
-use App\Models\InventoryModel;
 
 class Sales extends BaseController
 {
@@ -41,6 +41,7 @@ class Sales extends BaseController
         $this->partyModel = new PartyModel();
         $this->NModel = new NotificationModel();
         $this->InventoryModel = new InventoryModel();
+
         $user = new UserModel();
         $this->access = $user->setPermission();
 
@@ -61,8 +62,8 @@ class Sales extends BaseController
 
             return view('Sales/index', $data);
         }
-    }
-
+    } 
+     
     public function create()
     {
         if ($this->access === 'false') {
@@ -92,7 +93,7 @@ class Sales extends BaseController
                 return $this->response->redirect(base_url('sales/add-products/' . $insert_id));
             } 
         }  
-        $data['customers'] = $this->partyModel->select('id,party_name')->where('status', 'Active')->findAll();
+        $data['customers'] = $this->partyModel->select('id,party_name')->where('status', 1)->findAll();
         $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
         return view('Sales/create', $data);
          
@@ -167,7 +168,7 @@ class Sales extends BaseController
                 'message' => $data['order_details']['order_no'].' order has been opened for edit'
             ]);
 
-            $customers = $this->partyModel->select('party_name')->where('status', 'Active')->findAll();
+            $customers = $this->partyModel->select('party_name')->where('status', 1)->findAll();
             $data['customers']  = array_column($customers,'party_name');
             $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
             $data['order_details'] = $this->SOModel->where('id', $id)->first();
@@ -218,6 +219,7 @@ class Sales extends BaseController
         }
         return $newName;
     }
+
     public function addProducts($id)
     {
         if ($this->request->getPost()) {
@@ -320,7 +322,7 @@ class Sales extends BaseController
 
     function sendToInvoice($order_id){
         $order = $this->SOModel->where('id', $order_id)->first();
-        
+
         $result = $this->SOModel->update($order_id, [
             'status' => 1
         ]);
@@ -340,8 +342,8 @@ class Sales extends BaseController
 
     public function deleteSaleOrder($id)
     {
-         //delete inventory
-         $this->InventoryModel->where('sales_order_id', $id)->delete();
+        //delete inventory
+        $this->InventoryModel->where('sales_order_id', $id)->delete();
 
         //delete order product first 
         $this->SOPModel->where('order_id', $id)->delete();
@@ -351,5 +353,4 @@ class Sales extends BaseController
 
         return $this->response->redirect(base_url('sales'));
     }
-
 }

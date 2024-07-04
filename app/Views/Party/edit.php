@@ -29,7 +29,7 @@
 
 
               <div class="settings-sub-header">
-                <h6>Update Party</h6>
+                <h6>Update Party Classification</h6>
               </div>
               <?= $this->include('Party/form.php') ?>
 
@@ -46,41 +46,14 @@
   </div>
   <!-- /Main Wrapper -->
 
-<?= $this->include('partials/vendor-scripts') ?>
-<script>
-jQuery(document).ready(function($) {
-    $("#business_type_id").on('change', function() {
-        $("#target").empty();
-        var level = $(this).val();
-        if(level){
-               $.ajax ({
-                type: 'POST',
-                url: '../get_flags_fields',
-                data: { business_type: '' + level + '' },
-                success : function(htmlresponse) {
-                    $('#target').append(htmlresponse);
-                 }
-            });
-        }
-    });
-});
+  <?= $this->include('partials/vendor-scripts') ?>
 
-$(document).ready(function() {
-        var level = $("#business_type_id").val();
-        var party_id = $("#party_id").val();
-        if(level){
-            $.ajax ({
-                type: 'POST',
-                url: '../get_flags_fields',
-                data: { business_type: '' + level + '', party_id: '' + party_id + '' },
-                success : function(htmlresponse) {
-                    $('#target').append(htmlresponse);
-                 }
-            });
-        }
-});
-</script>
+  <!-- Profile Upload JS -->
+  <script src="<?php echo base_url(); ?>assets/js/profile-upload.js"></script>
 
+  <!-- Sticky Sidebar JS -->
+  <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+  <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
 </body>
 
 </html>

@@ -1,7 +1,3 @@
-<?php
-use App\Models\CompanyModel;
-
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -551,96 +547,40 @@ use App\Models\CompanyModel;
                   </div>
                 </div>
                  /Filter -->
-                <div class="row">
-                  <div class="col-md-9">
-                      <form method="post" action="<?php echo base_url() ?>office/searchByStatus" >
-                            <!-- Search -->
-                            <div class="search-section">
-                              <div class="row">
-                                <div class="col-md-2 col-sm-3">
-                                    <label class="col-form-label">
-                                      Search By Status
-                                    </label>
-                                </div>
-                                <div class="col-md-3 col-sm-3">
-                                    <div class="form-wrap">
-                                          <select class="form-control" name="status">
-                                          <option>Select</option>
-                                            <option value="1">Active</option>
-                                            <option value="0">Inactive</option>
-                                          </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-3">
-                                  <input type="submit" value="Submit" class="btn btn-primary">
-                                </div>
-                              </div>
-                            </div>
-                        </form>
-                  </div>
-                  <div class="col-md-3">
-                      <a href="<?php echo base_url();?>office/create" class="btn btn-dark " role="button">Add New Office</a>
-                  </div>
-                </div>
-                  
+
                 <!-- Contact List -->
                 <div class="table-responsive custom-table">
-                  <table class="table">
+                  <table class="table" id="deal_list">
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
                         <th>Name</th>
-                        <th>Company Name</th>
                         <th>Added</th>
-                        <th>Updated</th>
                         <th>Status</th>
                       </tr>
                     </thead>
                     <tbody>
                     <?php
-
                         if($office_data)
                         {
                             foreach($office_data as $office)
                             {
-                              $company = new CompanyModel();
-                              $companydata = $company->where('id',$office['company_id'])->first();
                               if($office['status'] == 0){
                                 $status= '<span class="badge badge-pill bg-danger">Inactive</span>';
                               }else{
                                 $status ='<span class="badge badge-pill bg-success">Active</span>';
                               }
                               $strtime = strtotime($office["created_at"]);
-                              $strtime2 = '';
-                              if(isset($office["updated_at"])){
-                                $strtime2 = strtotime($office["updated_at"]);
-                                $strtime2 = date('d-m-Y h:i:sa',$strtime2);
-                              }else{
-                                $strtime2= '';
-                              }
-                              if($companydata['status'] == 'Active'){
-                                if($office['status'] == 1){
-                                  $bun = '<a href="office/status/'.$office['id'].'" class="btn btn-danger btn-sm" role="button">Inactive</a>';
-                                }else{
-                                  $bun = '<a href="office/status/'.$office['id'].'" class="btn btn-success btn-sm" role="button">Active</a>';
-                                }
-                              }else{
-                                $bun = '';
-                              }
-                              
                                 echo '
                                 <tr>
                                     <td>
-                                    '. $bun.'
                                     <a title="Edit" type="button" href="'.base_url().'office/edit/'.$office['id'].'" class="btn btn-success btn-sm"><i class="ti ti-pencil"></i> </a>
                                     
                                     <a title="View" type="button" href="'.base_url().'office/view/'.$office['id'].'" class="btn btn-primary btn-sm"><i class="ti ti-arrow-right"></i> </a>
                                     <button title="Delete" type="button" onclick="delete_data('.$office["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                                     </td>
                                     <td>'.$office["name"].'</td>
-                                    <td>'. @$companydata['name'].'</td>
-                                    <td>'.date('d-m-Y h:i:sa',$strtime).'</td>
-                                    <td>'.$strtime2.'</td>
+                                    <td>'.date('d-m-Y',$strtime).'</td>
                                     <td>'.$status.'</td>
                                 </tr>';
                             }

@@ -32,7 +32,7 @@
                 <div class="card">
                   <div class="card-body">
                     <div class="settings-form">
-                   
+
 
                       <form method="post" enctype="multipart/form-data" action="<?php echo base_url('sales/create'); ?>">
 
@@ -90,8 +90,6 @@
 
   </div>
   <!-- /Main Wrapper -->
-  
-
 
   <?= $this->include('partials/vendor-scripts')  ?>
   <script>

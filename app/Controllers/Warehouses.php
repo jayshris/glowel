@@ -32,8 +32,8 @@ class Warehouses extends BaseController
         $user = new UserModel();
         $this->access = $user->setPermission();
 
-        $this->added_by = isset($_SESSION['id']) ? $_SESSION['id'] : '0';
-        $this->added_ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+        $this->added_by = isset($_SESSION['id']) > 0 ? $_SESSION['id'] : '0';
+        $this->added_ip = isset($_SERVER['REMOTE_ADDR']) > 0 ? $_SERVER['REMOTE_ADDR'] : '';
     }
 
     public function index()

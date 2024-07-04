@@ -48,6 +48,7 @@ use App\Models\StateModel;
                         <?php
                             $companyModel = new CompanyModel();
                             $company  = $companyModel->where('id', $office_data['company_id'])->first();
+
                             
                             $stateModel = new StateModel();
                             $state  = $stateModel->where('state_id', $office_data['state'])->first();
@@ -57,12 +58,11 @@ use App\Models\StateModel;
                         <li><span class="other-title">GST Number</span><span class="other-value"><?= $office_data['gst'] ?></span></li>
                         <li><span class="other-title">Office Code</span><span class="other-value"><?= $office_data['office_code'] ?></span></li>
                         <li><span class="other-title">Address</span><span class="other-value"><?= $office_data['address'] ?></span></li>
-                        <li><span class="other-title">State</span><span class="other-value"><?=  isset($state['state_name'])?$state['state_name']:'' ?></span></li>
+                        <li><span class="other-title">State</span><span class="other-value"><?=  $state['state_name'] ?></span></li>
                         <li><span class="other-title">Postcode</span><span class="other-value"><?= $office_data['postcode'] ?></span></li>
                         <li><span class="other-title">City</span><span class="other-value"><?= $office_data['city'] ?></span></li>
                         <li><span class="other-title">Booking Prefix</span><span class="other-value" style="margin-left:40px;"><?= $office_data['booking_prefix'] ?></span></li>
                     </ul>	
-                    <a href="<?php echo base_url();?>office" class="btn btn-light btn-primary">Back To List</a>
                 </div>
             </div>
             <!-- /Contact Sidebar -->

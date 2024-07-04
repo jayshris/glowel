@@ -2,6 +2,7 @@
 namespace App\Controllers;
 use App\Models\UserModel;
 use App\Models\UserTypeModel;
+use App\Models\CompanyModel;
 use App\Models\OfficeModel;
 use App\Models\ModulesModel;
 use App\Models\UserBranchModel;
@@ -44,7 +45,10 @@ class User extends BaseController {
                         return $this->response->redirect(site_url('/dashboard'));
                 }else{  
                         $userTypeModel = new UserTypeModel();
-                        $data['user_type'] = $userTypeModel->where(['status'=>'Active'])->orderBy('user_type_name','ASC')->findAll();
+                        $data['user_type'] = $userTypeModel->where(['status'=>'Active'])->orderBy('id')->findAll();
+
+                        $compModel = new CompanyModel();
+                        $data['company'] = $compModel->where(['status'=>'Active'])->orderBy('id')->findAll();
 
                         $officeModel = new OfficeModel();
                         $data['office'] = $officeModel->where(['status'=>1])->orderBy('id')->findAll();
@@ -69,6 +73,7 @@ class User extends BaseController {
                                         'login_expiry'      => $this->request->getVar('login_expiry'),
                                         'email'             => $this->request->getVar('email'),
                                         'mobile'            => $this->request->getVar('mobile'),
+                                        'company_id'        => $this->request->getVar('company_id'),
                                         'home_branch'       => $this->request->getVar('home_branch'),
                                         'password'          => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
                                         'created_at'        => date("Y-m-d h:i:sa"),
@@ -96,8 +101,6 @@ class User extends BaseController {
                         }
                         return view('User/add_user',$data);
                 }
-
-
         }
 
         public function edit($id=null){
@@ -107,15 +110,20 @@ class User extends BaseController {
                         $session = \Config\Services::session();
                         $session->setFlashdata('error', 'You are not permitted to access this page');
                         return $this->response->redirect(site_url('/dashboard'));
-                }else{  
-                        $userTypeModel = new UserTypeModel();
-                        $data['user_type'] = $userTypeModel->where(['status'=>'Active'])->orderBy('id')->findAll();
-                        $officeModel = new OfficeModel();
-                        $data['office'] = $officeModel->where(['status'=>1])->orderBy('id')->findAll();
-        
+                }else{ 
                         $user = new UserModel();
                         $data['userdata'] = $user->where('id', $id)->first();
+                        $company_id = ($data['userdata']['company_id']) ? $data['userdata']['company_id'] : 0;
 
+                        $userTypeModel = new UserTypeModel();
+                        $data['user_type'] = $userTypeModel->where(['status'=>'Active'])->orderBy('id')->findAll();
+
+                        $compModel = new CompanyModel();
+                        $data['company'] = $compModel->where(['status'=>'Active'])->orderBy('id')->findAll();
+
+                        $officeModel = new OfficeModel();
+                        $data['office'] = $officeModel->where(['company_id'=>$company_id])->where(['status'=>1])->orderBy('id')->findAll();
+        
                         $userBranches = new UserBranchModel();
                         $data['branches'] = $userBranches->where('user_id', $id)->findAll();
 
@@ -133,19 +141,17 @@ class User extends BaseController {
                 }else{  
 
                         if($this->request->getMethod()=='POST'){
-
                                 $id = $this->request->getVar('id');
                                 $rules = [
                                         'user_type'	=>'required',
                                         'first_name'	=>'required',
                                         'last_name'	=>'required',
-                                        'email'	        =>'required|valid_email|is_unique[users.email,users.id,'.$id.']',
-                                        'mobile'        =>'required|is_unique[users.mobile,users.id,'.$id.']',
+                                        'email'	        =>'required|valid_email',
+                                        'mobile'        =>'required',
                                         'home_branch'   =>'required',
                                 ];
 
-                                if($this->validate($rules)){
-                                        
+                                if($this->validate($rules)){                                        
                                         $model = new UserModel();
                                         $modelData = $model->where('id',$id)->first();
                                         $pwd= $this->request->getVar('password');
@@ -164,6 +170,7 @@ class User extends BaseController {
                                         'login_expiry'      => $this->request->getVar('login_expiry'),
                                         'email'             => $this->request->getVar('email'),
                                         'mobile'            => $this->request->getVar('mobile'),
+                                        'company_id'        => $this->request->getVar('company_id'),
                                         'home_branch'       => $this->request->getVar('home_branch'),
                                         'password'          => $password,
                                         'updated_at'        => date("Y-m-d h:i:sa"),
@@ -206,5 +213,36 @@ class User extends BaseController {
                         $session->setFlashdata('success', 'User Deleted');
                         return $this->response->redirect(site_url('/user')); 
                 }  
+        }
+
+        public function getHomeBranch()
+        {
+                $company_id = ($this->request->getPost('company_id')) ? $this->request->getPost('company_id') : 0;
+                $offModel = new OfficeModel();
+                $rows = $offModel->where(['company_id'=>$company_id])->where(['status'=>1])->orderBy('name','asc')->findAll();
+
+                $homeBranch = '';
+                if (!empty($rows)) {
+                    $homeBranch .= '<option>Select Home Branch/Office</option>';
+                    foreach ($rows as $row) {
+                        $homeBranch .= '<option value="' . $row['id'] . '">' . $row['name'] . '</option>';
+                    }
+                }
+                echo $homeBranch;exit;
+        }
+
+        public function getBranches()
+        {
+                $company_id = ($this->request->getPost('company_id')) ? $this->request->getPost('company_id') : 0;
+                $offModel = new OfficeModel();
+                $rows = $offModel->where(['company_id'=>$company_id])->where(['status'=>1])->orderBy('name','asc')->findAll();
+
+                $branches = '';
+                if (!empty($rows)) {
+                    foreach ($rows as $row) {
+                        $branches .= '<input class="form-check-input" type="checkbox" name="branch[]" id="id_'.$row["id"].'" value="'.$row["id"].'"><label for="id_'.$row["id"].'" class="col-form-label" style=" margin: 0px 20px 0px 3px;">'.ucwords($row["name"]).'</label>';
+                    }
+                }
+                echo $branches;exit;
         }
 }

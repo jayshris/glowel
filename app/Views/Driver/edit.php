@@ -44,43 +44,7 @@
   <!-- /Main Wrapper -->
 
   <?= $this->include('partials/vendor-scripts') ?>
-  <script >
-  jQuery(document).ready(function($) {
-  $("#party_id").on('change', function() {
-      $("#target").empty();
-      var level = $(this).val();
-      if(level){
-             $.ajax ({
-              type: 'POST',
-              url: '../populate_fields_data',
-              data: { party_id: '' + level + '' },
-              success : function(htmlresponse) {
-                  $('#target').append(htmlresponse);
-               }
-          });
-      }
-      $(this).closest('form').find("input[type=text], textarea,select").val("");
-      $('input[name="driver_type"]').prop('checked', false);
-      $('input[name="vehicle_types[]"]').prop('checked', false);
-      $('input[name="approve"]').prop('checked', false);
-  });
-});
 
-$(document).ready(function() {
-        var party_id = $("#party_id").val();
-        var driver_id = $("#driver_id").val();
-        if(party_id){
-            $.ajax ({
-                type: 'POST',
-                url: '../populate_fields_data',
-                data: { party_id: '' + party_id + '', driver_id: '' + driver_id + '' },
-                success : function(htmlresponse) {
-                    $('#target').append(htmlresponse);
-                 }
-            });
-        }
-});
-</script>
   <!-- Profile Upload JS -->
   <script src="<?php echo base_url(); ?>assets/js/profile-upload.js"></script>
 

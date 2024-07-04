@@ -29,22 +29,12 @@ class Businesstype extends BaseController
             return $this->response->redirect(site_url('/dashboard'));
         }else{
             $businestsypeModel = new BusinesstypeModel();
-            $data['businestsype_data'] = $businestsypeModel->select('business_type.*, MAX(business_type_flags.flags_id) as flags_id, GROUP_CONCAT(flags.title) as flags_names', false)
-
-                ->join('business_type_flags', 'business_type_flags.business_type_id = business_type.id', 'left')
-
-                ->join('flags', 'flags.id = business_type_flags.flags_id', 'left')
-
-                ->where('business_type.status', 'Active')
-
-                ->groupBy('business_type.id')
-                ->orderBy('business_type.id', 'DESC')
-                ->paginate(10);
+            $data['businestsype_data'] = $businestsypeModel->orderBy('id', 'DESC')->paginate(50);
             $data['pagination_link'] = $businestsypeModel->pager;
             $data['page_data'] = [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Business Type','li_1' => '123','li_2' => 'deals' ] )
             ];
-            return view('BusinessType/index',$data);
+            return view('Businesstype/index',$data);
         }
     }
 
@@ -66,7 +56,7 @@ class Businesstype extends BaseController
                 $request = service('request');
                 if($this->request->getMethod()=='POST'){
                   $error = $this->validate([
-                    'company_structure_name' =>  'required|alpha_numeric_space|is_unique[business_type.company_structure_name]',
+                    'company_structure_name' =>  'required|alpha_numeric|is_unique[business_type.company_structure_name]',
                     'flags' =>  'required',
                   ]);
 
@@ -76,7 +66,6 @@ class Businesstype extends BaseController
                     $businestsypeModel = new BusinesstypeModel();
                     $businestsypeModel->save([
                       'company_structure_name'	    =>	$this->request->getVar('company_structure_name'),
-                      'condition'     =>   'Enable',
                       'created_at'  =>  date("Y-m-d h:i:sa"),
                     ]);
 
@@ -86,10 +75,14 @@ class Businesstype extends BaseController
                         $data['error']="Please select atleast one flag";
                     }else{
                         $flagModel= new BusinesstypeFlagModel();
+                        $error = $this->validate([
+                            'company_structure_name' =>  'required|alpha_numeric|is_unique[business_type.company_structure_name]',
+                        ]);
                         foreach ($flags_array as $key => $value) {
                             $flagsData=[
                                     'business_type_id'       =>  $business_type_id,
-                                    'flags_id'     =>   $value,  ];
+                                    'flags_id'     =>   $value,       
+                            ];  
                             $flagModel->save($flagsData);  
                         }
                     }
@@ -99,7 +92,7 @@ class Businesstype extends BaseController
                     return $this->response->redirect(site_url('/Businesstype'));
                   }
                 }
-                return view( 'BusinessType/create',$data );
+                return view( 'Businesstype/create',$data );
           }
     }
 
@@ -123,21 +116,13 @@ class Businesstype extends BaseController
             if($this->request->getMethod()=='POST'){
               $id = $this->request->getVar('id');
               $error = $this->validate([
-                'company_structure_name' =>  'required|alpha_numeric_space',
+                'company_structure_name' =>  'required|alpha_numeric',
                 'flags' =>  'required',
               ]);
               if(!$error) {
                 $data['error'] 	= $this->validator;
               }else {
                 $businestsypeModel = new BusinesstypeModel();
-                $normalizedStr = strtolower(str_replace(' ', '', $this->request->getVar('company_structure_name')));
-                $flagstypecnt_data = $businestsypeModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(company_structure_name, " ", ""))',$normalizedStr)
-                ->where('id!=',$id)
-                ->orderBy('id')->countAllResults();
-                if($flagstypecnt_data==0){
                 $businestsypeModel->update($id,[
                     'company_structure_name'	=>	$this->request->getVar('company_structure_name'),
                     'updated_at'  =>  date("Y-m-d h:i:sa"),
@@ -154,14 +139,6 @@ class Businesstype extends BaseController
                     ];
                     $flagModel->save($flagData1);
                 }
-                }else{
-                  $this->validator->setError('company_structure_name', 'The field must contain a unique value.');
-                  $data['error']  = $this->validator;
-                  $data['businessFlags'] = $businessFlags->where('business_type_id', $id)->findAll();
-                  $data['business_data'] = $businestsypeModel->where('id', $id)->first();
-                  return view( 'BusinessType/edit',$data);
-                  return false;
-                }
                 $session = \Config\Services::session();
                 $session->setFlashdata('success', 'Business type updated');
                 return $this->response->redirect(site_url('/Businesstype'));
@@ -169,7 +146,7 @@ class Businesstype extends BaseController
             }
           }
 
-        return view('BusinessType/edit', $data);
+        return view('Businesstype/edit', $data);
 
     }
 

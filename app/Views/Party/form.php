@@ -16,7 +16,7 @@
                     <form method="post" action="<?php echo base_url().$action; ?>" enctype="multipart/form-data">
                         <div class="profile-details">
                           <div class="row">
-                              <input type="hidden" id="party_id" name="id" value="<?php
+                              <input type="hidden" name="id" value="<?php
                                 if(isset($pc_data)){
                                   echo $pc_data['id'];
                                 }
@@ -24,30 +24,37 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                   <label class="col-form-label">
-                                    Party Type <span class="text-danger">*</span>
-                                  </label><br>
-                                  <?php
-                                      if(isset($partytype)){
-                                        foreach($partytype as $row => $type) {
-                                          $partyTypesitem = [];
-                                          if(isset($partyTypes)){
-                                            foreach ($partyTypes as $key => $value) {
-                                              $partyTypesitem[] = $value['party_type_id'];
-                                            }
-                                          }
-                                           ?>
-                                          <input class="form-check-input" type="checkbox" name="party_types[]" id="id_<?php echo $type["id"]; ?>" value="<?php echo $type["id"]; ?>"  <?php if(in_array($type['id'], $partyTypesitem)){
-                                            echo "checked";} ?>><label for="id_<?php echo $type["id"]; ?>" class="col-form-label" style=" margin: 0px 20px 0px 3px;"><?php echo ucwords($type["name"]); ?></label>
-                                          <?php  
-                                        }
+                                    Customer Type <span class="text-danger">*</span>
+                                  </label>
+                                  <select class="select" name="party_type_id">
+                                    <option>Select</option>
+                                    <?php
+                                    if(isset($partytype)){
+                                      foreach($partytype as $row)
+                                      { ?> 
+                                      <option value="<?php echo $row["id"];?>"  <?php
+                                          if(isset($pc_data)){
+                                            if($pc_data['party_type_id'] == $row['id']){
+                                              echo 'selected';
+                                            } } ?>><?php echo ucwords($row["name"]); ?>
+                                      </option>
+                                      <?php
                                       }
-                                      ?>
+                                    }
+                                    ?>
+                                  </select>
+                                  <?php
+                                    if($validation->getError('party_type_id'))
+                                    {
+                                        echo '<div class="alert alert-danger mt-2">'.$validation->getError('party_type_id').'</div>';
+                                    }
+                                  ?>
                               </div>
                             </div>
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Party Name <span class="text-danger">*</span>
+                                Customer Name <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" required name="party_name" class="form-control" value="<?php
                                 if(isset($pc_data)){
@@ -66,7 +73,7 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Business Owner Name 
+                                Business Owner Name <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" required name="business_owner_name" class="form-control" value="<?php
                                 if(isset($pc_data)){
@@ -104,9 +111,9 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Accounts Person 
+                                Accounts Person <span class="text-danger">*</span>
                                 </label>
-                                <input type="text"  name="accounts_person" class="form-control" value="<?php
+                                <input type="text" required name="accounts_person" class="form-control" value="<?php
                                 if(isset($pc_data)){
                                   echo $pc_data['accounts_person'];
                                 }else{
@@ -124,9 +131,9 @@
                             <div class="col-md-12">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Business Address 
+                                Business Address <span class="text-danger">*</span>
                                 </label>
-                                <input type="text"  name="business_address" class="form-control" value="<?php
+                                <input type="text" required name="business_address" class="form-control" value="<?php
                                 if(isset($pc_data)){
                                   echo $pc_data['business_address'];
                                 }else{
@@ -164,7 +171,7 @@
                                   <label class="col-form-label">
                                     State <span class="text-danger">*</span>
                                   </label>
-                                  <select class="dropdown selectopt" name = "state">
+                                  <select class="select" name = "state">
                                     <option>Select</option>
                                     <?php
                                           if(isset($state)){
@@ -232,9 +239,9 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Other Phone number
+                                Other Phone number <span class="text-danger">*</span>
                                 </label>
-                                <input type="text"  name="other_phone" class="form-control" value="<?php
+                                <input type="text" required name="other_phone" class="form-control" value="<?php
                                 if(isset($pc_data)){
                                   echo $pc_data['other_phone'];
                                 }else{
@@ -271,9 +278,9 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Business Type <span class="text-danger">*</span>
-                                </label><br>
-                                <select class="dropdown selectopt" name = "business_type_id" id="business_type_id">
+                                Business type <span class="text-danger">*</span>
+                                </label>
+                                <select class="select" name = "business_type_id" id="business_type_id">
                                     <option>Select</option>
                                     <?php
                                     if(isset($businesstype)){
@@ -299,22 +306,44 @@
                               </div>
                             </div>
                             
-                            <div class="target" id="target">
-                            </div>
-                            <?php if($last != 'create'){ ?>
-                            <div>
-                                <input type = "checkbox" id="approve" class="form-check-input"  name="approve" <?php if(isset($pc_data)){
-                                  if($pc_data['approved'] == 1){
-                                        echo 'checked';
-                                  } } ?> value="1"> <label for="approve"> Approved</label> 
-                            </div>
-                           <?php } ?>    
+                            
+                                    <?php
+                                    if(isset($flags)){
+                                      foreach($flags as $row)
+                                      {
+                                      $title =  strtolower($row['title']);
+                                      $titlename = str_replace(' ', '', $title);
+                                        ?> 
+                                      <div class="col-md-6">
+                                        <div class="form-wrap">
+                                          <label class="col-form-label">
+                                          <?php echo $row['title']; ?>
+                                          </label>
+                                          <input type="text" required name="<?php echo $titlename; ?>" class="form-control" value="<?php
+                                          if(isset($pc_data)){
+                                            echo $pc_data[$titlename];
+                                          }else{
+                                            echo set_value($titlename); 
+                                          }
+                                          ?>">
+                                          <?php
+                                          if($validation->getError($titlename)) {
+                                              echo '<div class="alert alert-danger mt-2">'.$validation->getError($titlename).'</div>';
+                                          }
+                                          ?>
+                                        </div>
+                                      </div>
+
+                                      <?php
+                                      }
+                                    }
+                                    ?>
+
                           </div>
                         </div>
                         <div class="submit-button">
                           <button type="submit" class="btn btn-primary">Save Changes</button>
                           <a href="<?php echo base_url();?>party" class="btn btn-light">Cancel</a>
-                          <a href="<?php echo base_url();?>party" class="btn btn-light">Back To List</a>
                         </div>
                       </form>
                     </div>

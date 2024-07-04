@@ -77,18 +77,8 @@
                               }else{
                                 $status ='<span class="badge badge-pill bg-success">Active</span>';
                               }
-                              $created_at_str = '';
-                              $updated_at_str='';
-                              if(isset($fueltype["created_at"])){
-                                $created_at_str = strtotime($fueltype["created_at"]) ;
-                                $strtime = date('d-m-Y',$created_at_str);
-                              }
-                              if(isset($fueltype["updated_at"]) && ($fueltype["updated_at"]!='0000-00-00 00:00:00')){
-                                $updated_at_str = strtotime($fueltype["updated_at"]);
-                                $strtime1 = date('d-m-Y',$updated_at_str);
-                              }else{
-                                $strtime1 = '-';
-                              }
+                              $strtime = strtotime($fueltype["created_at"]);
+                              $strtime1 = strtotime($fueltype["updated_at"]);
                                 echo '
                                 <tr>
                                     <td>
@@ -97,8 +87,8 @@
                                     <button title="Delete" type="button" onclick="delete_data('.$fueltype["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                                     </td>
                                     <td>'.ucwords($fueltype["fuel_name"]).'</td>
-                                    <td>'.$strtime.'</td>
-                                    <td>'.$strtime1.'</td>
+                                    <td>'.date('d-m-Y',$strtime).'</td>
+                                    <td>'.date('d-m-Y',$strtime1).'</td>
                                     <td>'.$status.'</td>
                                 </tr>';
                             }

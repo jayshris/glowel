@@ -7,20 +7,7 @@
   <!-- Feathericon CSS -->
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/feather.css">
 </head>
-<style>
-.dropdown{
-  border-color: #E8E8E8;
-  color: #6F6F6F;
-  background-color: #ffffff;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.6;
-  border-radius: 5px;
-  padding: 0.5rem 0.85rem;
-  box-shadow: 0px 4px 4px 0px rgba(219, 219, 219, 0.2509803922);
-  min-height: 42px;
-}
-</style>
+
 <body>
 
   <!-- Main Wrapper -->
@@ -54,8 +41,8 @@
                               <div class="form-wrap">
                                 <label class="col-form-label">
                                   Company Name <span class="text-danger">*</span>
-                                </label><br>
-                                <select class="dropdown selectopt" name ="company_name">
+                                </label>
+                                <select class="select" name = "company_name">
                                   <option>Select</option>
                                   <?php
                                   if(isset($company)){
@@ -158,33 +145,30 @@
                             </div>
 
                             <div class="col-md-4">
-                            <div class="form-wrap">
-																<label class="col-form-label">
-																	State / Province <span class="text-danger">*</span>
-																</label><br>
-																<select class="dropdown selectopt" name="state">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                  State<span class="text-danger">*</span>
+                                </label>
+                                <select class="select" name="state">
                                   <option>Select</option>
-                              <?php
+                                <?php
                                 if (isset($state)) {
                                   foreach($state as $row)
                                   { ?>
                                     <option value="<?php echo $row["state_id"] ?>" 
-                                    <?php 
-                                    if(isset($profile_data)){
-                                    if($profile_data['state'] == $row["state_id"]) echo 'selected';
-                                       } ?>><?php echo $row["state_name"] ?></option>  
+                                    <?php echo set_select('state', $row['state_id'], False); ?> ><?php echo $row["state_name"] ?></option>  
                                   <?php
                                   }
                                 }
-                              ?>
-                                </select>
-																<?php
-                                if($validation->getError('state'))
-                                {
-                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('state').'</div>';
-                                }
                                 ?>
-															</div>
+                                </select>
+                                <?php
+                                  if($validation->getError('state'))
+                                  {
+                                      echo '<div class="alert alert-danger mt-2">'.$validation->getError('state').'</div>';
+                                  }
+                                 ?>
+                              </div>
                             </div>
 
                             <div class="col-md-4">
@@ -226,7 +210,6 @@
                           <button type="submit" name="add_profile" class="btn btn-primary">Save Changes</button>
                           <button type="reset" class="btn btn-light">Reset</button>
                           <a href="<?php echo base_url();?>office" class="btn btn-light">Cancel</a>
-                          <a href="<?php echo base_url();?>office" class="btn btn-light">Back To List</a>
                         </div>
                       </form>
                     </div>

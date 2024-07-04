@@ -254,7 +254,20 @@
 							<?php }
 						} 
 						?>
-							
+							<!-- <li class="notification-message">
+								<a href="<?php echo base_url(); ?>activities">
+									<div class="media d-flex">
+										<span class="avatar flex-shrink-0">
+											<img src="<?php echo base_url(); ?>public/assets/img/profiles/avatar-02.jpg" alt="Profile">
+											<span class="badge badge-info rounded-pill"></span>
+										</span>
+										<div class="media-body flex-grow-1">
+											<p class="noti-details">Ray Arnold left 6 comments on Isla Nublar SOC2 compliance report</p>
+											<p class="noti-time">Last Wednesday at 9:42 am</p>
+										</div>
+									</div>
+								</a>
+							</li> -->
 							<!-- <li class="notification-message">
 								<a href="<?php echo base_url(); ?>activities">
 									<div class="media d-flex">

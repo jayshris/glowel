@@ -9,19 +9,7 @@
   height: 5px;
   border-radius: 50px !important;
 }
-.dropdown{
-  border-color: #E8E8E8;
-  color: #6F6F6F;
-  background-color: #ffffff;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.6;
-  border-radius: 5px;
-  padding: 0.5rem 0.85rem;
-  box-shadow: 0px 4px 4px 0px rgba(219, 219, 219, 0.2509803922);
-  min-height: 42px;
-}
-.selectopt{width: 100%; }
+
 ::-webkit-scrollbar-track {
   background: #898989;
 }
@@ -31324,12 +31312,11 @@ table.table.dataTable > thead > tr th {
   z-index: unset;
 }
 .notification-dropdown .notif{
-  max-height: 400px;
-  overflow: auto;
-  height: auto;
+    max-height: 400px;
+    overflow: auto;
+    height: auto;
 }
 .resize-none{
   resize: none;
 }
 /*# sourceMappingURL=style.css.map */
-

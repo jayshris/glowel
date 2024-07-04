@@ -27,7 +27,7 @@ class Office extends BaseController {
             return $this->response->redirect(site_url('/dashboard'));
           }else{
               $officeModel = new OfficeModel();
-              $data['office_data'] = $officeModel->where('status',1)->orderBy('id', 'DESC')->paginate(10);
+              $data['office_data'] = $officeModel->orderBy('id', 'DESC')->paginate(10);
               $data['pagination_link'] = $officeModel->pager;
               $data['page_data'] = [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Company','li_1' => '123','li_2' => 'deals' ] )
@@ -51,8 +51,9 @@ class Office extends BaseController {
 
                 $companyModel = new CompanyModel();
                 $stateModel = new StateModel();
-                $data['company'] = $companyModel->where(['status'=>'Active'])->orderBy('name','ASC')->findAll();
-                $data['state'] = $stateModel->where(['isStatus'=>'1'])->orderBy('state_name','ASC')->orderBy('state_id')->findAll();
+                
+                $data['company'] = $companyModel->where(['status'=>'Active'])->orderBy('id')->findAll();
+                $data['state'] = $stateModel->where(['isStatus'=>'1'])->orderBy('state_id')->findAll();
                 $request = service('request');
                 if($this->request->getMethod()=='POST'){
                   $error = $this->validate([
@@ -64,7 +65,8 @@ class Office extends BaseController {
                     'city'          =>  'required',
                     'postcode'      =>  'required',
                   ]);
-                  if(!$error) {
+                  if(!$error)
+                  {
                     $data['error'] 	= $this->validator;
                   }else {
                     $officeModel = new OfficeModel();
@@ -73,7 +75,6 @@ class Office extends BaseController {
                       'name'	=>	$this->request->getVar('office_name'),
                       'gst'	=>	$this->request->getVar('gst'),
                       'office_code'	=>	 $request->getPost('office_code'),
-                      'city'    =>  $request->getPost('city'),
                       'address'	=>	$request->getPost('address'),
                       'state'	=>	$request->getPost('state'),
                       'postcode'	=>	$request->getPost('postcode'),
@@ -83,10 +84,14 @@ class Office extends BaseController {
                       'creator_ip_address'=>	$_SERVER['REMOTE_ADDR'],
                       'user_id'     => 1
                     ]);
+                    
                     $session = \Config\Services::session();
+        
                     $session->setFlashdata('success', 'Office Added');
                     return $this->response->redirect(site_url('/office'));
                   }
+        
+                  
                 }
                 return view( 'Office/create',$data );
           }
@@ -103,7 +108,7 @@ class Office extends BaseController {
               $companyModel = new CompanyModel();
               $stateModel = new StateModel();
                 
-              $data['company'] = $companyModel->where(['status'=>'Active'])->orderBy('name','ASC')->findAll();
+              $data['company'] = $companyModel->where(['status'=>'Active'])->orderBy('id')->findAll();
               $data['state'] = $stateModel->where(['isStatus'=>'1'])->orderBy('state_id')->findAll();
 
               $officeModel = new OfficeModel();
@@ -113,7 +118,6 @@ class Office extends BaseController {
               if($this->request->getMethod()=='POST'){
                 $id = $this->request->getVar('id');
                 $error = $this->validate([
-                  'office_name'	  =>	'required|trim|is_unique[office.name, office.id,'.$id.']',
                   'company_name'	=>	'required',
                   'office_code'   =>  'required',
                   'address'       =>  'required',
@@ -138,7 +142,7 @@ class Office extends BaseController {
                     'postcode'	=>	$request->getPost('postcode'),
                     'booking_prefix'	=>	$request->getPost('book_prefix'),
                     'status'  => 1,
-                    'updated_at'  =>  date("Y-m-d h:i:sa"),
+                    'created_at'  =>  date("Y-m-d h:i:sa"),
                     'creator_ip_address'=>	$_SERVER['REMOTE_ADDR'],
                     'user_id'     => 1
                   ]);
@@ -191,45 +195,6 @@ class Office extends BaseController {
               $data['office_data'] = $officeModel->where('id', $id)->first();
               
               return view('Office/details', $data);
-          }
-        }
-
-        public function status($id=null){
-          $access = $this->_access; 
-          if($access === 'false'){
-              $session = \Config\Services::session();
-              $session->setFlashdata('error', 'You are not permitted to access this page');
-              return $this->response->redirect(site_url('/dashboard'));
-          }else{
-
-              $officeModel = new OfficeModel();
-              $cModel = $officeModel->where('id', $id)->first();
-              if(isset($cModel)){
-                if($cModel['status'] == 0){
-                  $status = 1;
-                }else{
-                  $status = 0;
-                }
-              }
-              $officeModel->update($id,[
-                  'status'              => $status,
-                  'updated_at'         =>  date("Y-m-d h:i:sa"),
-              ]);
-              $session = \Config\Services::session();
-              $session->setFlashdata('success', 'Office Status updated');
-              return $this->response->redirect(site_url('/office'));
-          }
-      }
-
-        public function searchByStatus(){
-          if($this->request->getMethod()=='POST'){
-            $status = $this->request->getVar('status');
-            $oModel = new OfficeModel();
-            $data['oModel'] = $oModel->where('status', $status)->orderBy('id', 'DESC')->findAll();
-            $data['page_data'] = [
-            'page_title' => view( 'partials/page-title', [ 'title' => 'Offices','li_1' => '123','li_2' => 'deals' ] )
-            ];
-            return view('Office/search',$data);
           }
         }
 }

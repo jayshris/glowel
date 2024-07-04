@@ -70,17 +70,22 @@
                         {
                             foreach($employee_data as $employee)
                             {
-                              if($employee['approved'] == 1){
-                                $status ='<span class="badge badge-pill bg-success">Active</span>';
-                              }else{
+                              if($employee['status'] == 0){
                                 $status= '<span class="badge badge-pill bg-danger">Inactive</span>';
+                              }else{
+                                $status ='<span class="badge badge-pill bg-success">Active</span>';
                               }
                               $strtime = strtotime($employee["created_at"]);
                               $strtime1 = strtotime($employee["updated_at"]);
+                              if($employee['approved'] == NULL){
+                                $bun = '<a href="employee/approve/'.$employee['id'].'" class="btn btn-success btn-sm" role="button">Approve</a>';
+                              }else{
+                                $bun = '<strong>Approved</strong>';
+                              }
                                 echo '
                                 <tr>
                                     <td>
-                                    
+                                    '.$bun .'
                                     <a title="Edit" type="button" href="'.base_url().'employee/edit/'.$employee['id'].'" class="btn btn-success btn-sm"><i class="ti ti-pencil"></i> </a>
                                     
                                     <a title="View" type="button" href="'.base_url().'employee/view/'.$employee['id'].'" class="btn btn-primary btn-sm"><i class="ti ti-arrow-right"></i> </a>

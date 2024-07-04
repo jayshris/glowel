@@ -27,8 +27,11 @@ class Database extends Config
     public array $default = [
         'DSN'          => '',
         'hostname'     => 'localhost',
+        // 'username'     => 'aubadetech_gcm_dev',
+        // 'password'     => 'ezi9E!l90SEt#q-{H;e!xm7u',
         'username'     => 'root',
         'password'     => '',
+        // 'database'     => 'aubadetech_gcmgrop_dev',
         'database'     => 'gcm_dev',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',

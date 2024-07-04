@@ -28,56 +28,39 @@ use App\Models\PartytypeModel;
             
             <div class="card main-card">
               <div class="card-body">
-                <div class="row">
-                  <div class="col-md-9">
-                      <form method="post" action="<?php echo base_url() ?>party/searchByStatus" >
-                          <!-- Search -->
-                          <div class="search-section">
-                            <div class="row">
-                              <div class="col-md-2 col-sm-3">
-                                  <label class="col-form-label">
-                                    Search By Status
-                                  </label>
-                              </div>
-                              <div class="col-md-3 col-sm-3">
-                                  <div class="form-wrap">
-                                        <select class="form-control" name="status">
-                                        <option>Select</option>
-                                          <option value="Active">Active</option>
-                                          <option value="Inactive">Inactive</option>
-                                        </select>
-                                  </div>
-                              </div>
-                              <div class="col-md-3 col-sm-3">
-                                <input type="submit" value="Submit" class="btn btn-primary">
-                              </div>
-                            </div>
-                          </div>
-                      </form>
-                  </div>
-                  <div class="col-md-3">
-                    <a href="<?php echo base_url();?>party/create" class="btn btn-dark " role="button">Add New Party</a>
+
+                <!-- Search -->
+                <div class="search-section">
+                  <div class="row">
+                    <div class="col-md-5 col-sm-4">
+                      <div class="form-wrap icon-form">
+                        <span class="form-icon"><i class="ti ti-search"></i></span>
+                        <input type="text" class="form-control" placeholder="Search Deals">
+                      </div>
+                    </div>
+                    <?php
+
+        $session = \Config\Services::session();
+        if($session->getFlashdata('success')) {
+            echo '
+            <div class="alert alert-success">'.$session->getFlashdata("success").'</div>
+            ';
+        }
+        ?>
                   </div>
                 </div>
-                <?php
-                  $session = \Config\Services::session();
-                  if($session->getFlashdata('success')) {
-                      echo '
-                      <div class="alert alert-success">'.$session->getFlashdata("success").'</div>
-                      ';
-                  }
-                  ?>
+
                 <!-- Contact List -->
                 <div class="table-responsive custom-table">
-                  <table class="table">
+                  <table class="table" id="deal_list">
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
-                        <th>Customer Name</th>
-                        <th>Contact Person</th>
+                        <th>Customer name</th>
+                        <th>Customer type</th>
+                        <th>Contact person</th>
                         <th>Phone</th>
                         <th>Total Inv.</th>
-                        <th>Status</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -86,34 +69,32 @@ use App\Models\PartytypeModel;
                         {
                             foreach($party_data as $party)
                             {
-                              $pcustomertype = new PartytypeModel();
-                              $pcustomertype = $pcustomertype->where('id', $party['id'])->findAll();
+
+                              $pclass = new PartyClassificationModel();
+                              $pclass = $pclass->where('id', $party['party_classification_id'])->first();
+
                               
+                              $pcustomertype = new PartytypeModel();
+                              $pcustomertype = $pcustomertype->where('id', $party['party_type_id'])->first();
                               if($party['status'] == 'Inactive'){
                                 $status= '<span class="badge badge-pill bg-danger">Inactive</span>';
                               }else{
                                 $status ='<span class="badge badge-pill bg-success">Active</span>';
                               }
 
-                              if($party['status'] == 'Active'){
-                                $bun = '<a href="party/status/'.$party['id'].'" class="btn btn-danger btn-sm" role="button">Inactive</a>';
-                              }else{
-                                $bun = '<a href="party/status/'.$party['id'].'" class="btn btn-success btn-sm" role="button">Active</a>';
-                              }
                                 echo '
                                 <tr>
                                     <td>
-                                    '.$bun.'
                                     <a href="'.base_url().'party/edit/'.$party['id'].'"  class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
 
                                     <button type="button"   onclick="delete_data('.$party["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                                     </td>
                                     
                                     <td>'.$party['party_name'].'</td>
+                                    <td>'.@$pcustomertype['name'].'</td>
                                     <td>'.$party['contact_person'].'</td>
                                     <td>'.$party['primary_phone'].'</td>
                                     <td>20</td>
-                                    <td>'.$status.'</td>
                                 </tr>';
                             }
                         }

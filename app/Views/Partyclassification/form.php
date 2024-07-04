@@ -8,9 +8,9 @@
                     $uriSegments = explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)); 
                     $last = array_pop($uriSegments);
                     if($last == 'create'){
-                      $action = 'partyclassification/create';
+                      $action = 'PartyClassification/create';
                     }else{
-                      $action = 'partyclassification/edit';
+                      $action = 'PartyClassification/edit';
                     }
                     ?>
                     <form method="post" action="<?php echo base_url().$action; ?>" enctype="multipart/form-data">

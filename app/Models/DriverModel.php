@@ -10,9 +10,9 @@ class DriverModel extends Model
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $useSoftDeletes   = true;
+	protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name', 'id', 'foreman_id', 'driving_licence_number', 'mobile', 'adhaar_number', 'alternate_number', 'profile_image1', 'profile_image2', 'upi_id', 'address', 'city', 'state', 'zip', 'status', 'assigned', 'vehicle_type', 'created_at', 'updated_at', 'deleted_at', 'approved', 'approval_user_id', 'approval_user_type', 'approval_date', 'approval_ip_address'];
+    protected $allowedFields    = ['name','driving_licence_number','mobile','adhaar_number','alternate_number','profile_image1','profile_image2','upi_id','address','city','state','zip','status','vehicle_type','created_at','updated_at','deleted_at','approved','approval_user_id','approval_user_type','approval_date','approval_ip_address'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

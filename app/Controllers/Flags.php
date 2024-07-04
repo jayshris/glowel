@@ -7,7 +7,7 @@ use App\Models\ModulesModel;
 
 class Flags extends BaseController {
       public $_access;
-      public $flagsModel;
+
       public function __construct()
       {
           $u = new UserModel();
@@ -35,8 +35,8 @@ class Flags extends BaseController {
           }
         }
 
-      public function create()
-      {
+        public function create()
+        {
 
         $access = $this->_access; 
         if($access === 'false'){
@@ -49,37 +49,24 @@ class Flags extends BaseController {
             'page_title' => view( 'partials/page-title', [ 'title' => 'Add Flags','li_2' => 'profile' ] )
             ];
             
-            
+		        $data['flags_data'] = $this->flagsModel->where(['status'=>'Active'])->orderBy('id')->findAll();
+        
+
             $request = service('request');
             if($this->request->getMethod()=='POST'){
-              
               $error = $this->validate([
-                'title'   =>  'required|min_length[3]|max_length[50]|alpha_numeric_space',     
+                'title'   =>  'required|min_length[3]|max_length[50]|alpha_numeric_space',
               ]);
               if(!$error)
               {
                 $data['error'] 	= $this->validator;
               }else {
-                $normalizedStr = strtolower(str_replace(' ', '', $this->request->getVar('title')));
-                $flags_data = $this->flagsModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(title, " ", ""))',$normalizedStr)
-                ->orderBy('id')->countAllResults();
-                if($flags_data==0){
-                    $this->flagsModel->save([
-                    'title' =>  $this->request->getVar('title'),
-                    'status'  => 'Active',
-                    'created_at'  =>  date("Y-m-d h:i:sa"),
+                 $this->flagsModel->save([
+                  'title'	=>	$this->request->getVar('title'),
+                  'status'  => 'Active',
+                  'created_at'  =>  date("Y-m-d h:i:sa"),
 
-                  ]);
-                }else{
-                  $this->validator->setError('title', 'The field must contain a unique value.');
-                  $data['error']  = $this->validator;
-                  return view( 'Flags/create',$data );
-                  return false;
-                }
-                 
+                ]);
                 
                 $session = \Config\Services::session();
     
@@ -91,7 +78,7 @@ class Flags extends BaseController {
             }
             return view( 'Flags/create',$data );
           }
-      }
+        }
 
          public function edit($id=null)
          {
@@ -114,27 +101,12 @@ class Flags extends BaseController {
               $data['error'] 	= $this->validator;
               
             }else {
-              $normalizedStr = strtolower(str_replace(' ', '', $this->request->getVar('title')));
-                $flags_data = $this->flagsModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(title, " ", ""))',$normalizedStr)
-                ->where('id!=',$id)
-                ->orderBy('id')->countAllResults();
-                if($flags_data==0){
-                    $this->flagsModel->update($id,[
-                      'title'  =>  $this->request->getVar('title'),
-                      'status'  => 'Active',
-                      'updated_at'  =>  date("Y-m-d h:i:sa"),
-                    ]);
-                }else{
-                  $this->validator->setError('title', 'The field must contain a unique value.');
-                  $data['error']  = $this->validator;
-                  return view( 'Flags/create',$data );
-                  return false;
-                }
               
-              
+              $this->flagsModel->update($id,[
+                'title'  =>  $this->request->getVar('title'),
+                'status'  => 'Active',
+                'updated_at'  =>  date("Y-m-d h:i:sa"),
+              ]);
               $session = \Config\Services::session();
   
               $session->setFlashdata('success', 'Flags updated');
@@ -160,7 +132,6 @@ class Flags extends BaseController {
             return $this->response->redirect(site_url('/flags'));
            }
          }
-  
 
          
 }

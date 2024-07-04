@@ -55,36 +55,25 @@ class Vehicletype extends BaseController {
             $request = service('request');
             if($this->request->getMethod()=='POST'){
               $error = $this->validate([
-                'name'   =>  'required|min_length[3]|max_length[50]|alpha_numeric_space',
+                'name'   =>  'required|min_length[3]|max_length[50]|alpha_numeric_space|is_unique[vehicle_type.name]',
                 'number_of_tyres'   =>  'required|numeric|greater_than[0]',
-                'unladen_weight'   =>  'required|greater_than[0]',
+                'unladen_weight'   =>  'required|numeric|greater_than[0]',
               ]);
               if(!$error)
               {
                 $data['error'] 	= $this->validator;
               }else {
-                $normalizedStr = strtolower(str_replace(' ', '', $this->request->getVar('name')));
-                $vehicletype_data = $this->vehicletypeModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(name, " ", ""))',$normalizedStr)
-                ->orderBy('id')->countAllResults();
-                if($vehicletype_data==0){
-                     $this->vehicletypeModel->save([
-                      'name'  =>  $this->request->getVar('name'),
-                      'number_of_tyres'  =>  $this->request->getVar('number_of_tyres'),
-                      'unladen_weight'  =>  $this->request->getVar('unladen_weight'),
-                      'status'  => 'Active',
-                      'created_at'  =>  date("Y-m-d h:i:sa"),
-                    ]);
-                }else{
-                  $this->validator->setError('name', 'The field must contain a unique value.');
-                  $data['error']  = $this->validator;
-                  return view( 'VehicleType/create',$data );
-                  return false;
-                }               
+                 $this->vehicletypeModel->save([
+                  'name'	=>	$this->request->getVar('name'),
+                  'number_of_tyres'  =>  $this->request->getVar('number_of_tyres'),
+                  'unladen_weight'  =>  $this->request->getVar('unladen_weight'),
+                  'status'  => 'Active',
+                  'created_at'  =>  date("Y-m-d h:i:sa"),
+
+                ]);
                 
                 $session = \Config\Services::session();
+    
                 $session->setFlashdata('success', 'Vehicle Type Added');
                 return $this->response->redirect(site_url('/vehicletype'));
               }
@@ -111,36 +100,21 @@ class Vehicletype extends BaseController {
             $error = $this->validate([
               'name'   =>  'required|min_length[3]|max_length[50]|alpha_numeric_space',
               'number_of_tyres'   =>  'required|numeric|greater_than[0]',
-              'unladen_weight'   =>  'required|greater_than[0]|regex_match[/^[1-9]\d*(\.\d{1,2})?$/]',
+              'unladen_weight'   =>  'required|numeric|greater_than[0]',
             ]);
             if(!$error)
             {
               $data['error'] 	= $this->validator;
               
             }else {
-              $normalizedStr = strtolower(str_replace(' ', '', $this->request->getVar('name')));
-                $vehicletype_data = $this->vehicletypeModel
-                ->where('status','Active')
-                ->where('deleted_at',NULL)
-                ->where('LOWER(REPLACE(name, " ", ""))',$normalizedStr)
-                ->where('id!=',$id)
-                ->orderBy('id')->countAllResults();
-                if($vehicletype_data==0){
-                     $this->vehicletypeModel->update($id,[
-                      'name'  =>  $this->request->getVar('name'),
-                      'number_of_tyres'  =>  $this->request->getVar('number_of_tyres'),
-                      'unladen_weight'  =>  $this->request->getVar('unladen_weight'),
-                      'status'  => 'Active',
-                      'updated_at'  =>  date("Y-m-d h:i:sa"),
-                    ]);
-                }else{
-                  $this->validator->setError('name', 'The field must contain a unique value.');
-                  $data['error']  = $this->validator;
-                  return view( 'VehicleType/edit',$data );
-                  return false;
-                } 
               
-              
+              $this->vehicletypeModel->update($id,[
+                'name'  =>  $this->request->getVar('name'),
+                'number_of_tyres'  =>  $this->request->getVar('number_of_tyres'),
+                'unladen_weight'  =>  $this->request->getVar('unladen_weight'),
+                'status'  => 'Active',
+                'updated_at'  =>  date("Y-m-d h:i:sa"),
+              ]);
               $session = \Config\Services::session();
   
               $session->setFlashdata('success', 'Vehicle Type updated');
