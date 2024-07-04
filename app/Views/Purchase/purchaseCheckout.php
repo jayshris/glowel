@@ -9,6 +9,9 @@
            .noprint {
               visibility: hidden;
            }
+           .hide-td{
+            display: none;
+           }
         }
     </style>
 </head>
@@ -78,7 +81,7 @@
                         <th width="10%">#</th>
                         <th width="15%">Thumbnail</th>
                         <th width="20%">Product Name</th>
-                        <th width="15%">Rate</th>
+                        <th width="15%" class="hide-td">Rate</th>
                         <th width="15%">Order Quantity</th>
                         <!-- <th width="15%">Remove</th> -->
                       </tr>
@@ -91,7 +94,7 @@
                           <td><?= $i++ ?>.</td>
                           <td><a href="<?= base_url('public/uploads/products/') . $ap['product_image_1'] ?>" target="_blank"><img src="<?= base_url('public/uploads/products/') . $ap['product_image_1'] ?>" style="height: 60px;"></a> </td>
                           <td><?= $ap['product_name'] ?></td>
-                          <td><?= $ap['rate'] ?></td>
+                          <td class="hide-td"><?= $ap['rate'] ?></td>
                           <td><?= $ap['quantity'] ?></td>
                           <!-- <td><button class="btn btn-danger" onclick="$.delete(<?= $ap['sp_id'] ?>)"><i class="fa fa-trash"></i></button></td> -->
                         </tr>
@@ -133,22 +136,24 @@
       
       $.confirm = function() {
         if(confirm("Do you want to print & send for invoice?")){
-            window.print();
-            $.ajax({
-                type: "GET",
-                url: "<?= base_url('purchase/sendToInvoice/' . $token ) ?>",
-                success: function(status) {
-                    // console.log(status);
-                    if(status>0){
-                    window.location.replace("<?= base_url('purchase') ?>");
-                    }else{
-                    alert('Something is wrong, please try again!!!');
-                    }
-                }
-            });
-        }else{
-          window.location.replace("<?= base_url('purchase/add-products/' . $token) ?>");
+          if(confirm("Do you want to print & send for invoice?")){
+              window.print();
+              $.ajax({
+                  type: "GET",
+                  url: "<?= base_url('purchase/sendToInvoice/' . $token ) ?>",
+                  success: function(status) {
+                      // console.log(status);
+                      if(status>0){
+                      window.location.replace("<?= base_url('purchase') ?>");
+                      }else{
+                      alert('Something is wrong, please try again!!!');
+                      }
+                  }
+              });
+          } 
         }
+        window.location.replace("<?= base_url('purchase/add-products/' . $token) ?>");
+            
       }
     </script>
 </body>

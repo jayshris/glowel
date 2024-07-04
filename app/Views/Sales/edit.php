@@ -57,12 +57,36 @@
                                   <?php }?>
                                 <?php } ?>
                               </select>
+                              <?php
+                                if($validation->getError('customer_name'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('customer_name').'</div>';
+                                }
+                                ?>
                             </div>
 
                             <div class="col-md-2">
                               <label class="col-form-label">Order Date<span class="text-danger">*</span></label>
-                              <input type="date" required name="order_date" value="<?= date('Y-m-d',strtotime($order_details['added_date'])) ?>" min="<?= date('Y-m-d') ?>" class="form-control datepicker">
+                              <input type="date" required name="order_date" value="<?= date('Y-m-d',strtotime($order_details['added_date'])) ?>" readonly class="form-control datepicker">
                             </div>
+
+                            <div class="col-md-3">
+                              <label class="col-form-label">Branch<span class="text-danger">*</span></label> 
+                              <select class="select"  required name="branch_id"  <?= $order_details['branch_id']?>>
+                                <?php if(!empty($branches)){ ?>
+                                  <?php foreach($branches as  $c){ ?>
+                                    <option <?php echo ($c['id'] == $order_details['branch_id']) ? 'selected': '' ;?> value="<?php echo $c['id'];?>"><?php echo $c['name'];?></option>
+                                  <?php }?>
+                                <?php } ?>
+                              </select>
+                              <?php
+                                if($validation->getError('branch_id'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('branch_id').'</div>';
+                                }
+                                ?>
+                            </div>
+
                             <div class="col-md-12"></div>
                             <div class="col-md-3">  
                               <label class="col-form-label">Image 1 <span class="text-info ">(JPEG,JPG,PDF)</span></label>

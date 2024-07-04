@@ -2,18 +2,19 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
-use App\Models\ProductCategoryModel;
-use App\Models\ProductsModel;
-use App\Models\ProductWarehouseLinkModel;
-use App\Models\SalesOrderModel;
-use App\Models\SalesProductModel;
 use App\Models\UserModel;
 use App\Models\PartyModel;
-use App\Models\NotificationModel;
+use App\Models\ProductsModel;
 use App\Models\InventoryModel;
+use App\Models\SalesOrderModel;
+use App\Models\NotificationModel;
+use App\Models\SalesProductModel;
+use App\Controllers\BaseController;
+use App\Models\ProductCategoryModel;
+use App\Models\OfficeModel;
 
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\ProductWarehouseLinkModel;
 
 class Sales extends BaseController
 {
@@ -29,6 +30,7 @@ class Sales extends BaseController
     public $partyModel;
     public $NModel;
     public $InventoryModel;
+    public $OfficeModel;
     public function __construct()
     {
         $this->session = \Config\Services::session();
@@ -41,6 +43,7 @@ class Sales extends BaseController
         $this->partyModel = new PartyModel();
         $this->NModel = new NotificationModel();
         $this->InventoryModel = new InventoryModel();
+        $this->OfficeModel = new OfficeModel();
 
         $user = new UserModel();
         $this->access = $user->setPermission();
@@ -76,7 +79,8 @@ class Sales extends BaseController
                     'errors' => [
                         'regex_match' => 'The customer field only contain alphanumeric characters.',
                     ],
-                ]
+                ], 
+                'branch_id'   =>'required'
             ]);
             $validation = \Config\Services::validation(); 
             if (!empty($validation->getErrors())) {
@@ -87,18 +91,26 @@ class Sales extends BaseController
                     'customer_name' => $this->request->getPost('customer_name'),
                     'added_by' => $this->added_by,
                     'added_ip' => $this->added_ip,
-                    'added_date' => $this->request->getPost('order_date')
+                    'added_date' => $this->request->getPost('order_date'),
+                    'branch_id' => $this->request->getPost('branch_id')
                 ]) ? $this->SOModel->getInsertID() : '0';
                 $this->session->setFlashdata('success', 'Order Created Successfully'); 
                 return $this->response->redirect(base_url('sales/add-products/' . $insert_id));
             } 
         }  
         $data['customers'] = $this->partyModel->select('id,party_name')->where('status', 1)->findAll();
-        $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
+        $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();   
+        $data['branches'] = $this->selectUserBranches(); 
         return view('Sales/create', $data);
          
     }
-
+    function selectUserBranches(){
+       $user = new UserModel();
+       return $user->select('o.id,o.name')
+        ->join('company c','users.company_id = c.id') 
+        ->join('office o','c.id= o.company_id')                    
+        ->where(['users.id'=>$_SESSION['id']])->where(['o.status'=>1])->orderBy('o.name','asc')->findAll();
+    }
     public function edit($id)
     {
         if ($this->access === 'false') {
@@ -110,8 +122,9 @@ class Sales extends BaseController
                     'rules' => 'trim|regex_match[^[a-zA-Z0-9\s]*$]', 
                     'errors' => [
                         'regex_match' => 'The customer  field only contain alphanumeric characters.',
-                    ],
-                ],
+                    ], 
+                ], 
+                'branch_id'   =>'required'
             ]); 
             //as per discussed max size validation not required
             if($this->request->getFile('img_1')->getSize() > 0) {
@@ -132,7 +145,8 @@ class Sales extends BaseController
                     'customer_name' => $this->request->getPost('customer_name'),
                     'added_by' => $this->added_by,
                     'added_ip' => $this->added_ip,
-                    'added_date' => $this->request->getPost('order_date')
+                    'added_date' => $this->request->getPost('order_date'),
+                    'branch_id' => $this->request->getPost('branch_id')
                 ];
                 // update image if found or either upload with webcam
                 if ($this->request->getFile('img_1')->getSize() > 0) {
@@ -145,6 +159,7 @@ class Sales extends BaseController
                 }else if($this->request->getPost('image_2')){
                     $so_data['image_2'] = $this->uploadFileWithCam($id,$this->request->getPost(),'image_2');
                 }
+                // echo '<pre>';print_r($so_data);exit;
                 $this->SOModel->update($id,$so_data);
                 $this->session->setFlashdata('success', 'Order Updated Successfully'); 
                 return $this->response->redirect(base_url('sales/add-products/' . $id));
@@ -156,7 +171,7 @@ class Sales extends BaseController
             $this->session->setFlashdata('danger', 'Order can not be editable!!!'); 
             return $this->response->redirect(base_url('sales/index'));
         }
-        if(isset($data['order_details']['edit_count']) && $data['order_details']['edit_count'] < 1){
+        if(isset($data['order_details']['edit_count']) && $data['order_details']['edit_count'] < 10){
             $this->SOModel->update($id, [ 
                 'edit_count' => ( $data['order_details']['edit_count']+1),
                 'status'=>0
@@ -176,8 +191,8 @@ class Sales extends BaseController
             if(!in_array($data['order_details']['customer_name'],$data['customers'])){
                 array_push($data['customers'],$data['order_details']['customer_name']);
             }
-            // echo '<pre>';print_r($data);exit;
             
+            $data['branches'] = $this->selectUserBranches();
             return view('Sales/edit', $data);
         }else{
             $this->session->setFlashdata('danger', 'Order can be edited only 1 times!!!');
@@ -237,7 +252,12 @@ class Sales extends BaseController
 
                     // product rate at home branch warehouse
                     $res = $this->PWLModel->join('warehouses', 'warehouses.id = product_warehouse_link.warehouse_id')->where('product_id', $product)->where('office_id', $u_home_branch)->first();
-                    
+                    // print_r($res);exit;
+                    if(!$res){
+                        $this->session->setFlashdata('danger', 'Inventory Locations does not allocated for selected product, please check!!!');
+                        return redirect()->to('/sales/add-products/' . $id);
+                    }
+
                     if(isset($sale_order_product) && !empty($sale_order_product)){
                         //edit sales order product 
                         $qty= $this->request->getPost('qty_' . $product) + $sale_order_product['quantity'];

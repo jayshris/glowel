@@ -12,7 +12,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\ProductWarehouseLinkModel;
 use App\Models\PurchaseOrderProductModel;
 use App\Models\InventoryModel;
-
+use App\Models\OfficeModel;
 class Purchase extends BaseController
 {
     public $PCModel;
@@ -27,6 +27,7 @@ class Purchase extends BaseController
     public $POModel;
     public $POPModel;
     public $InventoryModel;
+    public $OfficeModel;
     public function __construct()
     {
         $this->session = \Config\Services::session();
@@ -39,6 +40,7 @@ class Purchase extends BaseController
         $this->POModel = new PurchaseOrderModel();
         $this->POPModel = new PurchaseOrderProductModel();
         $this->InventoryModel = new InventoryModel();
+        $this->OfficeModel = new OfficeModel();
         $user = new UserModel();
         $this->access = $user->setPermission();
 
@@ -76,7 +78,8 @@ class Purchase extends BaseController
                     'errors' => [
                         'regex_match' => 'The customer  field only contain alphanumeric characters.',
                     ],
-                ]
+                ], 
+                'branch_id'   =>'required'
             ]);
             $validation = \Config\Services::validation();
             // echo 'error<pre>';print_r($this->request->getPost());
@@ -89,7 +92,8 @@ class Purchase extends BaseController
                     'customer_name' => $this->request->getPost('customer_name'),
                     'added_by' => $this->added_by,
                     'added_ip' => $this->added_ip,
-                    'added_date' => $this->request->getPost('order_date')
+                    'added_date' => $this->request->getPost('order_date'),
+                    'branch_id' => $this->request->getPost('branch_id')
                 ]) ? $this->POModel->getInsertID() : '0';
                 $this->session->setFlashdata('success', 'Order Created Successfully');
 
@@ -103,9 +107,17 @@ class Purchase extends BaseController
         ->where(['party_type.name'=> 'Vendor','party.status'=> 'Active'])
         ->where('party.status', 'Active')->findAll();
         $data['last_order'] = $this->POModel->orderBy('id', 'desc')->first();
+        $data['branches'] = $this->selectUserBranches(); 
         return view('Purchase/create', $data);
         
     } 
+    function selectUserBranches(){
+        $user = new UserModel();
+        return $user->select('o.id,o.name')
+         ->join('company c','users.company_id = c.id') 
+         ->join('office o','c.id= o.company_id')                    
+         ->where(['users.id'=>$_SESSION['id']])->where(['o.status'=>1])->orderBy('o.name','asc')->findAll();
+     }
     public function edit($id)
     {
         if ($this->access === 'false') {
@@ -119,7 +131,8 @@ class Purchase extends BaseController
                     'errors' => [
                         'regex_match' => 'The customer  field only contain alphanumeric characters.',
                     ],
-                ],
+                ], 
+                'branch_id'   =>'required'
             ]); 
             //as per discussed max size validation not required
             if($this->request->getFile('img_1')->getSize() > 0) {
@@ -154,7 +167,8 @@ class Purchase extends BaseController
                 $po_data = ['customer_name' => $this->request->getPost('customer_name'),
                             'added_by' => $this->added_by,
                             'added_ip' => $this->added_ip,
-                            'added_date' => $this->request->getPost('order_date') 
+                            'added_date' => $this->request->getPost('order_date'),
+                            'branch_id' => $this->request->getPost('branch_id') 
                             ];
                   // update image if found or either upload with webcam
                 if ($this->request->getFile('img_1')->getSize() > 0) {
@@ -212,7 +226,7 @@ class Purchase extends BaseController
                     array_push($data['customers'],$data['order_details']['customer_name']);
                 }
             } 
-          
+            $data['branches'] = $this->selectUserBranches();
             return view('Purchase/edit', $data);
         }else{
             $this->session->setFlashdata('danger', 'Order can be edited only 2 times!!!');

@@ -61,7 +61,6 @@ use App\Models\StateModel;
                         <li><span class="other-title">State</span><span class="other-value"><?=  $state['state_name'] ?></span></li>
                         <li><span class="other-title">Postcode</span><span class="other-value"><?= $office_data['postcode'] ?></span></li>
                         <li><span class="other-title">City</span><span class="other-value"><?= $office_data['city'] ?></span></li>
-                        <li><span class="other-title">Booking Prefix</span><span class="other-value" style="margin-left:40px;"><?= $office_data['booking_prefix'] ?></span></li>
                     </ul>	
                 </div>
             </div>

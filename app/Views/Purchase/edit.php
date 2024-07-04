@@ -43,12 +43,12 @@
                         <div class="profile-details">
                           <div class="row g-3">
 
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                               <label class="col-form-label">Order Number <span class="text-danger">*</span></label>
                               <input type="text" required readonly name="order_no" value="<?= $order_details['order_no'] ?>" class="form-control">
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                               <label class="col-form-label">Customer Name</label>
                               <!-- <input type="text" required name="customer_name" class="form-control"> -->
                               <select class="customer_name form-control" id="customer_name" name="customer_name" >
@@ -66,11 +66,28 @@
                               ?>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                               <label class="col-form-label">Order Date<span class="text-danger">*</span></label>
-                              <input type="date" required name="order_date" value="<?= date('Y-m-d',strtotime($order_details['added_date'])) ?>" min="<?= date('Y-m-d') ?>" class="form-control datepicker">
+                              <input type="date" required name="order_date" value="<?= date('Y-m-d',strtotime($order_details['added_date'])) ?>" readonly class="form-control datepicker">
                             </div>
 
+                            <div class="col-md-3">
+                              <label class="col-form-label">Branch<span class="text-danger">*</span></label> 
+                              <select class="select"  required name="branch_id"  <?= $order_details['branch_id']?>>
+                                <?php if(!empty($branches)){ ?>
+                                  <?php foreach($branches as  $c){ ?>
+                                    <option <?php echo ($c['id'] == $order_details['branch_id']) ? 'selected': '' ;?> value="<?php echo $c['id'];?>"><?php echo $c['name'];?></option>
+                                  <?php }?>
+                                <?php } ?>
+                              </select>
+                              <?php
+                                if($validation->getError('branch_id'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('branch_id').'</div>';
+                                }
+                                ?>
+                            </div>
+                                
                             <div class="col-md-3">  
                               <label class="col-form-label">Image 1 <span class="text-info ">(JPEG,JPG,PDF)</span></label>
                               <br>
@@ -189,25 +206,25 @@
                         </div>
                       </form>
                       <div class="modal fade" id="open-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Capture Image</h5>
-            <button type="button" class="close"  data-bs-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body" id="showdata">
-            ...
-          </div>
-          <hr>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal" id="cam_modal_close_btn">Close</button>
-            <button type="button" class="btn btn-primary" onclick="saveCamImg()">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Capture Image</h5>
+                              <button type="button" class="close"  data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body" id="showdata">
+                              ...
+                            </div>
+                            <hr>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal" id="cam_modal_close_btn">Close</button>
+                              <button type="button" class="btn btn-primary" onclick="saveCamImg()">Save changes</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

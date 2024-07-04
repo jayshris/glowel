@@ -50,18 +50,41 @@
                             <div class="col-md-3">
                               <label class="col-form-label">Customer Name <span class="text-danger">*</span></label>
                               <!-- <input type="text" required name="customer_name" class="form-control"> -->
-                              <select class="customer_name form-control"  required name="customer_name" >
+                              <select class="customer_name form-control" name="customer_name" >
                                 <?php if(!empty($customers)){ ?>
                                   <?php foreach($customers as $key => $c){ ?>
                                     <option <?php echo ($key == 0) ? 'selelected': '' ;?> value="<?php echo $c['party_name'];?>"><?php echo $c['party_name'];?></option>
                                   <?php }?>
                                 <?php } ?>
                               </select>
+                              <?php
+                                if($validation->getError('customer_name'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('customer_name').'</div>';
+                                }
+                                ?>
                             </div>
 
                             <div class="col-md-2">
                               <label class="col-form-label">Order Date<span class="text-danger">*</span></label>
-                              <input type="date" required name="order_date" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" class="form-control datepicker">
+                              <input type="date" readonly  name="order_date" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" class="form-control datepicker">
+                            </div>
+
+                            <div class="col-md-3">
+                              <label class="col-form-label">Branch<span class="text-danger">*</span></label> 
+                              <select class="select"  required name="branch_id" >
+                                <?php if(!empty($branches)){ ?>
+                                  <?php foreach($branches as $key => $c){ ?>
+                                    <option <?php echo ($key == 0) ? 'selected': '' ;?> value="<?php echo $c['id'];?>"><?php echo $c['name'];?></option>
+                                  <?php }?>
+                                <?php } ?>
+                              </select>
+                              <?php
+                                if($validation->getError('branch_id'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('branch_id').'</div>';
+                                }
+                                ?>
                             </div>
 
                           </div>

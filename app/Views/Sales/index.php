@@ -30,7 +30,7 @@
                 <div class="col-4 text-end">
                   <div class="head-icons">
                     <a href="<?= base_url('sales') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
-                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header"><i class="ti ti-chevrons-up"></i></a>
+                    <!-- <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header"><i class="ti ti-chevrons-up"></i></a> -->
                   </div>
                 </div>
               </div>
@@ -122,6 +122,9 @@
                             <a href="<?= base_url('sales/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
 
                             <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
+
+                            <button type="button" onclick="print_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-print">Print</i></button>  
+                           
                           </td>
                           <td><?= $pc['order_no'] ?></td>
                           <td><?= $pc['customer_name'] ?></td>
@@ -166,6 +169,16 @@
 
     <!-- page specific scripts  -->
     <script>
+      function print_data(id){
+        var url = "<?php echo base_url('sales/sales-checkout/'); ?>" + id;
+        var printWindow = window.open( url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
+        // printWindow.addEventListener('load', function(){
+            printWindow.print();
+            // printWindow.close();
+        // }, true);
+            
+      }
+
       function delete_data(id) {
         if (confirm("Are you sure you want to remove this product ?")) {
           window.location.href = "<?php echo base_url('sales/deleteSaleOrder/'); ?>" + id;

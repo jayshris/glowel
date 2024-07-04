@@ -69,9 +69,26 @@
 
                             <div class="col-md-2">
                               <label class="col-form-label">Order Date<span class="text-danger">*</span></label>
-                              <input type="date" required name="order_date" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" class="form-control datepicker">
+                              <input type="date" readonly required name="order_date" value="<?= date('Y-m-d') ?>" min="<?= date('Y-m-d') ?>" class="form-control datepicker">
                             </div>
 
+                            <div class="col-md-3">
+                              <label class="col-form-label">Branch<span class="text-danger">*</span></label> 
+                              <select class="select"  required name="branch_id" >
+                                <?php if(!empty($branches)){ ?>
+                                  <?php foreach($branches as $key => $c){ ?>
+                                    <option <?php echo ($key == 0) ? 'selected': '' ;?> value="<?php echo $c['id'];?>"><?php echo $c['name'];?></option>
+                                  <?php }?>
+                                <?php } ?>
+                              </select>
+                              <?php
+                                if($validation->getError('branch_id'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('branch_id').'</div>';
+                                }
+                                ?>
+                            </div>
+                            
                           </div>
                           <br>
                         </div>
