@@ -408,4 +408,12 @@ class Purchase extends BaseController
 
         return $this->response->redirect(base_url('purchase'));
     }
+
+    function updateStatus($order_id){
+        $result = $this->POModel->update($order_id, [
+            'status' => ORDER_STATUS['cancel']
+        ]);
+        $this->session->setFlashdata('success', 'Order has been updated succefully');
+        return $this->response->redirect(base_url('sales'));
+    }
 }

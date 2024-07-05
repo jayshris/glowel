@@ -42,7 +42,7 @@ class Invoices extends BaseController
             $data['orders'] = $this->SOModel
             ->select('sales_orders.id,sales_orders.status,i.invoice_no,sales_orders.added_date,sales_orders.customer_name,sales_orders.order_no')
             ->join('invoices i','i.sales_order_id = sales_orders.id', 'left')
-            ->whereIn('sales_orders.status',[1,5])->orderBy('sales_orders.id', 'desc')->findAll(); 
+            ->whereIn('sales_orders.status',[1,2,5])->orderBy('sales_orders.id', 'desc')->findAll(); 
             return view('Invoices/index', $data);
         }
     }
@@ -61,24 +61,24 @@ class Invoices extends BaseController
                     ],
                 ], 
                 'delivery_address'   =>'required',  
-                'invoice_doc' => [
-                    'rules' => 'uploaded[invoice_doc]|mime_in[invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
-                    'errors' => [
-                        'mime_in' => 'Image must be in jpeg/png format',
-                    ]
-                ],
-                'packing_list_doc' => [
-                    'rules' => 'uploaded[packing_list_doc]|mime_in[packing_list_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
-                    'errors' => [
-                        'mime_in' => 'Image must be in jpeg/png format',
-                    ]
-                ] ,
-                'e_way_bill_doc' => [
-                    'rules' => 'uploaded[e_way_bill_doc]|mime_in[e_way_bill_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
-                    'errors' => [
-                        'mime_in' => 'Image must be in jpeg/png format',
-                    ]
-                ]  
+                // 'invoice_doc' => [
+                //     'rules' => 'uploaded[invoice_doc]|mime_in[invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
+                //     'errors' => [
+                //         'mime_in' => 'Image must be in jpeg/png format',
+                //     ]
+                // ],
+                // 'packing_list_doc' => [
+                //     'rules' => 'uploaded[packing_list_doc]|mime_in[packing_list_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
+                //     'errors' => [
+                //         'mime_in' => 'Image must be in jpeg/png format',
+                //     ]
+                // ] ,
+                // 'e_way_bill_doc' => [
+                //     'rules' => 'uploaded[e_way_bill_doc]|mime_in[e_way_bill_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
+                //     'errors' => [
+                //         'mime_in' => 'Image must be in jpeg/png format',
+                //     ]
+                // ]  
             ]);
             // echo '<pre>';print_r($this->request->getPost()); 
             // echo '<pre>';print_r($_FILES);

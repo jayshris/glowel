@@ -67,7 +67,7 @@
                             <div class="col-md-12"></div> 
 
                             <div class="col-md-6">
-                              <label class="col-form-label">Invoice Doc<span class="text-danger">*</span> <span class="text-info ">(PNG,JPEG,JPG)</span></label>
+                              <label class="col-form-label">Invoice Doc<span class="text-danger">*</span></label>
                               <input type="file"  name="invoice_doc" required  value="" class="form-control">
                               <?php
                               if ($validation->getError('invoice_doc')) {
@@ -77,7 +77,7 @@
                             </div>
 
                             <div class="col-md-6">
-                              <label class="col-form-label">Packing List Doc<span class="text-danger">*</span> <span class="text-info ">(PNG,JPEG,JPG)</span></label>
+                              <label class="col-form-label">Packing List Doc<span class="text-danger">*</span> </label>
                               <input type="file"  name="packing_list_doc" required value="" class="form-control">
                               <?php
                               if ($validation->getError('packing_list_doc')) {
@@ -87,7 +87,7 @@
                             </div>
 
                             <div class="col-md-6">
-                              <label class="col-form-label">E-Way Bill Doc<span class="text-danger">*</span> <span class="text-info ">(PNG,JPEG,JPG)</span></label>
+                              <label class="col-form-label">E-Way Bill Doc<span class="text-danger">*</span> </label>
                               <input type="file"  name="e_way_bill_doc" required value=""  class="form-control">
                               <?php
                               if ($validation->getError('e_way_bill_doc')) {
@@ -97,7 +97,7 @@
                             </div>
 
                             <div class="col-md-6">
-                              <label class="col-form-label">Other Doc<span class="text-info ">(PNG,JPEG,JPG)</span></label>
+                              <label class="col-form-label">Other Doc</label>
                               <input type="file" name="other_doc" value="" class="form-control">
                               <?php
                               if ($validation->getError('other_doc')) {

@@ -122,7 +122,10 @@
                                 </tr>
                             <?php } ?>
                         <?php }else{ ?>
-                            <tr><td colspan="7"> <center>No records found!!!</center></td></tr>
+                            <tr>
+                              <td></td>
+                              <td></td><td></td><td> <center>No records found!!!</center></td><td></td><td></td><td></td>
+                            </tr>
                         <?php }?>    
                     </tbody>
                   </table>

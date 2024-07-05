@@ -373,4 +373,12 @@ class Sales extends BaseController
 
         return $this->response->redirect(base_url('sales'));
     }
+
+    function updateStatus($order_id){
+        $result = $this->SOModel->update($order_id, [
+            'status' => ORDER_STATUS['cancel']
+        ]);
+        $this->session->setFlashdata('success', 'Order has been updated succefully');
+        return $this->response->redirect(base_url('sales'));
+    }
 }

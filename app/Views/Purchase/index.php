@@ -119,11 +119,10 @@
                         <tr>
                           <td><?= $i++; ?>.</td>
                           <td>
-                            <?php 
-                            if (in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS)) { ?>
-                              <a href="<?= base_url('purchase/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if($pc['edit_count'] >1){ ?> disabled<?php }?>" role="button"><i class="ti ti-pencil"></i></a>
-                            <?php } ?>
-                            <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
+                             <a href="<?= base_url('purchase/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >1) && (in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-pencil"></i></a>
+                             <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
+                             <button type="button" onclick="print_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-printer"></i></button>  
+                             <button type="button" onclick="cancel_status('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm <?php if ($pc['status'] == ORDER_STATUS['open']) { ?> disabled <?php } ?>"> <i class="fa fa-close"></i></button> 
                           </td>
                           <td><?= $pc['order_no'] ?></td>
                           <td><?= $pc['customer_name'] ?></td>
@@ -198,6 +197,24 @@
             $('.dataTables_length').appendTo('.datatable-length');
           }
         });
+      }
+
+      function cancel_status(id) {
+        if (confirm("Are you sure you want to cancel this order ?")) {
+          window.location.href = "<?php echo base_url('purchase/updateStatus/'); ?>" + id;
+        }
+        return false;
+      }
+
+      function print_data(id){
+        var url = "<?php echo base_url('purchase/purchase-checkout/'); ?>" + id;  
+
+        var printWindow = window.open( url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
+        printWindow.addEventListener('load', function(){
+            printWindow.print();
+            printWindow.close();
+        }, true);
+            
       }
     </script>
 </body>
