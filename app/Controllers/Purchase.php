@@ -199,40 +199,43 @@ class Purchase extends BaseController
             }
            
         } 
+        $this->checkOrderStatus($id); 
+        
+        $customers = $this->partyModel->select('party.id,party.party_name')
+        ->join('party_type_party_map', ' party.id = party_type_party_map.party_id')
+        ->join('party_type', ' party_type.id = party_type_party_map.party_type_id')
+        ->where(['party_type.name'=> 'Vendor','party.status'=> 'Active'])
+        ->where('party.status', 'Active')->findAll();
+
+        $data['customers']  = array_column($customers,'party_name');
+
+        $data['last_order'] = $this->POModel->orderBy('id', 'desc')->first();
+
+        $data['selected_customer'] = $data['order_details']['customer_name'];
+        if(!empty($data['order_details']['customer_name'])){
+            if(!in_array($data['order_details']['customer_name'],$data['customers'])){
+                array_push($data['customers'],$data['order_details']['customer_name']);
+            }
+        } 
+        $data['branches'] = $this->selectUserBranches();
+        return view('Purchase/edit', $data);  
+    }
+
+    function checkOrderStatus($id){
         //order can be edited only 2 times as per doc
         $data['order_details'] = $this->POModel->where('id', $id)->first();
         if (!in_array($data['order_details']['status'],PURCHASE_STATUS_EDIT_PERMITIONS)) {
-             $this->session->setFlashdata('danger', 'Order can not be editable!!!'); 
+            $this->session->setFlashdata('danger', 'Order can not be editable!!!'); 
             return $this->response->redirect(base_url('purchase/index'));
         }
         if(isset($data['order_details']['edit_count']) && $data['order_details']['edit_count'] < 2){
             $this->POModel->update($id, [ 
                 'edit_count' => ( $data['order_details']['edit_count']+1)
             ]);
-
-            $customers = $this->partyModel->select('party.id,party.party_name')
-            ->join('party_type_party_map', ' party.id = party_type_party_map.party_id')
-            ->join('party_type', ' party_type.id = party_type_party_map.party_type_id')
-            ->where(['party_type.name'=> 'Vendor','party.status'=> 'Active'])
-            ->where('party.status', 'Active')->findAll();
-
-            $data['customers']  = array_column($customers,'party_name');
-
-            $data['last_order'] = $this->POModel->orderBy('id', 'desc')->first();
-
-            $data['selected_customer'] = $data['order_details']['customer_name'];
-            if(!empty($data['order_details']['customer_name'])){
-                if(!in_array($data['order_details']['customer_name'],$data['customers'])){
-                    array_push($data['customers'],$data['order_details']['customer_name']);
-                }
-            } 
-            $data['branches'] = $this->selectUserBranches();
-            return view('Purchase/edit', $data);
         }else{
             $this->session->setFlashdata('danger', 'Order can be edited only 2 times!!!');
             return $this->response->redirect(base_url('purchase/index'));
         }
-        
     }
     function uploadFileWithCam($id,$postdata,$flag){ 
         $path ='public/uploads/purchase/';
@@ -415,5 +418,13 @@ class Purchase extends BaseController
         ]);
         $this->session->setFlashdata('success', 'Order has been updated succefully');
         return $this->response->redirect(base_url('sales'));
+    }
+
+    function view($orderId){
+        $this->checkOrderStatus($orderId); 
+        $data['token'] = $orderId;
+        $data['order_details'] = $this->POModel->where('id', $orderId)->first();
+        $data['added_products'] = $this->POPModel->select('*,purchase_order_products.id as sp_id')->join('products', 'products.id = purchase_order_products.product_id')->where('order_id', $orderId)->findAll();
+        return view('Purchase/view', $data);
     }
 }

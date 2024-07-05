@@ -245,6 +245,7 @@ $routes->get('sales/getOrderProducts/(:num)', 'Sales::getOrderProducts/$1');
 $routes->get('sales/sendToInvoice/(:num)', 'Sales::sendToInvoice/$1');
 $routes->match(['get', 'post'], 'sales/sales-checkout/(:num)', 'Sales::salesCheckout/$1');
 $routes->get('sales/deleteSaleOrder/(:num)', 'Sales::deleteSaleOrder/$1');
+$routes->get('sales/view/(:num)', 'Sales::view/$1');
 
 //purchase
 $routes->match(['get', 'post'], 'purchase', 'Purchase::index');
@@ -258,6 +259,7 @@ $routes->get('purchase/sendToInvoice/(:num)', 'Purchase::sendToInvoice/$1');
 $routes->match(['get', 'post'], 'purchase/purchase-checkout/(:num)', 'Purchase::purchaseCheckout/$1');
 $routes->get('purchase/deletePurchaseOrder/(:num)', 'Purchase::deletePurchaseOrder/$1');
 $routes->post('purchase/showWebCam', 'Purchase::showWebCam');
+$routes->get('purchase/view/(:num)', 'Purchase::view/$1');
 
 //Invoice listing
 $routes->match(['get', 'post'], 'invoices', 'Invoices::index');

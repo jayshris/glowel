@@ -166,38 +166,19 @@ class Sales extends BaseController
             }
         }  
         //order can be edited only 2 times as per doc
+        $this->checkOrderStatus($id); 
+        
+        $customers = $this->partyModel->select('party_name')->where('status', 1)->findAll();
+        $data['customers']  = array_column($customers,'party_name');
+        $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
         $data['order_details'] = $this->SOModel->where('id', $id)->first();
-        if (!in_array($data['order_details']['status'],PURCHASE_STATUS_EDIT_PERMITIONS)) {
-            $this->session->setFlashdata('danger', 'Order can not be editable!!!'); 
-            return $this->response->redirect(base_url('sales/index'));
+        $data['selected_customer'] = $data['order_details']['customer_name'];
+        if(!in_array($data['order_details']['customer_name'],$data['customers'])){
+            array_push($data['customers'],$data['order_details']['customer_name']);
         }
-        if(isset($data['order_details']['edit_count']) && $data['order_details']['edit_count'] < 1){
-            $this->SOModel->update($id, [ 
-                'edit_count' => ( $data['order_details']['edit_count']+1),
-                'status'=>0
-            ]);
-            //send notification to all user for order is open for edit
-            $this->NModel->save([
-                'order_id' => $id, 
-                'user_id'=>$_SESSION['id'],
-                'message' => $data['order_details']['order_no'].' order has been opened for edit'
-            ]);
-
-            $customers = $this->partyModel->select('party_name')->where('status', 1)->findAll();
-            $data['customers']  = array_column($customers,'party_name');
-            $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
-            $data['order_details'] = $this->SOModel->where('id', $id)->first();
-            $data['selected_customer'] = $data['order_details']['customer_name'];
-            if(!in_array($data['order_details']['customer_name'],$data['customers'])){
-                array_push($data['customers'],$data['order_details']['customer_name']);
-            }
-            
-            $data['branches'] = $this->selectUserBranches();
-            return view('Sales/edit', $data);
-        }else{
-            $this->session->setFlashdata('danger', 'Order can be edited only 1 times!!!');
-            return $this->response->redirect(base_url('sales/index'));
-        } 
+        
+        $data['branches'] = $this->selectUserBranches();
+        return view('Sales/edit', $data); 
     }
     function uploadFileWithCam($id,$postdata,$flag){ 
         $path ='public/uploads/sales/';
@@ -380,5 +361,37 @@ class Sales extends BaseController
         ]);
         $this->session->setFlashdata('success', 'Order has been updated succefully');
         return $this->response->redirect(base_url('sales'));
+    }
+
+    function view($orderId){
+        $this->checkOrderStatus($orderId);
+        $data['token'] = $orderId;
+        $data['order_details'] = $this->SOModel->where('id', $orderId)->first();
+        $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $orderId)->findAll();
+        return view('Sales/view', $data);
+    }
+
+    function checkOrderStatus($id){
+        //order can be edited only 2 times as per doc and only update if status is open, ready_for_invoicing, in_invoicing
+        $data['order_details'] = $this->SOModel->where('id', $id)->first();
+        if (!in_array($data['order_details']['status'],PURCHASE_STATUS_EDIT_PERMITIONS)) {
+            $this->session->setFlashdata('danger', 'Order can not be editable!!!'); 
+            return $this->response->redirect(base_url('sales/index'));
+        }
+        if(isset($data['order_details']['edit_count']) && $data['order_details']['edit_count'] < 1){
+            $this->SOModel->update($id, [ 
+                'edit_count' => ( $data['order_details']['edit_count']+1),
+                'status'=>0
+            ]);
+            //send notification to all user for order is open for edit
+            $this->NModel->save([
+                'order_id' => $id, 
+                'user_id'=>$_SESSION['id'],
+                'message' => $data['order_details']['order_no'].' order has been opened for edit'
+            ]);
+        }else{
+            $this->session->setFlashdata('danger', 'Order can be edited only 1 times!!!');
+            return $this->response->redirect(base_url('sales/index'));
+        }
     }
 }

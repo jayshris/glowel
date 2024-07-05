@@ -119,19 +119,20 @@
                         <tr>
                           <td><?= $i++; ?>.</td>
                           <td>
-                             <a href="<?= base_url('purchase/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >1) && (in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-pencil"></i></a>
+                             <a href="<?= base_url('purchase/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >1) && (!in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-pencil"></i></a>
+                             <a href="<?= base_url('purchase/view/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >1) && (!in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-eye"></i></a>
                              <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                              <button type="button" onclick="print_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-printer"></i></button>  
-                             <button type="button" onclick="cancel_status('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm <?php if ($pc['status'] == ORDER_STATUS['open']) { ?> disabled <?php } ?>"> <i class="fa fa-close"></i></button> 
+                             <button type="button" onclick="cancel_status('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm <?php if ($pc['status'] != ORDER_STATUS['open']) { ?> disabled <?php } ?>"> <i class="fa fa-close"></i></button> 
                           </td>
                           <td><?= $pc['order_no'] ?></td>
                           <td><?= $pc['customer_name'] ?></td>
                           <td><?= date('d M Y', strtotime($pc['added_date'])) ?></td>
                           <td><?= $pc['modify_date'] != '' ? date('d M Y', strtotime($pc['modify_date'])) : '' ?></td>
                           <td>
-                            <?php if ($pc['status']) {
-                              echo '<span class="badge badge-pill bg-success">'.PURCHASE_STATUS_DETAILS[$pc['status']].'</span>';
-                            } else echo '<span class="badge badge-pill bg-danger">'.PURCHASE_STATUS_DETAILS[$pc['status']].'</span>';
+                            <?php if (PURCHASE_STATUS_DETAILS[$pc['status']] == ORDER_STATUS['ready_for_invoicing']) {
+                                echo '<span class="badge badge-pill bg-success">'.PURCHASE_STATUS_DETAILS[$pc['status']].'</span>';
+                              } else echo '<span class="badge badge-pill bg-danger">'.PURCHASE_STATUS_DETAILS[$pc['status']].'</span>';
                             ?>
                           </td>
                         </tr>
