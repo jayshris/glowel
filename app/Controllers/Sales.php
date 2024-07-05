@@ -171,7 +171,7 @@ class Sales extends BaseController
             $this->session->setFlashdata('danger', 'Order can not be editable!!!'); 
             return $this->response->redirect(base_url('sales/index'));
         }
-        if(isset($data['order_details']['edit_count']) && $data['order_details']['edit_count'] < 10){
+        if(isset($data['order_details']['edit_count']) && $data['order_details']['edit_count'] < 1){
             $this->SOModel->update($id, [ 
                 'edit_count' => ( $data['order_details']['edit_count']+1),
                 'status'=>0
@@ -254,7 +254,7 @@ class Sales extends BaseController
                     $res = $this->PWLModel->join('warehouses', 'warehouses.id = product_warehouse_link.warehouse_id')->where('product_id', $product)->where('office_id', $u_home_branch)->first();
                     // print_r($res);exit;
                     if(!$res){
-                        $this->session->setFlashdata('danger', 'Inventory Locations does not allocated for selected product, please check!!!');
+                        $this->session->setFlashdata('danger', 'Home Branch not found, please check!!!');
                         return redirect()->to('/sales/add-products/' . $id);
                     }
 
