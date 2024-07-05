@@ -227,7 +227,7 @@
         });
        
     }); 
-    $("#customer_name").val($('#selected_customer').val()).trigger('change');
+    // $("#customer_name").val($('#selected_customer').val()).trigger('change');
 
     $.getCategory = function() {
 

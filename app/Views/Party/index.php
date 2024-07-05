@@ -1,6 +1,7 @@
 <?php
-use App\Models\PartyClassificationModel;
 use App\Models\PartytypeModel;
+use App\Models\PartyTypePartyModel;
+use App\Models\PartyClassificationModel;
 ?>
 
 <!DOCTYPE html>
@@ -71,11 +72,17 @@ use App\Models\PartytypeModel;
                             {
 
                               $pclass = new PartyClassificationModel();
-                              $pclass = $pclass->where('id', $party['party_classification_id'])->first();
+                              // $pclass = $pclass->where('id', $party['party_classification_id'])->first();
 
                               
                               $pcustomertype = new PartytypeModel();
-                              $pcustomertype = $pcustomertype->where('id', $party['party_type_id'])->first();
+                              // $pcustomertype = $pcustomertype->where('id', $party['party_type_id'])->first();
+
+                              $PartyTypePartyModel = new PartyTypePartyModel();
+                              $pcustomertype = $PartyTypePartyModel
+                              ->join('party p','p.id= party_type_party_map.party_id')
+                              ->join('party_type pt','pt.id= party_type_party_map.party_type_id')
+                              ->where('p.id', $party['id'])->first();
                               if($party['status'] == 'Inactive'){
                                 $status= '<span class="badge badge-pill bg-danger">Inactive</span>';
                               }else{

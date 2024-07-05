@@ -193,17 +193,17 @@ class Party extends BaseController
             }
           }
 
-          $partyTypes = $this->request->getVar('party_types');
+          $party_type_id = $this->request->getVar('party_type_id');
           $party_types = new PartyTypePartyModel();
           $partytypes = $party_types->where('party_id', $id)->delete();
 
-          foreach ($partyTypes as $key => $value) {
+          // foreach ($partyTypes as $key => $value) {
             $partyTypes1 = [
-              'party_type_id' =>  $value,
+              'party_type_id' =>  $party_type_id,
               'party_id'      =>   $id,
             ];
             $party_types->save($partyTypes1);
-          }
+          // }
 
           $session = \Config\Services::session();
           $session->setFlashdata('success', 'Party  Updated');
@@ -231,6 +231,16 @@ class Party extends BaseController
       $data['partytype'] = $partytype->orderby('name', 'ASC')->where('status', 'Active')->findAll();
       $partyTypes = new PartyTypePartyModel();
       $data['partyTypes'] = $partyTypes->where('party_id', $id)->findAll();
+
+         /**Add code */
+         $PartyTypePartyModel = new PartyTypePartyModel();
+         $data['pc_data']['party_type_id'] = $PartyTypePartyModel
+           ->join('party p','p.id= party_type_party_map.party_id')
+           ->join('party_type pt','pt.id= party_type_party_map.party_type_id')
+           ->where('p.id', $id)->first();
+         /** End */
+         // echo '<pre>';print_r($data['pc_data']);exit;
+
       $stateModel = new StateModel();
       $data['state'] = $stateModel->where(['isStatus' => '1'])->orderBy('state_id')->findAll();
       $businesstypeModel = new BusinessTypeModel();
@@ -241,7 +251,7 @@ class Party extends BaseController
 
         $error = $this->validate([
           'party_name'                =>  'required|trim|regex_match[/^[a-z\d\-_\s]+$/i]',
-          'party_types'              =>  'required',
+          'party_type_id'              =>  'required',
           'state'                     =>  'required',
           'city'                      =>  'required',
           'postcode'                  =>  'required',
@@ -370,17 +380,17 @@ class Party extends BaseController
             }
           }
 
-          $partyTypes = $this->request->getVar('party_types');
+          $party_type_id = $this->request->getVar('party_type_id');
           $party_types = new PartyTypePartyModel();
           $partytypes = $party_types->where('party_id', $id)->delete();
 
-          foreach ($partyTypes as $key => $value) {
+          // foreach ($partyTypes as $key => $value) {
             $partyTypes1 = [
-              'party_type_id' =>  $value,
+              'party_type_id' =>  $party_type_id,
               'party_id'      =>   $id,
             ];
             $party_types->save($partyTypes1);
-          }
+          // }
 
           $session = \Config\Services::session();
           $session->setFlashdata('success', 'Party Approved Successfully');
@@ -421,7 +431,7 @@ class Party extends BaseController
       if ($this->request->getMethod() == 'POST') {
         $error = $this->validate([
           'party_name'              =>  'required|trim|regex_match[/^[a-z\d\-_\s]+$/i]|is_unique[party.party_name]',
-          'party_types'              =>  'required',
+          'party_type_id'              =>  'required',
 
           'state'                     =>  'required',
           'city'                      =>  'required',
@@ -600,15 +610,15 @@ class Party extends BaseController
           $partyModel->save($arr);
 
           $party_id = $partyModel->getInsertID();
-          $party_types = $this->request->getVar('party_types');
+          $party_type_id = $this->request->getVar('party_type_id');
           $partytypes = new PartyTypePartyModel();
-          foreach ($party_types as $key => $value) {
+          // foreach ($party_types as $key => $value) {
             $ptData = [
-              'party_type_id' =>  $value,
+              'party_type_id' =>  $party_type_id,
               'party_id'      => $party_id,
             ];
             $partytypes->save($ptData);
-          }
+          // }
           $session = \Config\Services::session();
           $session->setFlashdata('success', 'Party added');
           return $this->response->redirect(site_url('/party'));

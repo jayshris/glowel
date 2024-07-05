@@ -10,7 +10,7 @@
                     if($last == 'create'){
                       $action = 'Party/create';
                     }else{
-                      $action = 'Party/edit';
+                      $action = 'Party/edit/'.$pc_data['id'];
                     }
                     ?>
                     <form method="post" action="<?php echo base_url().$action; ?>" enctype="multipart/form-data">
@@ -34,7 +34,7 @@
                                       { ?> 
                                       <option value="<?php echo $row["id"];?>"  <?php
                                           if(isset($pc_data)){
-                                            if($pc_data['party_type_id'] == $row['id']){
+                                            if($pc_data['party_type_id']['id'] == $row['id']){
                                               echo 'selected';
                                             } } ?>><?php echo ucwords($row["name"]); ?>
                                       </option>

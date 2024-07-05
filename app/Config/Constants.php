@@ -97,5 +97,5 @@ define('EVENT_PRIORITY_HIGH', 10);
  * This defines purchase status array
  */
 define('PURCHASE_STATUS_EDIT_PERMITIONS', [0,1,2]);
-define('PURCHASE_STATUS', [0,1,2,3,4]);
-define('PURCHASE_STATUS_DETAILS', [0=>'Open',1=>'Ready For Invoicing',2=> 'In invoicing',3=> 'Invoice genrated',4=>'Cancel']);
+define('PURCHASE_STATUS', [0,1,2,3,4,5]);
+define('PURCHASE_STATUS_DETAILS', [0=>'Open',1=>'Ready For Invoicing',2=> 'In invoicing',3=> 'Invoice genrated',4=>'Cancel',5=>'Ready for Delivery']);

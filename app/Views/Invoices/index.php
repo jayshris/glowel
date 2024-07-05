@@ -25,7 +25,7 @@
             <div class="page-header">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h4 class="page-title">Sales Orders</h4>
+                  <h4 class="page-title">Invoices</h4>
                 </div>
                 <div class="col-4 text-end">
                   <div class="head-icons">
@@ -37,7 +37,7 @@
             </div>
             <!-- /Page Header -->
 
-            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('sales'); ?>">
+            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('invoices'); ?>">
               <div class="card main-card">
                 <div class="card-body">
                   <h4>Search / Filter</h4>
@@ -48,17 +48,16 @@
                       <div class="form-wrap">
                         <label class="col-form-label">Status</label>
                         <select class="form-select" name="status" aria-label="Default select example">
-                          <option value="">Select Status</option>
-                          <option value="0">Open</option>
+                          <option value="">Select Status</option> 
                           <option value="1">Ready for Invoicing</option>
+                          <option value="5">Ready for Delivery</option>
                         </select>
                       </div>
                     </div>
 
                     <div class="col-md-7">
                       <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
-                      <a href="./sales" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
-                      <a href="<?= base_url('sales/create') ?>" class="btn btn-danger mt-4">Add Order</a>
+                      <a href="./invoices" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp; 
                     </div>
                   </div>
                 </div>
@@ -84,61 +83,47 @@
                         echo '<div class="alert alert-danger">' . $session->getFlashdata("danger") . '</div>';
                       }
                       ?>
-                    </div>
-                    <!-- <div class="col-md-3 col-sm-8">
-                      <div class="export-list text-sm-end">
-                        <ul>
-                          <li>
-                            <a href="<?= base_url('product-categories/create') ?>" class="btn btn-primary"><i class="ti ti-square-rounded-plus"></i>Add New Category</a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div> -->
-                  </div>
-                </div>
-                <!-- /Search -->
+                    </div> 
 
-                <!-- Product Type List -->
+                <!--   List -->
                 <div class="table-responsive custom-table">
-                  <table class="table" id="ProductCategory">
+                  <table class="table" id="invoice-table">
                     <thead class="thead-light">
                       <tr>
                         <th>#</th>
                         <th>Action</th>
                         <th>Order No</th>
-                        <th>Customer Name</th>
-                        <th>Added</th>
-                        <th>Updated</th>
-                        <th>Status</th>
+                        <th>Order Date</th> 
+                        <th>Customer Name</th>  
+                        <th>Invoice No</th>
+                        <th>Order Status</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <?php
-                      $i = 1;
-                      foreach ($orders as $pc) { ?>
-                        <tr>
-                          <td><?= $i++; ?>.</td>
-                          <td>
-                            <?php if (in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS)) { ?>
-                               <a href="<?= base_url('sales/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if($pc['edit_count'] >0){ ?> disabled<?php }?>" role="button"><i class="ti ti-pencil"></i></a>
+                        <?php if(!empty($orders)){ ?>
+                            <?php
+                            $i = 1;
+                            foreach ($orders as $pc) { ?>
+                                <tr>
+                                <td><?= $i++; ?>.</td>
+                                <td>
+                                    <a href="<?= base_url('invoices/create/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if($pc['invoice_no'] >1){ ?> disabled<?php }?>" title="Generate  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
+                                </td>
+                                <td><?= $pc['order_no'] ?></td>
+                                <td><?= date('d M Y H:i:s', strtotime($pc['added_date'])) ?></td>
+                                <td><?= ($pc['customer_name']) ? $pc['customer_name'] : '-'; ?></td>
+                                <td><?= ($pc['invoice_no']) ? $pc['invoice_no'] : '-'; ?></td> 
+                                <td>
+                                    <?php if ($pc['status']) {
+                                    echo '<span class="badge badge-pill bg-success">'.PURCHASE_STATUS_DETAILS[$pc['status']].'</span>';
+                                    };
+                                    ?>
+                                </td> 
+                                </tr>
                             <?php } ?>
-                            <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
-
-                            <button type="button" onclick="print_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-print">Print</i></button>  
-                           
-                          </td>
-                          <td><?= $pc['order_no'] ?></td>
-                          <td><?= $pc['customer_name'] ?></td>
-                          <td><?= date('d M Y', strtotime($pc['added_date'])) ?></td>
-                          <td><?= $pc['modify_date'] != '' ? date('d M Y', strtotime($pc['modify_date'])) : '' ?></td>
-                          <td>
-                            <?php if ($pc['status']) {
-                              echo '<span class="badge badge-pill bg-success">Ready For Invoicing</span>';
-                            } else echo '<span class="badge badge-pill bg-danger">Open</span>';
-                            ?>
-                          </td>
-                        </tr>
-                      <?php } ?>
+                        <?php }else{ ?>
+                            <tr><td colspan="7"> <center>No records found!!!</center></td></tr>
+                        <?php }?>    
                     </tbody>
                   </table>
                 </div>
@@ -167,30 +152,10 @@
 
     <!-- scripts link  -->
     <?= $this->include('partials/vendor-scripts') ?>
-
-    <!-- page specific scripts  -->
+ 
     <script>
-      function print_data(id){
-        var url = "<?php echo base_url('sales/sales-checkout/'); ?>" + id;
-        var printWindow = window.open( url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
-        // printWindow.addEventListener('load', function(){
-            printWindow.print();
-            // printWindow.close();
-        // }, true);
-            
-      }
-
-      function delete_data(id) {
-        if (confirm("Are you sure you want to remove this product ?")) {
-          window.location.href = "<?php echo base_url('sales/deleteSaleOrder/'); ?>" + id;
-        }
-        return false;
-      }
-
-
-      // datatable init
-      if ($('#ProductCategory').length > 0) {
-        $('#ProductCategory').DataTable({
+    if ($('#invoice-table').length > 0) {
+        $('#invoice-table').DataTable({
           "bFilter": false,
           "bInfo": false,
           "autoWidth": true,
@@ -210,7 +175,7 @@
             $('.dataTables_length').appendTo('.datatable-length');
           }
         });
-      }
+    }
     </script>
 </body>
 

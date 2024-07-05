@@ -259,5 +259,9 @@ $routes->match(['get', 'post'], 'purchase/purchase-checkout/(:num)', 'Purchase::
 $routes->get('purchase/deletePurchaseOrder/(:num)', 'Purchase::deletePurchaseOrder/$1');
 $routes->post('purchase/showWebCam', 'Purchase::showWebCam');
 
+//Invoice listing
+$routes->match(['get', 'post'], 'invoices', 'Invoices::index');
+$routes->match(['get', 'post'], 'invoices/create/(:num)', 'Invoices::create/$1');
+
 // auto routes must be set false... for security
 $routes->setAutoRoute(true);

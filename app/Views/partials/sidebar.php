@@ -76,6 +76,13 @@ $page = $controller;
                             </ul>
                         </li>
                         <li class="submenu">
+                            <a href="javascript:void(0);" class="<?php echo ($page == 'Invoices') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Invoices</span><span class="menu-arrow"></span></a>
+                            <ul>
+                                <!-- purchase Orders  -->
+                                <li><a class="<?php echo ($page == 'Invoices') ? 'active' : ''; ?>" href="<?php echo base_url('invoices'); ?>">Invoices</a></li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
                             <a href="javascript:void(0);" class="<?php echo ($page == 'Company' || $page == 'Office' || $page == 'Warehouses') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Setup</span><span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a class="<?php echo ($page == 'Company') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>company/create">Add Company</a></li>

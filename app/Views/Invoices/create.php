@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <?= $this->include('partials/title-meta') ?>
+  <?= $this->include('partials/head-css') ?>
+  <style>.error{color: red;}</style>
+</head> 
+<body> 
+  <!-- Main Wrapper -->
+  <div class="main-wrapper"> 
+    <?= $this->include('partials/menu') ?> 
+    <!-- Page Wrapper -->
+    <div class="page-wrapper">
+      <div class="content">
+        <div class="row">
+          <div class="col-md-12"> 
+            <?= $this->include('partials/page-title') ?> 
+            <?php $validation = \Config\Services::validation();
+             $order_number = $last_order ? 'I/' . date('m/y/') .  ($last_order['id'] + 1) : 'I/' . date('m/y/1');
+            ?> 
+            <div class="row">
+              <div class="col-xl-12 col-lg-12">
+                <!-- Settings Info -->
+                <div class="card">
+                  <div class="card-body">
+                    <div class="settings-form">  
+                      <form method="post" enctype="multipart/form-data" id="invoices_form" action="<?php echo base_url('invoices/create/'.$sale_order_id.''); ?>">
+                        <div class="settings-sub-header">
+                          <h6>Generate Invoice</h6>
+                        </div>
+                        <div class="profile-details">
+                          <div class="row g-3"> 
+                            <div class="col-md-6">
+                              <label class="col-form-label">Customer Name<span class="text-danger">*</span></label> 
+                              <input type="hidden" name="invoice_no" value="<?= $order_number ?>" class="form-control">
+                              <div> 
+                              <select class="customer_name form-control" required id="customer_name" name="customer_name" onchange="getCustomerAddr()">
+                                <!-- <option value="">Select customer</option> -->
+                                <?php if(!empty($customers)){ ?>
+                                  <?php foreach($customers as $key => $c){ ?>
+                                    <option value="<?php echo $c['party_name'];?>" pid="<?= $c['id'];?>"><?php echo $c['party_name'];?></option>
+                                  <?php }?>
+                                <?php } ?>
+                              </select>
+                              </div>
+                              <?php
+                                if($validation->getError('customer_name'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('customer_name').'</div>';
+                                }
+                                ?>
+                            </div> 
+
+
+                            <div class="col-md-6">
+                              <label class="col-form-label">Delivery Address<span class="text-danger">*</span></label> 
+                              <textarea name="delivery_address" required id="delivery_address" class="form-control resize-none" maxlength="100"></textarea> 
+                              <?php
+                                if($validation->getError('delivery_address'))
+                                {
+                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('delivery_address').'</div>';
+                                }
+                                ?>
+                            </div>
+
+                            <div class="col-md-12"></div> 
+
+                            <div class="col-md-6">
+                              <label class="col-form-label">Invoice Doc<span class="text-danger">*</span> <span class="text-info ">(PNG,JPEG,JPG)</span></label>
+                              <input type="file"  name="invoice_doc" required  value="" class="form-control">
+                              <?php
+                              if ($validation->getError('invoice_doc')) {
+                                echo '<br><span class="text-danger mt-2">' . $validation->getError('invoice_doc') . '</span>';
+                              }
+                              ?>
+                            </div>
+
+                            <div class="col-md-6">
+                              <label class="col-form-label">Packing List Doc<span class="text-danger">*</span> <span class="text-info ">(PNG,JPEG,JPG)</span></label>
+                              <input type="file"  name="packing_list_doc" required value="" class="form-control">
+                              <?php
+                              if ($validation->getError('packing_list_doc')) {
+                                echo '<br><span class="text-danger mt-2">' . $validation->getError('packing_list_doc') . '</span>';
+                              }
+                              ?>
+                            </div>
+
+                            <div class="col-md-6">
+                              <label class="col-form-label">E-Way Bill Doc<span class="text-danger">*</span> <span class="text-info ">(PNG,JPEG,JPG)</span></label>
+                              <input type="file"  name="e_way_bill_doc" required value=""  class="form-control">
+                              <?php
+                              if ($validation->getError('e_way_bill_doc')) {
+                                echo '<br><span class="text-danger mt-2">' . $validation->getError('e_way_bill_doc') . '</span>';
+                              }
+                              ?>
+                            </div>
+
+                            <div class="col-md-6">
+                              <label class="col-form-label">Other Doc<span class="text-info ">(PNG,JPEG,JPG)</span></label>
+                              <input type="file" name="other_doc" value="" class="form-control">
+                              <?php
+                              if ($validation->getError('other_doc')) {
+                                echo '<br><span class="text-danger mt-2">' . $validation->getError('other_doc') . '</span>';
+                              }
+                              ?>
+                            </div>
+
+                          </div>
+                          <br>
+                        </div>
+                        <div class="submit-button">
+                          <button type="submit" id="submit" onclick="confirmcForm()" class="btn btn-primary">Save Changes</button>
+                          <!-- onclick="confirm()" -->
+                          <!-- <a href="/invoices" class="btn btn-warning">Reset</a> -->
+                          <a href="<?php echo base_url('invoices'); ?>" class="btn btn-light">Back</a>
+                        </div>
+                      </form>
+
+                    </div>
+                  </div>
+                </div>
+                <!-- /Settings Info -->
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /Page Wrapper -->
+
+  </div>
+  <!-- /Main Wrapper --> 
+  <?= $this->include('partials/vendor-scripts') ?> 
+  <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
+  <script>
+    $(document).ready(function() {
+        $("#customer_name").select2({
+        tags: true
+        });  
+        $("#customer_name").val($("#customer_name option:first").val()).trigger('change'); 
+
+        // $("#invoices_form").validate({
+        //     rules: {
+        //         customer_name: "required",
+        //         delivery_address: "required",
+        //         // invoice_doc:"required",
+        //         // packing_list_doc:"required",
+        //         // e_way_bill_doc:"required"
+        //     },
+        //     messages: {
+        //         customer_name: "Please enter customer name",
+        //         delivery_address: "Please enter delivery address "
+    
+        //     },
+        // submitHandler : function(form) {
+        //         $(this).submit();
+        //         alert('submit');
+        // }
+        // });
+    });   
+    function getCustomerAddr(){ 
+        var customer_name = $('#customer_name option:selected').attr('pid'); 
+        // alert(customer_name);
+        if(!customer_name){
+            return false;
+        }
+        $.ajax({
+            method: "POST",
+            url: '<?php echo base_url('invoices/getPartyAddress') ?>',
+            data: {
+                id: customer_name
+            },
+            success: function(response) {   
+                $('#delivery_address').val(response);
+            }
+        });
+
+        }
+          function confirmcForm() { 
+           
+          if(confirm("Do you want to save?")){ 
+            $('#invoices_form').submit();
+          }else{   
+              $.ajax({
+                  type: "GET",
+                  url: "<?= base_url('invoices/changeStatus/' . $sale_order_id ) ?>",
+                  success: function(status) {
+                      // console.log(status);
+                      if(status>0){
+                      window.location.replace("<?= base_url('invoices') ?>");
+                      }else{
+                      alert('Something is wrong, please try again!!!');
+                      }
+                  }
+              });
+          } 
+      }
+
+   </script>                              
+</body>
+
+</html>
