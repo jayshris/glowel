@@ -24,19 +24,21 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                   <label class="col-form-label">
-                                    Customer Type <span class="text-danger">*</span>
+                                    Party Type <span class="text-danger">*</span>
                                   </label>
-                                  <select class="select" name="party_type_id">
+                                  <select class="select" required class="js-example-basic-multiple" name="party_type_id[]" multiple="multiple">
                                     <option>Select</option>
                                     <?php
                                     if(isset($partytype)){
                                       foreach($partytype as $row)
                                       { ?> 
-                                      <option value="<?php echo $row["id"];?>"  <?php
-                                          if(isset($pc_data)){
-                                            if($pc_data['party_type_id']['id'] == $row['id']){
-                                              echo 'selected';
-                                            } } ?>><?php echo ucwords($row["name"]); ?>
+                                      <option value="<?php echo $row["id"];?>"  <?php 
+                                      if(isset($selected_party_type_ids)){
+                                        if(in_array($row['id'],$selected_party_type_ids)){
+                                          echo 'selected';
+                                        }  
+                                      }
+                                             ?>><?php echo ucwords($row["name"]); ?>
                                       </option>
                                       <?php
                                       }
@@ -54,7 +56,7 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Customer Name <span class="text-danger">*</span>
+                                Party Name <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" required name="party_name" class="form-control" value="<?php
                                 if(isset($pc_data)){
@@ -73,20 +75,15 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Business Owner Name <span class="text-danger">*</span>
+                                 Owner Name 
                                 </label>
-                                <input type="text" required name="business_owner_name" class="form-control" value="<?php
+                                <input type="text" name="business_owner_name" class="form-control" value="<?php
                                 if(isset($pc_data)){
                                   echo $pc_data['business_owner_name'];
                                 }else{
                                   echo set_value('business_owner_name'); 
                                 }
                                 ?>">
-                                <?php
-                                if($validation->getError('business_owner_name')) {
-                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('business_owner_name').'</div>';
-                                }
-                                ?>
                               </div>
                             </div>
                             <div class="col-md-6">
@@ -111,27 +108,22 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Accounts Person <span class="text-danger">*</span>
+                                Accounts Person  
                                 </label>
-                                <input type="text" required name="accounts_person" class="form-control" value="<?php
+                                <input type="text"   name="accounts_person" class="form-control" value="<?php
                                 if(isset($pc_data)){
                                   echo $pc_data['accounts_person'];
                                 }else{
                                   echo set_value('accounts_person'); 
                                 }
-                                ?>">
-                                <?php
-                                if($validation->getError('accounts_person')) {
-                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('accounts_person').'</div>';
-                                }
-                                ?>
+                                ?>"> 
                               </div>
                             </div>
                             
                             <div class="col-md-12">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Business Address <span class="text-danger">*</span>
+                                 Address <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" required name="business_address" class="form-control" value="<?php
                                 if(isset($pc_data)){
@@ -150,26 +142,21 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                City <span class="text-danger">*</span>
+                                City  
                                 </label>
-                                <input type="text" required name="city" class="form-control" value="<?php
+                                <input type="text"   name="city" class="form-control" value="<?php
                                 if(isset($pc_data)){
                                   echo $pc_data['city'];
                                 }else{
                                   echo set_value('city'); 
                                 }
-                                ?>">
-                                <?php
-                                if($validation->getError('city')) {
-                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('city').'</div>';
-                                }
-                                ?>
+                                ?>"> 
                               </div>
                             </div>
                             <div class="col-md-6">
                               <div class="form-wrap">
                                   <label class="col-form-label">
-                                    State <span class="text-danger">*</span>
+                                    State 
                                   </label>
                                   <select class="select" name = "state">
                                     <option>Select</option>
@@ -201,26 +188,21 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Postcode <span class="text-danger">*</span>
+                                Postcode  
                                 </label>
-                                <input type="text" required name="postcode" class="form-control" value="<?php
+                                <input type="text"   name="postcode" class="form-control" value="<?php
                                 if(isset($pc_data)){
                                   echo $pc_data['postcode'];
                                 }else{
                                   echo set_value('postcode'); 
                                 }
-                                ?>">
-                                <?php
-                                if($validation->getError('postcode')) {
-                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('postcode').'</div>';
-                                }
-                                ?>
+                                ?>"> 
                               </div>
                             </div>
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Primary Phone number <span class="text-danger">*</span>
+                                 Phone number <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" required name="primary_phone" class="form-control" value="<?php
                                 if(isset($pc_data)){
@@ -239,46 +221,36 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Other Phone number <span class="text-danger">*</span>
+                                Other Phone number 
                                 </label>
-                                <input type="text" required name="other_phone" class="form-control" value="<?php
+                                <input type="text"   name="other_phone" class="form-control" value="<?php
                                 if(isset($pc_data)){
                                   echo $pc_data['other_phone'];
                                 }else{
                                   echo set_value('other_phone'); 
                                 }
-                                ?>">
-                                <?php
-                                if($validation->getError('other_phone')) {
-                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('other_phone').'</div>';
-                                }
-                                ?>
+                                ?>"> 
                               </div>
                             </div>
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Email <span class="text-danger">*</span>
+                                Email  
                                 </label>
-                                <input type="text" required name="email" class="form-control" value="<?php
+                                <input type="text"   name="email" class="form-control" value="<?php
                                 if(isset($pc_data)){
                                   echo $pc_data['email'];
                                 }else{
                                   echo set_value('email'); 
                                 }
-                                ?>">
-                                <?php
-                                if($validation->getError('email')) {
-                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('email').'</div>';
-                                }
-                                ?>
+                                ?>"> 
                               </div>
                             </div>
 
                             <div class="col-md-6">
                               <div class="form-wrap">
                                 <label class="col-form-label">
-                                Business type <span class="text-danger">*</span>
+                                Business type  
                                 </label>
                                 <select class="select" name = "business_type_id" id="business_type_id">
                                     <option>Select</option>
@@ -297,12 +269,7 @@
                                       }
                                     }
                                     ?>
-                                  </select>
-                                <?php
-                                if($validation->getError('business_type_id')) {
-                                    echo '<div class="alert alert-danger mt-2">'.$validation->getError('business_type_id').'</div>';
-                                }
-                                ?>
+                                  </select> 
                               </div>
                             </div>
                             
@@ -319,7 +286,7 @@
                                           <label class="col-form-label">
                                           <?php echo $row['title']; ?>
                                           </label>
-                                          <input type="text" required name="<?php echo $titlename; ?>" class="form-control" value="<?php
+                                          <input type="text"  name="<?php echo $titlename; ?>" class="form-control" value="<?php
                                           if(isset($pc_data)){
                                             echo $pc_data[$titlename];
                                           }else{

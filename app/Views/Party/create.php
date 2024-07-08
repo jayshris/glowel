@@ -50,6 +50,12 @@
   <!-- Sticky Sidebar JS -->
   <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
   <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+
+  <script>
+  $(document).ready(function() {
+      $('.js-example-basic-multiple').select2();
+  });
+  </script>
 </body>
 
 </html>

@@ -57,6 +57,17 @@ class Party extends BaseController
       $data['partytype'] = $partytype->orderby('name', 'ASC')->where('status', 'Active')->findAll();
       $partyTypes = new PartyTypePartyModel();
       $data['partyTypes'] = $partyTypes->where('party_id', $id)->findAll();
+
+       /**Add code */
+       $PartyTypePartyModel = new PartyTypePartyModel();
+       $party_type_ids = $PartyTypePartyModel->select('party_type_id')
+         ->join('party p','p.id= party_type_party_map.party_id')
+         ->join('party_type pt','pt.id= party_type_party_map.party_type_id')
+         ->where('p.id', $id)->findAll(); 
+       // echo '<pre>';print_r($data['pc_data']);exit;
+       $data['selected_party_type_ids'] = ($party_type_ids) ? array_column($party_type_ids,'party_type_id') : [];
+      /** End */
+      
       $stateModel = new StateModel();
       $data['state'] = $stateModel->where(['isStatus' => '1'])->orderBy('state_id')->findAll();
       $businesstypeModel = new BusinessTypeModel();
@@ -67,12 +78,12 @@ class Party extends BaseController
 
         $error = $this->validate([
           'party_name'                =>  'required|trim|regex_match[/^[a-z\d\-_\s]+$/i]',
-          'party_types'              =>  'required',
-          'state'                     =>  'required',
-          'city'                      =>  'required',
-          'postcode'                  =>  'required',
+          'party_type_id'              =>  'required',
+          // 'state'                     =>  'required',
+          // 'city'                      =>  'required',
+          // 'postcode'                  =>  'required',
           'primary_phone'             =>  'required|numeric',
-          'business_type_id'          =>  'required',
+          // 'business_type_id'          =>  'required',
         ]);
         if (!$error) {
           $data['error']   = $this->validator;
@@ -193,17 +204,17 @@ class Party extends BaseController
             }
           }
 
-          $party_type_id = $this->request->getVar('party_type_id');
-          $party_types = new PartyTypePartyModel();
-          $partytypes = $party_types->where('party_id', $id)->delete();
+          $partyTypes = $this->request->getVar('party_type_id');
+          $PartyTypePartyModel = new PartyTypePartyModel();
+           $PartyTypePartyModel->where('party_id', $id)->delete();
 
-          // foreach ($partyTypes as $key => $value) {
+          foreach ($partyTypes as $key => $value) {
             $partyTypes1 = [
-              'party_type_id' =>  $party_type_id,
+              'party_type_id' =>  $value,
               'party_id'      =>   $id,
             ];
-            $party_types->save($partyTypes1);
-          // }
+            $PartyTypePartyModel->save($partyTypes1);
+          }
 
           $session = \Config\Services::session();
           $session->setFlashdata('success', 'Party  Updated');
@@ -433,11 +444,11 @@ class Party extends BaseController
           'party_name'              =>  'required|trim|regex_match[/^[a-z\d\-_\s]+$/i]|is_unique[party.party_name]',
           'party_type_id'              =>  'required',
 
-          'state'                     =>  'required',
-          'city'                      =>  'required',
-          'postcode'                  =>  'required',
+          // 'state'                     =>  'required',
+          // 'city'                      =>  'required',
+          // 'postcode'                  =>  'required',
           'primary_phone'             =>  'required|numeric',
-          'business_type_id'          =>  'required',
+          // 'business_type_id'          =>  'required',
 
           // 'aadhaar_img_front' => [
           //   'rules' => 'max_size[aadhaar_img_front,100]|mime_in[aadhaar_img_front,image/png,image/PNG,image/jpg,image/JPG,image/jpeg,image/JPEG]',
@@ -482,6 +493,10 @@ class Party extends BaseController
           //   ]
           // ]
         ]);
+        $validation = \Config\Services::validation();
+              
+        // echo 'POst dt<pre>';print_r($this->request->getPost());
+        // echo 'getErrors<pre>';print_r($validation->getErrors());exit;
 
         if (!$error) {
           $data['error']   = $this->validator;
@@ -610,15 +625,15 @@ class Party extends BaseController
           $partyModel->save($arr);
 
           $party_id = $partyModel->getInsertID();
-          $party_type_id = $this->request->getVar('party_type_id');
-          $partytypes = new PartyTypePartyModel();
-          // foreach ($party_types as $key => $value) {
+          $party_types = $this->request->getVar('party_type_id');
+          $PartyTypePartyModel = new PartyTypePartyModel();
+           foreach ($party_types as $key => $value) {
             $ptData = [
-              'party_type_id' =>  $party_type_id,
+              'party_type_id' =>  $value,
               'party_id'      => $party_id,
             ];
-            $partytypes->save($ptData);
-          // }
+            $PartyTypePartyModel->save($ptData);
+           }
           $session = \Config\Services::session();
           $session->setFlashdata('success', 'Party added');
           return $this->response->redirect(site_url('/party'));
