@@ -139,8 +139,8 @@
                           <td><a href="<?= base_url('public/uploads/products/') . $pc['product_image_1'] ?>" target="_blank"><img src="<?= base_url('public/uploads/products/') . $pc['product_image_1'] ?>" style="height: 60px;"></a> </td>
                           <td><?= $pc['product_name'] ?></td> 
                           <td><?= $pc['cat_name'] ?></td>
-                          <td><?= 'Added by-'.$pc['added_by'].date('d M Y', strtotime($pc['added_date'])) ?></td>
-                          <td><?= 'Modified by-'.$pc['modify_by'].' At- '. date('d M Y', strtotime($pc['modify_date'])) ?></td>
+                          <td><?=  $pc['added_by'].' '.date('d M Y', strtotime($pc['added_date'])) ?></td>
+                          <td><?=  $pc['modify_by'].' '. date('d M Y', strtotime($pc['modify_date'])) ?></td>
                           <td>
                             <?php if ($pc['status']) {
                               echo '<span class="badge badge-pill bg-success">Active</span>';
