@@ -26,8 +26,10 @@ class Office extends BaseController {
             $session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(site_url('/dashboard'));
           }else{
-              $officeModel = new OfficeModel();
+              $officeModel = new OfficeModel(); 
+              $officeModel->select('office.*,c.name as cname')->join('company c','office.company_id = c.id'); 
               $data['office_data'] = $officeModel->orderBy('id', 'DESC')->paginate(10);
+              // echo '<pre>';print_r($data);exit;
               $data['pagination_link'] = $officeModel->pager;
               $data['page_data'] = [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Company','li_1' => '123','li_2' => 'deals' ] )

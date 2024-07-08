@@ -554,6 +554,7 @@
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
+                        <th>Company Name</th>
                         <th>Name</th>
                         <th>Added</th>
                         <th>Status</th>
@@ -579,6 +580,7 @@
                                     <a title="View" type="button" href="'.base_url().'office/view/'.$office['id'].'" class="btn btn-primary btn-sm"><i class="ti ti-arrow-right"></i> </a>
                                     <button title="Delete" type="button" onclick="delete_data('.$office["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                                     </td>
+                                    <td>'.$office["cname"].'</td>
                                     <td>'.$office["name"].'</td>
                                     <td>'.date('d-m-Y',$strtime).'</td>
                                     <td>'.$status.'</td>

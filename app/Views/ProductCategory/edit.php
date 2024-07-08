@@ -43,15 +43,17 @@
                         <div class="profile-details">
                           <div class="row g-3">
 
-                            <div class="col-md-3">
+                            <!-- <div class="col-md-3">
                               <label class="col-form-label">Product Type<span class="text-danger">*</span></label>
                               <select class="form-select" required name="product_type" aria-label="Default select example">
                                 <option value="">Select Type</option>
-                                <?php foreach ($product_types as $p) {
-                                  echo '<option value="' . $p['id'] . '" ' . ((isset($category_details) && $category_details['prod_type_id'] == $p['id']) ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
-                                } ?>
+                                <?php 
+                                // foreach ($product_types as $p) {
+                                //   echo '<option value="' . $p['id'] . '" ' . ((isset($category_details) && $category_details['prod_type_id'] == $p['id']) ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
+                                // } 
+                                ?>
                               </select>
-                            </div>
+                            </div> -->
 
                             <div class="col-md-3">
                               <label class="col-form-label">Category Name <span class="text-danger">*</span></label>

@@ -31319,4 +31319,7 @@ table.table.dataTable > thead > tr th {
 .resize-none{
   resize: none;
 }
+.min-h{
+  min-height: 10px;
+}
 /*# sourceMappingURL=style.css.map */

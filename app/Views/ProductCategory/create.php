@@ -44,15 +44,17 @@
                         <div class="profile-details">
                           <div class="row g-3">
 
-                            <div class="col-md-3">
+                            <!-- <div class="col-md-3">
                               <label class="col-form-label">Product Type<span class="text-danger">*</span></label>
                               <select class="form-select" required name="product_type" aria-label="Default select example">
                                 <option value="">Select Type</option>
-                                <?php foreach ($product_types as $p) {
-                                  echo '<option value="' . $p['id'] . '" ' . (set_value('product_type') == $p['id'] ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
-                                } ?>
+                                <?php 
+                                // foreach ($product_types as $p) {
+                                //   echo '<option value="' . $p['id'] . '" ' . (set_value('product_type') == $p['id'] ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
+                                // }
+                                 ?>
                               </select>
-                            </div>
+                            </div> -->
 
                             <div class="col-md-3">
                               <label class="col-form-label">Category Name <span class="text-danger">*</span></label>
@@ -75,7 +77,7 @@
                             </div>
 
                             <div class="col-md-3">
-                              <label class="col-form-label">Category Image<span class="text-danger">*</span> <span class="text-info ">(100KB|PNG,JPEG,JPG)</span></label>
+                              <label class="col-form-label">Category Image<span class="text-danger">*</span> <span class="text-info ">(PNG,JPEG,JPG)</span></label>
                               <?php
                               if ($validation->getError('category_img')) {
                                 echo '<br><span class="text-danger mt-2">' . $validation->getError('category_img') . '</span>';

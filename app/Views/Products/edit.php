@@ -50,15 +50,17 @@
                         <div class="profile-details">
                           <div class="row g-3">
 
-                            <div class="col-md-2">
+                            <!-- <div class="col-md-2">
                               <label class="col-form-label">Product Type<span class="text-danger">*</span></label>
                               <select class="form-select" required name="product_type" id="product_type" aria-label="Default select example" onchange="$.getCategory();">
                                 <option value="">Select Type</option>
-                                <?php foreach ($product_types as $p) {
-                                  echo '<option value="' . $p['id'] . ' " ' . ((isset($product_details) && $product_details['type_id'] == $p['id']) ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
-                                } ?>
+                                <?php 
+                                // foreach ($product_types as $p) {
+                                //   echo '<option value="' . $p['id'] . ' " ' . ((isset($product_details) && $product_details['type_id'] == $p['id']) ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
+                                // }
+                                 ?>
                               </select>
-                            </div>
+                            </div> -->
 
                             <div class="col-md-2">
                               <label class="col-form-label">Product Category<span class="text-danger">*</span></label>
@@ -78,6 +80,17 @@
                               }
                               ?>
                               <input type="text" required name="product_name" value="<?= isset($product_details) ? $product_details['product_name'] : "" ?>" class="form-control">
+                            </div>
+
+                            <div class="col-md-3">
+                              <label class="col-form-label">Measurement Unit</label>
+                              <select class="form-select" name="unit_id" id="unit_id" aria-label="Default select example">
+                                <option value="">Select Type</option>
+                                  <?php foreach ($units as $val) {
+                                    echo '<option value="' . $val['id'] . '"' . ((isset($product_details) && $product_details['unit_id'] == $val['id']) ? 'selected' : '') . '>' . $val['unit'] . '</option>';
+                                  } ?>
+                                </select>
+                              </select>
                             </div>
 
                             <div class="col-md-12"></div>
@@ -124,8 +137,7 @@
                                   <tbody>
                                     <tr>
                                       <th></th>
-                                      <th>Rate</th>
-                                      <th>Measurement Unit</th>
+                                      <th>Rate</th> 
                                     </tr>
 
                                     <?php
@@ -144,7 +156,6 @@
                                           <label class="form-check-label" for="warehouse_<?= $o['id'] . '_' . $w['id'] ?>"><?= $w['name'] ?></label>
                                         </td>
                                         <td><input type="text" name="warehouse_rate<?= $o['id'] . '_' . $w['id']  ?>" value="<?= $warehouse_link ? $warehouse_link['rate'] : '' ?>" class="form-control"></td>
-                                        <td><input type="text" name="warehouse_unit<?= $o['id'] . '_' . $w['id']  ?>" value="<?= $warehouse_link ? $warehouse_link['unit'] : '' ?>" class="form-control"></td>
                                       </tr>
 
                                     <?php

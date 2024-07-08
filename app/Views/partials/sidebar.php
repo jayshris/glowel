@@ -47,7 +47,7 @@ $page = $controller;
                             <a href="javascript:void(0);" class="<?php echo ($page == 'ProductType' || $page == 'ProductCategory' || $page == 'Products') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Product</span><span class="menu-arrow"></span></a>
                             <ul>
                                 <!-- Product Types  -->
-                                <li><a class="<?php echo ($page == 'ProductType') ? 'active' : ''; ?>" href="<?php echo base_url('product-types'); ?>">Product Types</a></li>
+                                <!-- <li><a class="<?php echo ($page == 'ProductType') ? 'active' : ''; ?>" href="<?php echo base_url('product-types'); ?>">Product Types</a></li> -->
 
                                 <!-- Product Categories  -->
                                 <li><a class="<?php echo ($page == 'ProductCategory') ? 'active' : ''; ?>" href="<?php echo base_url('product-categories'); ?>">Product Categories</a></li>
@@ -83,13 +83,13 @@ $page = $controller;
                             </ul>
                         </li>
                         <li class="submenu">
-                            <a href="javascript:void(0);" class="<?php echo ($page == 'Company' || $page == 'Office' || $page == 'Warehouses') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Setup</span><span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);" class="<?php echo ($page == 'Company' || $page == 'Office' || $page == 'Warehouses' || $page == 'Units') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Setup</span><span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a class="<?php echo ($page == 'Company') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>company/create">Add Company</a></li>
                                 <li><a class="<?php echo ($page == 'Company') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>company">Company Listing Screen</a></li>
                                 <li><a class="<?php echo ($page == 'Office') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>office/create">Add Office</a></li>
                                 <li><a class="<?php echo ($page == 'Office') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>office">Office Listing Screen</a></li>
-
+                                
                                 <!-- Warehouses -->
                                 <li><a class="<?php echo ($page == 'Warehouses') ? 'active' : ''; ?>" href="<?php echo base_url('warehouses'); ?>">Warehouses</a></li>
 
@@ -101,6 +101,9 @@ $page = $controller;
                                 
                                 <li><a class="<?php echo ($page == 'businesstype') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>businesstype">Business Type</a></li>
                                 <li><a class="<?php echo ($page == 'businesstype/create') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>businesstype/create">Add Business Type</a></li>
+
+                                <li><a class="<?php echo ($page == 'Units') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>units">Unit Listing Screen</a></li>
+                                <li><a class="<?php echo ($page == 'Units') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>units/create">Add Unit</a></li>
                             </ul>
                         </li>
 

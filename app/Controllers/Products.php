@@ -2,16 +2,17 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
-use App\Models\OfficeModel;
-use App\Models\ProductCategoryModel;
-use App\Models\ProductsModel;
-use App\Models\ProductTypeModel;
-use App\Models\ProductWarehouseLinkModel;
-use App\Models\UserBranchModel;
+use App\Models\UnitModel;
 use App\Models\UserModel;
+use App\Models\OfficeModel;
+use App\Models\ProductsModel;
+use App\Models\UserBranchModel;
 use App\Models\WarehousesModel;
+use App\Models\ProductTypeModel;
+use App\Controllers\BaseController;
+use App\Models\ProductCategoryModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\ProductWarehouseLinkModel;
 
 class Products extends BaseController
 {
@@ -26,6 +27,7 @@ class Products extends BaseController
     public $session;
     public $added_by;
     public $added_ip;
+    public $UnitModel;
 
     public function __construct()
     {
@@ -38,7 +40,8 @@ class Products extends BaseController
         $this->WModel = new WarehousesModel();
         $this->PWLModel = new ProductWarehouseLinkModel();
         $this->UBModel = new UserBranchModel();
-
+        $this->UnitModel = new UnitModel();
+        
         $user = new UserModel();
         $this->access = $user->setPermission();
 
@@ -52,13 +55,15 @@ class Products extends BaseController
             $this->session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(base_url('/dashboard'));
         } else {
-            $this->PModel->select('products.*,product_types.type_name,product_categories.cat_name');
+            $this->PModel->select('products.*,product_types.type_name,product_categories.cat_name,u.first_name as added_by,u1.first_name as modify_by');
             $this->PModel->join('product_types', 'product_types.id = products.type_id');
+            $this->PModel->join('users u', 'u.id = products.added_by','left');
+            $this->PModel->join('users u1', 'u1.id = products.modify_by','left');
             $this->PModel->join('product_categories', 'product_categories.id = products.category_id');
 
-            if ($this->request->getPost('product_type') != '') {
-                $this->PModel->where('products.type_id', $this->request->getPost('product_type'));
-            }
+            // if ($this->request->getPost('product_type') != '') {
+            //     $this->PModel->where('products.type_id', $this->request->getPost('product_type'));
+            // }
 
             if ($this->request->getPost('status') != '') {
                 $this->PModel->where('products.status', $this->request->getPost('status'));
@@ -66,8 +71,8 @@ class Products extends BaseController
 
             $this->PModel->where('is_deleted', '0')->orderBy('products.id', 'desc');
             $data['products'] =  $this->PModel->findAll();
-
-            $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            // echo '<pre>';print_r($data);exit;
+            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
             $data['post_data'] = $this->request->getPost();
 
             return view('Products/index', $data);
@@ -124,11 +129,14 @@ class Products extends BaseController
 
             if (!$error) {
                 $data['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
-                $data['offices'] = $this->OModel->where('status', 1)->findAll();
+              // $data['offices'] = $this->OModel->where('status', 1)->findAll();
+                 $data['offices'] = $this->userSelectedBranches(); 
                 $data['WModel'] = $this->WModel;
                 $data['PWLModel'] = $this->PWLModel;
-                $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+                // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
                 $data['error'] = $this->validator;
+                $data['product_categories'] = $this->PCModel->where('status', 1)->findAll();
+                $data['units'] = $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
                 return view('Products/create', $data);
             } else {
 
@@ -157,7 +165,7 @@ class Products extends BaseController
                 }
 
                 $insert_id =  $this->PModel->save([
-                    'type_id' => $this->request->getVar('product_type'),
+                    // 'type_id' => $this->request->getVar('product_type'),
                     'category_id' => $this->request->getVar('product_category'),
                     'product_name' => $this->request->getVar('product_name'),
                     'product_image_1' => $newName1,
@@ -165,7 +173,8 @@ class Products extends BaseController
                     'added_by' => $this->added_by,
                     'added_ip' => $this->added_ip,
                     'summary' => $this->request->getVar('summary'),
-                    'description' => $this->request->getVar('description')
+                    'description' => $this->request->getVar('description'),
+                    'unit_id' => $this->request->getVar('unit_id')
                 ]) ? $this->PModel->getInsertID() : '0';
 
 
@@ -178,7 +187,7 @@ class Products extends BaseController
                             'product_id' => $insert_id,
                             'warehouse_id' => $this->request->getVar('warehouse' . $office),
                             'rate' => $this->request->getVar('warehouse_rate' . $office . '_' . $this->request->getVar('warehouse' . $office)),
-                            'unit' => $this->request->getVar('warehouse_unit' . $office . '_' . $this->request->getVar('warehouse' . $office)),
+                            // 'unit' => $this->request->getVar('warehouse_unit' . $office . '_' . $this->request->getVar('warehouse' . $office)),
                         ];
                         print_r($linkArr);
                         $this->PWLModel->insert($linkArr);
@@ -196,14 +205,25 @@ class Products extends BaseController
             }
         } else {
             $data['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
-            $data['offices'] = $this->OModel->where('status', 1)->findAll();
+            // $data['offices'] = $this->OModel->where('status', 1)->findAll();
+            $data['offices'] = $this->userSelectedBranches(); 
             $data['WModel'] = $this->WModel;
             $data['PWLModel'] = $this->PWLModel;
-            $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            $data['units'] = $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
+            $data['product_categories'] = $this->PCModel->where('status', 1)->findAll();
+            // echo '<pre>';print_r($data);exit;
             return view('Products/create', $data);
         }
     }
+ 
 
+    function userSelectedBranches(){
+        $userBranch= new UserBranchModel();
+        return $userBranch->select('o.id,o.name') 
+            ->join('office o','user_branches.office_id= o.id')                    
+            ->where(['user_branches.user_id'=>$_SESSION['id']])->where(['o.status'=>1])->orderBy('o.name','asc')->findAll();
+    }
     public function getCategory()
     {
         $rows = $this->PCModel->where('prod_type_id', $this->request->getPost('type_id'))->findAll();
@@ -268,7 +288,7 @@ class Products extends BaseController
                 $data['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
                 // $data['user_offices'] = $this->UBModel->select()->where('user_id', 2)->findAll();
 
-                $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+                // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
                 $data['product_categories'] = $this->PCModel->where('status', 1)->findAll();
                 $data['product_details'] = $this->PModel->where('id', $id)->first();
                 $data['error'] = $this->validator;
@@ -290,7 +310,7 @@ class Products extends BaseController
                                 'product_id' => $id,
                                 'warehouse_id' => $this->request->getVar('warehouse' . $office),
                                 'rate' => $this->request->getVar('warehouse_rate' . $office . '_' . $this->request->getVar('warehouse' . $office)),
-                                'unit' => $this->request->getVar('warehouse_unit' . $office . '_' . $this->request->getVar('warehouse' . $office)),
+                                // 'unit' => $this->request->getVar('warehouse_unit' . $office . '_' . $this->request->getVar('warehouse' . $office)),
                             ];
                             $this->PWLModel->insert($linkArr);
                         }
@@ -298,7 +318,7 @@ class Products extends BaseController
                 }
 
                 $this->PModel->update($id, [
-                    'type_id' => $this->request->getVar('product_type'),
+                    // 'type_id' => $this->request->getVar('product_type'),
                     'category_id' => $this->request->getVar('product_category'),
                     'product_name' => $this->request->getVar('product_name'),
                     'status' => $this->request->getVar('status'),
@@ -306,7 +326,8 @@ class Products extends BaseController
                     'modify_date' => date('Y-m-d h:i:s'),
                     'modify_ip' => $this->added_ip,
                     'summary' => $this->request->getVar('summary'),
-                    'description' => $this->request->getVar('description')
+                    'description' => $this->request->getVar('description'),
+                    'unit_id' => $this->request->getVar('unit_id')
                 ]);
 
                 // update image1 if found
@@ -354,16 +375,17 @@ class Products extends BaseController
                 return $this->response->redirect(base_url('/products'));
             }
         } else {
-            $data['offices'] = $this->OModel->where('status', 1)->findAll();
+            // $data['offices'] = $this->OModel->where('status', 1)->findAll();
+            $data['offices'] = $this->userSelectedBranches(); 
             $data['WModel'] = $this->WModel;
             $data['PWLModel'] = $this->PWLModel;
             $data['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
             // $data['user_offices'] = $this->UBModel->select()->where('user_id', 2)->findAll();
 
-            $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
             $data['product_categories'] = $this->PCModel->where('status', 1)->findAll();
             $data['product_details'] = $this->PModel->where('id', $id)->first();
-
+            $data['units'] = $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
             return view('Products/edit', $data);
         }
     }

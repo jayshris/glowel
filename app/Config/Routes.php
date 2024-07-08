@@ -265,5 +265,12 @@ $routes->get('purchase/view/(:num)', 'Purchase::view/$1');
 $routes->match(['get', 'post'], 'invoices', 'Invoices::index');
 $routes->match(['get', 'post'], 'invoices/create/(:num)', 'Invoices::create/$1');
 
+//Units listing
+$routes->match(['get', 'post'], 'units', 'Units::index');
+$routes->match(['get', 'post'], 'units/create', 'Units::create');
+$routes->match(['get', 'post'], 'units/edit/(:num)', 'Units::edit/$1');
+$routes->match(['get', 'post'], 'units/view/(:num)', 'Units::view/$1');
+$routes->match(['get', 'post'], 'units/delete/(:num)', 'Units::delete/$1');
+
 // auto routes must be set false... for security
 $routes->setAutoRoute(true);

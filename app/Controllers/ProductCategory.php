@@ -38,12 +38,12 @@ class ProductCategory extends BaseController
             $this->session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(base_url('/dashboard'));
         } else {
-            $this->PCModel->select('product_categories.*,product_types.type_name');
-            $this->PCModel->join('product_types', 'product_types.id = product_categories.prod_type_id');
+            // $this->PCModel->select('product_categories.*,product_types.type_name');
+            // $this->PCModel->join('product_types', 'product_types.id = product_categories.prod_type_id');
 
-            if ($this->request->getPost('product_type') != '') {
-                $this->PCModel->where('product_categories.prod_type_id', $this->request->getPost('product_type'));
-            }
+            // if ($this->request->getPost('product_type') != '') {
+            //     $this->PCModel->where('product_categories.prod_type_id', $this->request->getPost('product_type'));
+            // }
 
             if ($this->request->getPost('status') != '') {
                 $this->PCModel->where('product_categories.status', $this->request->getPost('status'));
@@ -52,7 +52,7 @@ class ProductCategory extends BaseController
             $this->PCModel->orderBy('product_categories.id', 'desc');
             $data['product_categories'] =  $this->PCModel->findAll();
 
-            $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
             $data['post_data'] = $this->request->getPost();
 
             return view('ProductCategory/index', $data);
@@ -82,16 +82,15 @@ class ProductCategory extends BaseController
                     ],
                 ],
                 'category_img' => [
-                    'rules' => 'uploaded[category_img]|max_size[category_img,100]|mime_in[category_img,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
+                    'rules' => 'uploaded[category_img]|mime_in[category_img,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
                     'errors' => [
-                        'mime_in' => 'Image must be in jpeg/png format',
-                        'max_size' => 'Image must be under 100KB'
+                        'mime_in' => 'Image must be in jpeg/png format' 
                     ]
                 ]
             ]);
 
             if (!$error) {
-                $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+                // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
                 $data['error'] = $this->validator;
                 return view('ProductCategory/create', $data);
             } else {
@@ -109,7 +108,7 @@ class ProductCategory extends BaseController
                 // die;
 
                 $this->PCModel->save([
-                    'prod_type_id' => $this->request->getVar('product_type'),
+                    // 'prod_type_id' => $this->request->getVar('product_type'),
                     'cat_name' => $this->request->getVar('category_name'),
                     'cat_abbreviation' => $this->request->getVar('category_abbr'),
                     'cat_image' => $newName,
@@ -121,8 +120,8 @@ class ProductCategory extends BaseController
                 return $this->response->redirect(base_url('/product-categories'));
             }
         } else {
-            $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-            return view('ProductCategory/create', $data);
+            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            return view('ProductCategory/create');
         }
     }
 
@@ -149,16 +148,15 @@ class ProductCategory extends BaseController
                     ],
                 ],
                 'category_img' => [
-                    'rules' => 'max_size[category_img,100]|mime_in[category_img,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
+                    'rules' => 'mime_in[category_img,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
                     'errors' => [
-                        'mime_in' => 'Image must be in jpeg/png format',
-                        'max_size' => 'Image must be under 100KB'
+                        'mime_in' => 'Image must be in jpeg/png format'
                     ]
                 ]
             ]);
 
             if (!$error) {
-                $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+                // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
                 $data['category_details'] = $this->PCModel->where('id', $id)->first();
                 $data['error'] = $this->validator;
 
@@ -166,7 +164,7 @@ class ProductCategory extends BaseController
             } else {
 
                 $this->PCModel->update($id, [
-                    'prod_type_id' => $this->request->getVar('product_type'),
+                    // 'prod_type_id' => $this->request->getVar('product_type'),
                     'cat_name' => $this->request->getVar('category_name'),
                     'cat_abbreviation' => $this->request->getVar('category_abbr'),
                     'status' => $this->request->getVar('status'),
@@ -201,7 +199,7 @@ class ProductCategory extends BaseController
             }
         } else {
             $data['category_details'] = $this->PCModel->where('id', $id)->first();
-            $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
             return view('ProductCategory/edit', $data);
         }
     }

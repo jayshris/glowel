@@ -210,7 +210,7 @@ class Purchase extends BaseController
         $data['customers']  = array_column($customers,'party_name');
 
         $data['last_order'] = $this->POModel->orderBy('id', 'desc')->first();
-
+        $data['order_details'] = $this->POModel->where('id',$id)->orderBy('id', 'desc')->first();
         $data['selected_customer'] = $data['order_details']['customer_name'];
         if(!empty($data['order_details']['customer_name'])){
             if(!in_array($data['order_details']['customer_name'],$data['customers'])){

@@ -44,15 +44,17 @@
                   <hr>
                   <div class="row mt-2">
 
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                       <label class="col-form-label">Product Type</label>
                       <select class="form-select" name="product_type" aria-label="Default select example">
                         <option value="">Select Type</option>
-                        <?php foreach ($product_types as $p) {
-                          echo '<option value="' . $p['id'] . '" ' . (set_value('product_type') == $p['id'] ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
-                        } ?>
+                        <?php 
+                        // foreach ($product_types as $p) {
+                        //   echo '<option value="' . $p['id'] . '" ' . (set_value('product_type') == $p['id'] ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
+                        // } 
+                        ?>
                       </select>
-                    </div>
+                    </div> -->
 
                     <div class="col-md-2">
                       <div class="form-wrap">
@@ -118,7 +120,7 @@
                         <th>Thumbnail</th>
                         <th>Category Name</th>
                         <th>Abbreviation</th>
-                        <th>Type Name</th>
+                        <!-- <th>Type Name</th> -->
                         <th>Added</th>
                         <th>Updated</th>
                         <th>Status</th>
@@ -138,7 +140,7 @@
                           <td><a href="<?= base_url('public/uploads/product_categories/') . $pc['cat_image'] ?>" target="_blank"><img src="<?= base_url('public/uploads/product_categories/') . $pc['cat_image'] ?>" style="height: 60px;"></a> </td>
                           <td><?= $pc['cat_name'] ?></td>
                           <td><?= $pc['cat_abbreviation'] ?></td>
-                          <td><?= $pc['type_name'] ?></td>
+                          <!-- <td><?php //echo $pc['type_name'] ?></td> -->
                           <td><?= date('d M Y', strtotime($pc['added_date'])) ?></td>
                           <td><?= $pc['modify_date'] != '' ? date('d M Y', strtotime($pc['modify_date'])) : '' ?></td>
                           <td>

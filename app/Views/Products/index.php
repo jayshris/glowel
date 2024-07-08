@@ -44,15 +44,17 @@
                   <hr>
                   <div class="row mt-2">
 
-                    <div class="col-md-3">
+                    <!-- <div class="col-md-3">
                       <label class="col-form-label">Product Type</label>
                       <select class="form-select" name="product_type" aria-label="Default select example">
                         <option value="">Select Type</option>
-                        <?php foreach ($product_types as $p) {
-                          echo '<option value="' . $p['id'] . '" ' . (set_value('product_type') == $p['id'] ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
-                        } ?>
+                        <?php 
+                        // foreach ($product_types as $p) {
+                        //   echo '<option value="' . $p['id'] . '" ' . (set_value('product_type') == $p['id'] ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
+                        // } 
+                        ?>
                       </select>
-                    </div>
+                    </div> -->
 
                     <div class="col-md-2">
                       <div class="form-wrap">
@@ -116,8 +118,7 @@
                         <th>#</th>
                         <th>Action</th>
                         <th>Thumbnail</th>
-                        <th>Product Name</th>
-                        <th>Type</th>
+                        <th>Product Name</th> 
                         <th>Category</th>
                         <th>Added</th>
                         <th>Updated</th>
@@ -136,11 +137,10 @@
                             <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                           </td>
                           <td><a href="<?= base_url('public/uploads/products/') . $pc['product_image_1'] ?>" target="_blank"><img src="<?= base_url('public/uploads/products/') . $pc['product_image_1'] ?>" style="height: 60px;"></a> </td>
-                          <td><?= $pc['product_name'] ?></td>
-                          <td><?= $pc['type_name'] ?></td>
+                          <td><?= $pc['product_name'] ?></td> 
                           <td><?= $pc['cat_name'] ?></td>
-                          <td><?= date('d M Y', strtotime($pc['added_date'])) ?></td>
-                          <td><?= $pc['modify_date'] != '' ? date('d M Y', strtotime($pc['modify_date'])) : '' ?></td>
+                          <td><?= 'Added by-'.$pc['added_by'].date('d M Y', strtotime($pc['added_date'])) ?></td>
+                          <td><?= 'Modified by-'.$pc['modify_by'].' At- '. date('d M Y', strtotime($pc['modify_date'])) ?></td>
                           <td>
                             <?php if ($pc['status']) {
                               echo '<span class="badge badge-pill bg-success">Active</span>';
