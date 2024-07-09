@@ -61,27 +61,24 @@ $page = $controller;
 
                         <!-- Pankaj sales modules  -->
                         <li class="submenu">
-                            <a href="javascript:void(0);" class="<?php echo ($page == 'Sales') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Sales</span><span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);" class="<?php echo ($page == 'Sales' || $page == 'SalesInvoices' || $page == 'SalesInvoicesVerifivation') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Sales</span><span class="menu-arrow"></span></a>
                             <ul>
                                 <!-- Sales Orders  -->
                                 <li><a class="<?php echo ($page == 'Sales') ? 'active' : ''; ?>" href="<?php echo base_url('sales'); ?>">Sales Orders</a></li>
+                                <li><a class="<?php echo ($page == 'SalesInvoices') ? 'active' : ''; ?>" href="<?php echo base_url('sales-invoices'); ?>">Outward Invoices</a></li>
+                                <li><a class="<?php echo ($page == 'SalesInvoicesVerifivation') ? 'active' : ''; ?>" href="<?php echo base_url('sales-invoices-verifivation'); ?>">Verification Invoices</a></li>
                             </ul>
                         </li>
                         <!-- Pankaj sales modules  -->
                         <li class="submenu">
-                            <a href="javascript:void(0);" class="<?php echo ($page == 'Purchase') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Purchase</span><span class="menu-arrow"></span></a>
+                            <a href="javascript:void(0);" class="<?php echo ($page == 'Purchase' || $page == 'PurchaseInvoices' || $page == 'PurchaseInvoicesVerifivation') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Purchase</span><span class="menu-arrow"></span></a>
                             <ul>
                                 <!-- purchase Orders  -->
                                 <li><a class="<?php echo ($page == 'Purchase') ? 'active' : ''; ?>" href="<?php echo base_url('purchase'); ?>">Purchase Orders</a></li>
+                                <li><a class="<?php echo ($page == 'PurchaseInvoices') ? 'active' : ''; ?>" href="<?php echo base_url('purchase-invoices'); ?>">Inward Invoices</a></li>
+                                <li><a class="<?php echo ($page == 'PurchaseInvoicesVerifivation') ? 'active' : ''; ?>" href="<?php echo base_url('purchase-invoices-verifivation'); ?>">Verification Invoices</a></li>
                             </ul>
-                        </li>
-                        <li class="submenu">
-                            <a href="javascript:void(0);" class="<?php echo ($page == 'Invoices') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Invoices</span><span class="menu-arrow"></span></a>
-                            <ul>
-                                <!-- purchase Orders  -->
-                                <li><a class="<?php echo ($page == 'Invoices') ? 'active' : ''; ?>" href="<?php echo base_url('invoices'); ?>">Invoices</a></li>
-                            </ul>
-                        </li>
+                        </li> 
                         <li class="submenu">
                             <a href="javascript:void(0);" class="<?php echo ($page == 'Company' || $page == 'Office' || $page == 'Warehouses' || $page == 'Units') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Setup</span><span class="menu-arrow"></span></a>
                             <ul>

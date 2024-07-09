@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class InvoiceModel extends Model
+class PurchaseInvoiceModel extends Model
 {
-    protected $table            = 'sales_invoices';
+    protected $table            = 'purchase_invoices';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['invoice_no','sales_order_id','customer_name','delivery_address','invoice_doc','packing_list_doc','e_way_bill_doc','other_doc'];
+    protected $allowedFields    =  ['invoice_no','purchase_order_id','customer_name','delivery_address','invoice_doc','tally_invoice_doc','packing_list_doc','tally_packing_list_doc','other_doc','other_doc_2','status'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

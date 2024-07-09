@@ -25,21 +25,25 @@
                 <div class="card">
                   <div class="card-body">
                     <div class="settings-form">  
-                      <form method="post" enctype="multipart/form-data" id="invoices_form" action="<?php echo base_url('invoices/create/'.$sale_order_id.''); ?>">
+                      <form method="post" enctype="multipart/form-data" id="invoices_form" action="<?php echo base_url('purchase-invoices/save/'.$sale_order_id.''); ?>">
                         <div class="settings-sub-header">
-                          <h6>Generate Invoice</h6>
+                          <h6>
+                             <?php echo (isset($invoice_details['id']) && ($invoice_details['id']>0)) ? 'Edit Invoice': 'Generate Invoice';?>
+                             </h6>
                         </div>
                         <div class="profile-details">
                           <div class="row g-3"> 
                             <div class="col-md-6">
                               <label class="col-form-label">Customer Name<span class="text-danger">*</span></label> 
-                              <input type="hidden" name="invoice_no" value="<?= $order_number ?>" class="form-control">
+                              <input type="hidden" name="invoice_no" id="invoice_no" value="<?= $order_number ?>" class="form-control">
+                              <input type="hidden" name="id" id="purchase_invoice_id" value="<?= isset($invoice_details['id']) ? $invoice_details['id'] : '';?>" class="form-control">
                               <div> 
+                              <input type="hidden" id="selected_customer" value="<?php echo isset($selected_customer) ? $selected_customer :''; ?>"/> 
+
                               <select class="customer_name form-control" required id="customer_name" name="customer_name" onchange="getCustomerAddr()">
-                                <!-- <option value="">Select customer</option> -->
                                 <?php if(!empty($customers)){ ?>
                                   <?php foreach($customers as $key => $c){ ?>
-                                    <option value="<?php echo $c['party_name'];?>" pid="<?= $c['id'];?>"><?php echo $c['party_name'];?></option>
+                                    <option value="<?php echo $c;?>" pid="<?= $key;?>"><?php echo $c;?></option>
                                   <?php }?>
                                 <?php } ?>
                               </select>
@@ -55,7 +59,9 @@
 
                             <div class="col-md-6">
                               <label class="col-form-label">Delivery Address<span class="text-danger">*</span></label> 
-                              <textarea name="delivery_address" required id="delivery_address" class="form-control resize-none" maxlength="100"></textarea> 
+                              <textarea name="delivery_address" required id="delivery_address" class="form-control resize-none" maxlength="100">
+                                <?= isset($invoice_details['delivery_address']) ? $invoice_details['delivery_address'] : '';?>
+                              </textarea> 
                               <?php
                                 if($validation->getError('delivery_address'))
                                 {
@@ -67,8 +73,11 @@
                             <div class="col-md-12"></div> 
 
                             <div class="col-md-6">
-                              <label class="col-form-label">Invoice Doc<span class="text-danger">*</span></label>
-                              <input type="file"  name="invoice_doc" required  value="" class="form-control">
+                              <label class="col-form-label">Invoice Doc<span class="text-danger">*</span></label><br>
+                              <?php if(isset($invoice_details['invoice_doc']) && !empty($invoice_details['invoice_doc'])) { ?>
+                              <img src="<?= base_url('public/uploads/PurchaseInvoices/') . $invoice_details['invoice_doc'] ?>" style="height: 150px;">
+                              <?php } ?>
+                              <input type="file"  name="invoice_doc" <?= isset($invoice_details['invoice_doc']) ? '' :'required ';?> class="form-control">
                               <?php
                               if ($validation->getError('invoice_doc')) {
                                 echo '<br><span class="text-danger mt-2">' . $validation->getError('invoice_doc') . '</span>';
@@ -77,8 +86,11 @@
                             </div>
 
                             <div class="col-md-6">
-                              <label class="col-form-label">Packing List Doc<span class="text-danger">*</span> </label>
-                              <input type="file"  name="packing_list_doc" required value="" class="form-control">
+                              <label class="col-form-label">Packing List Doc<span class="text-danger">*</span> </label><br>
+                              <?php if(isset($invoice_details['packing_list_doc']) && !empty($invoice_details['packing_list_doc'])) { ?>
+                              <img src="<?= base_url('public/uploads/PurchaseInvoices/') . $invoice_details['packing_list_doc'] ?>" style="height: 150px;">
+                              <?php } ?>
+                              <input type="file"  name="packing_list_doc"   <?= isset($invoice_details['packing_list_doc']) && !empty($invoice_details['packing_list_doc']) ? '' : 'required';?> class="form-control">
                               <?php
                               if ($validation->getError('packing_list_doc')) {
                                 echo '<br><span class="text-danger mt-2">' . $validation->getError('packing_list_doc') . '</span>';
@@ -87,8 +99,11 @@
                             </div>
 
                             <div class="col-md-6">
-                              <label class="col-form-label">E-Way Bill Doc<span class="text-danger">*</span> </label>
-                              <input type="file"  name="e_way_bill_doc" required value=""  class="form-control">
+                              <label class="col-form-label">E-Way Bill Doc<span class="text-danger">*</span> </label><br>
+                              <?php if(isset($invoice_details['e_way_bill_doc']) && !empty($invoice_details['e_way_bill_doc'])) { ?>
+                              <img src="<?= base_url('public/uploads/PurchaseInvoices/') . $invoice_details['e_way_bill_doc'] ?>" style="height: 150px;">
+                              <?php } ?>
+                              <input type="file"  name="e_way_bill_doc" <?= isset($invoice_details['e_way_bill_doc'])  && !empty($invoice_details['e_way_bill_doc']) ? '' : 'required';?>  class="form-control">
                               <?php
                               if ($validation->getError('e_way_bill_doc')) {
                                 echo '<br><span class="text-danger mt-2">' . $validation->getError('e_way_bill_doc') . '</span>';
@@ -97,8 +112,11 @@
                             </div>
 
                             <div class="col-md-6">
-                              <label class="col-form-label">Other Doc</label>
-                              <input type="file" name="other_doc" value="" class="form-control">
+                              <label class="col-form-label">Other Doc</label><br>
+                              <?php if(isset($invoice_details['other_doc']) && !empty($invoice_details['other_doc'])) { ?>
+                              <img src="<?= base_url('public/uploads/PurchaseInvoices/') . $invoice_details['other_doc'] ?>" style="height: 150px;">
+                              <?php } ?>
+                              <input type="file" name="other_doc"  class="form-control">
                               <?php
                               if ($validation->getError('other_doc')) {
                                 echo '<br><span class="text-danger mt-2">' . $validation->getError('other_doc') . '</span>';
@@ -110,10 +128,10 @@
                           <br>
                         </div>
                         <div class="submit-button">
-                          <button type="submit" id="submit" onclick="confirmcForm()" class="btn btn-primary">Save Changes</button>
-                          <!-- onclick="confirm()" -->
-                          <!-- <a href="/invoices" class="btn btn-warning">Reset</a> -->
-                          <a href="<?php echo base_url('invoices'); ?>" class="btn btn-light">Back</a>
+                          <input type="hidden" name="for_verification" id="for_verification" value=""/>
+                         <button type="submit" id="submit" class="btn btn-primary">Save</button>
+                          <button type="submit" id="submit" onclick="confirmcForm()" class="btn btn-success">Save & Final</button>
+                          <a href="<?php echo base_url('/purchase-invoices'); ?>" class="btn btn-light">Back</a>
                         </div>
                       </form>
 
@@ -140,9 +158,12 @@
     $(document).ready(function() {
         $("#customer_name").select2({
         tags: true
-        });  
-        $("#customer_name").val($("#customer_name option:first").val()).trigger('change'); 
-
+        });   
+        if($('#purchase_invoice_id').val() > 0){
+          $("#customer_name").val($('#selected_customer').val()).trigger('change');
+        }else{
+          $("#customer_name").val($("#customer_name option:first").val()).trigger('change'); 
+        }
         // $("#invoices_form").validate({
         //     rules: {
         //         customer_name: "required",
@@ -170,7 +191,7 @@
         }
         $.ajax({
             method: "POST",
-            url: '<?php echo base_url('invoices/getPartyAddress') ?>',
+            url: '<?php echo base_url('PurchaseInvoices/getPartyAddress') ?>',
             data: {
                 id: customer_name
             },
@@ -183,15 +204,16 @@
           function confirmcForm() { 
            
           if(confirm("Do you want to save?")){ 
+            $('#for_verification').val(1);
             $('#invoices_form').submit();
           }else{   
               $.ajax({
                   type: "GET",
-                  url: "<?= base_url('invoices/changeStatus/' . $sale_order_id ) ?>",
+                  url: "<?= base_url('PurchaseInvoices/changeStatus/' . $sale_order_id ) ?>",
                   success: function(status) {
                       // console.log(status);
                       if(status>0){
-                      window.location.replace("<?= base_url('invoices') ?>");
+                      window.location.replace("<?= base_url('purchase-invoices') ?>");
                       }else{
                       alert('Something is wrong, please try again!!!');
                       }

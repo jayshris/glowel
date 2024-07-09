@@ -261,9 +261,19 @@ $routes->get('purchase/deletePurchaseOrder/(:num)', 'Purchase::deletePurchaseOrd
 $routes->post('purchase/showWebCam', 'Purchase::showWebCam');
 $routes->get('purchase/view/(:num)', 'Purchase::view/$1');
 
-//Invoice listing
-$routes->match(['get', 'post'], 'invoices', 'Invoices::index');
-$routes->match(['get', 'post'], 'invoices/create/(:num)', 'Invoices::create/$1');
+//Purchase/Inward Invoice listing
+$routes->match(['get', 'post'], 'purchase-invoices', 'PurchaseInvoices::index');
+$routes->match(['get', 'post'], 'purchase-invoices/save/(:num)', 'PurchaseInvoices::save/$1');
+
+$routes->match(['get', 'post'], 'purchase-invoices-verifivation', 'PurchaseInvoicesVerifivation::index');
+$routes->match(['get', 'post'], 'purchase-invoices-verifivation/save/(:num)', 'PurchaseInvoicesVerifivation::save/$1');
+
+//Sales/Outward Invoice listing
+$routes->match(['get', 'post'], 'sales-invoices', 'SalesInvoices::index');
+$routes->match(['get', 'post'], 'sales-invoices/save/(:num)', 'SalesInvoices::save/$1');
+
+$routes->match(['get', 'post'], 'sales-invoices-verifivation', 'SalesInvoicesVerifivation::index');
+$routes->match(['get', 'post'], 'sales-invoices-verifivation/save/(:num)', 'SalesInvoicesVerifivation::save/$1');
 
 //Units listing
 $routes->match(['get', 'post'], 'units', 'Units::index');

@@ -25,7 +25,7 @@
             <div class="page-header">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h4 class="page-title">Invoices</h4>
+                  <h4 class="page-title">Purchase Invoice</h4>
                 </div>
                 <div class="col-4 text-end">
                   <div class="head-icons">
@@ -37,7 +37,7 @@
             </div>
             <!-- /Page Header -->
 
-            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('invoices'); ?>">
+            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('purchase-invoices-verifivation'); ?>">
               <div class="card main-card">
                 <div class="card-body">
                   <h4>Search / Filter</h4>
@@ -49,15 +49,16 @@
                         <label class="col-form-label">Status</label>
                         <select class="form-select" name="status" aria-label="Default select example">
                           <option value="">Select Status</option> 
-                          <option value="1">Ready for Invoicing</option>
-                          <option value="5">Ready for Delivery</option>
+                          <?php foreach(invoice_status_details as $k => $v){ ?>
+                            <option value="<?= $k ?>"><?= $v?></option>
+                          <?php } ?> 
                         </select>
                       </div>
                     </div>
 
                     <div class="col-md-7">
                       <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
-                      <a href="./invoices" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp; 
+                      <a href="./purchase-invoices-verifivation" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp; 
                     </div>
                   </div>
                 </div>
@@ -91,8 +92,7 @@
                     <thead class="thead-light">
                       <tr>
                         <th>#</th>
-                        <th>Action</th>
-                        <th>Order No</th>
+                        <th>Action</th> 
                         <th>Order Date</th> 
                         <th>Customer Name</th>  
                         <th>Invoice No</th>
@@ -105,26 +105,32 @@
                             $i = 1;
                             foreach ($orders as $pc) { ?>
                                 <tr>
-                                <td><?= $i++; ?>.</td>
+                                <td><?= $i++ ?>.</td>
                                 <td>
-                                    <a href="<?= base_url('invoices/create/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if($pc['invoice_no'] >1){ ?> disabled<?php }?>" title="Generate  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
-                                </td>
-                                <td><?= $pc['order_no'] ?></td>
-                                <td><?= date('d M Y H:i:s', strtotime($pc['added_date'])) ?></td>
+                                <?php if($pc['status'] == invoice_status['close']) { ?>
+                                    <a href="3" class="btn btn-info btn-sm disabled" title="Closed" role="button"><i class="ti ti-check"></i></a> 
+                                <?php }else{ ?>
+                                    <a href="<?= base_url('purchase-invoices-verifivation/save/' . $pc['purchase_order_id']) ?>" class="btn btn-info btn-sm " title="Verify  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
+                                <?php }?>
+                                
+                                </td> 
+                                <td><?= date('d M Y H:i:s', strtotime($pc['created_at'])) ?></td>
                                 <td><?= ($pc['customer_name']) ? $pc['customer_name'] : '-'; ?></td>
                                 <td><?= ($pc['invoice_no']) ? $pc['invoice_no'] : '-'; ?></td> 
                                 <td>
-                                    <?php if ($pc['status']) {
-                                    echo '<span class="badge badge-pill bg-success">'.PURCHASE_STATUS_DETAILS[$pc['status']].'</span>';
-                                    };
+                                    <?php if ($pc['status'] == invoice_status['for_verification']) {
+                                        $class = 'bg-success';
+                                    }else{
+                                        $class = 'bg-danger';
+                                    }
                                     ?>
+                                   <span class="badge badge-pill <?= $class?>"><?= invoice_status_details[$pc['status']] ?></span>
                                 </td> 
                                 </tr>
                             <?php } ?>
                         <?php }else{ ?>
-                            <tr>
-                              <td></td>
-                              <td></td><td></td><td> <center>No records found!!!</center></td><td></td><td></td><td></td>
+                            <tr> <td></td>
+                              <td></td><td></td><td> <center>No records found!!!</center></td><td></td><td></td>
                             </tr>
                         <?php }?>    
                     </tbody>

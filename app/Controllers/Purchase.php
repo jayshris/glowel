@@ -331,7 +331,11 @@ class Purchase extends BaseController
             } else {
                 $this->session->setFlashdata('danger', 'Home branch not set for user');
             }
-            return redirect()->to('/purchase/add-products/' . $id);
+            if($this->request->getPost('purchase_invoice_verification_form')){
+                return redirect()->to('/purchase-invoices-verifivation/save/' . $id);
+            }else{
+                return redirect()->to('/purchase/add-products/' . $id);
+            }
         }
         $data['token'] = $id;
         $data['categories'] = $this->PCModel->orderBy('cat_name', 'asc')->findAll();
