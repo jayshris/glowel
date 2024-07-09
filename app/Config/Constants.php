@@ -99,7 +99,9 @@ define('EVENT_PRIORITY_HIGH', 10);
 define('PURCHASE_STATUS_EDIT_PERMITIONS', [0,1,2]);
 define('PURCHASE_STATUS', [0,1,2,3,4,5]);
 define('PURCHASE_STATUS_DETAILS', [0=>'Open',1=>'Ready For Invoicing',2=> 'In invoicing',3=> 'Invoice genrated',4=>'Cancel',5=>'Ready for Delivery']);
+
 define('ORDER_STATUS', ['open'=>0,'ready_for_invoicing'=>1,'in_invoicing'=>2, 'invoice_genrated'=>3,'cancel'=>4,'ready_for_delivery'=>5]);
+
 define('invoice_status',['for_verification' => 1,'close'=>2]);
 define('invoice_status_details',[1=>'For Verification',2=>'Closed']);
 define('invoice_status_verify',[1,2]);

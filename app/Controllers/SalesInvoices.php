@@ -57,6 +57,7 @@ class SalesInvoices extends BaseController
     public function save($id)
     {
         $data['invoice_details'] = $this->SalesInvoiceModel->where('sales_order_id', $id)->first();
+        $inoice_id = isset($data['invoice_details']['id']) ? $data['invoice_details']['id'] : 0;
         if ($this->request->getPost()) {
             $error = $this->validate([
                 'customer_name' => [ 
@@ -70,7 +71,18 @@ class SalesInvoices extends BaseController
             // echo '<pre>';print_r($this->request->getPost()); 
             // echo '<pre>';print_r($_FILES);
             // echo '<pre>';print_r($this->validator->getErrors());
-            // die;
+            // die; 
+            if($inoice_id >0){
+                if((empty($data['invoice_details']['invoice_doc']) && $this->request->getFile('invoice_doc')->getSize() < 1)){
+                    $this->validateData([], [
+                        'invoice_doc' => 'uploaded[invoice_doc]|mime_in[invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
+                    ]);
+                } 
+            }else{ 
+                $this->validateData([], [
+                    'invoice_doc' => 'uploaded[invoice_doc]|mime_in[invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
+                ]); 
+            }   
 
             $validation = \Config\Services::validation(); 
             if (!empty($validation->getErrors())) {

@@ -55,7 +55,7 @@ class PurchaseInvoicesVerifivation extends BaseController
     public function save($id)
     {
         $data['invoice_details'] = $this->PurchaseInvoiceModel->where('purchase_order_id', $id)->first();
-        $inoice_id = $data['invoice_details']['id'];
+        $inoice_id = isset($data['invoice_details']['id']) ? $data['invoice_details']['id'] : 0;
         if ($this->request->getPost()) {
             $error = $this->validate([
                 'customer_name' => [ 
@@ -66,26 +66,23 @@ class PurchaseInvoicesVerifivation extends BaseController
                 ], 
                 'delivery_address'   =>'required',   
             ]); 
-            if($inoice_id >0 && (empty($data['invoice_details']['invoice_doc']) && $this->request->getFile('invoice_doc')->getSize() < 1)){
-                $validate = false;  
-            }else{
-                $validate = true;
-            } 
-            if($inoice_id >0 && (empty($data['invoice_details']['tally_invoice_doc']) && $this->request->getFile('tally_invoice_doc')->getSize() < 1)){
-                $validate = false;  
-            }else{
-                $validate = true;
-            }  
-            if($this->request->getFile('invoice_doc')->getSize() > 0 || !$validate) {
+            if($inoice_id >0){
+                if((empty($data['invoice_details']['invoice_doc']) && $this->request->getFile('invoice_doc')->getSize() < 1)){
+                    $this->validateData([], [
+                        'invoice_doc' => 'uploaded[invoice_doc]|mime_in[invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
+                    ]);
+                } 
+                if((empty($data['invoice_details']['tally_invoice_doc']) && $this->request->getFile('tally_invoice_doc')->getSize() < 1)){
+                    $this->validateData([], [
+                        'tally_invoice_doc' => 'uploaded[tally_invoice_doc]|mime_in[tally_invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
+                    ]);
+                } 
+            }else{ 
                 $this->validateData([], [
                     'invoice_doc' => 'uploaded[invoice_doc]|mime_in[invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
-                ]); 
-            }
-            if($this->request->getFile('tally_invoice_doc')->getSize() > 0 || !$validate) {
-                $this->validateData([], [
                     'tally_invoice_doc' => 'uploaded[tally_invoice_doc]|mime_in[tally_invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
                 ]); 
-            } 
+            }   
 // echo '<pre>';print_r($this->request->getPost());exit;
             $validation = \Config\Services::validation(); 
             if (!empty($validation->getErrors())) {
