@@ -25,19 +25,18 @@
             <div class="page-header">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h4 class="page-title">Purchase Invoice</h4>
+                  <h4 class="page-title">Outward Invoice</h4>
                 </div>
                 <div class="col-4 text-end">
                   <div class="head-icons">
                     <a href="<?= base_url('sales') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
-                    <!-- <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header"><i class="ti ti-chevrons-up"></i></a> -->
                   </div>
                 </div>
               </div>
             </div>
             <!-- /Page Header -->
 
-            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('purchase-invoices'); ?>">
+            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('sales-invoices'); ?>">
               <div class="card main-card">
                 <div class="card-body">
                   <h4>Search / Filter</h4>
@@ -49,15 +48,16 @@
                         <label class="col-form-label">Status</label>
                         <select class="form-select" name="status" aria-label="Default select example">
                           <option value="">Select Status</option> 
-                          <option value="1">Ready for Invoicing</option>
-                          <option value="5">Ready for Delivery</option>
+                          <?php foreach(sales_invoice_filter as $k => $v){ ?>
+                            <option value="<?= $k ?>" <?= ($selected_status == $k) ? 'selected' : '' ?>><?= $v?></option>
+                          <?php } ?> 
                         </select>
                       </div>
                     </div>
 
                     <div class="col-md-7">
                       <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
-                      <a href="./purchase-invoices" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp; 
+                      <a href="./sales-invoices" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp; 
                     </div>
                   </div>
                 </div>
@@ -107,9 +107,9 @@
                                 <tr>
                                 <td><?= $i++ ?>.</td>
                                 <td>
-                                <?php if(in_array($pc['pi_status'],invoice_status_verify)) { ?>
+                                <?php if(in_array($pc['si_status'],invoice_status_verify)) { ?>
                                   
-                                    <?php if($pc['pi_status'] == invoice_status['for_verification']){ ?>
+                                    <?php if($pc['si_status'] == invoice_status['for_verification']){ ?>
                                       <a href="#" class="btn btn-info btn-sm" title="Verify Invoice" role="button"> <i class="ti ti-check"></i></a> 
                                     <?php }else{?>
                                       <a href="#" class="btn btn-info btn-sm" title="Closed Invoice" role="button"><i class="ti ti-minus"></i></a> 
@@ -117,9 +117,9 @@
                                   
                                 <?php }else{ ?>
                                   <?php if(empty($pc['invoice_no'])){ ?> 
-                                    <a href="<?= base_url('purchase-invoices/save/' . $pc['id']) ?>" class="btn btn-info btn-sm " title="Generate  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
+                                    <a href="<?= base_url('sales-invoices/save/' . $pc['id']) ?>" class="btn btn-info btn-sm " title="Generate  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
                                   <?php }else{?>
-                                    <a href="<?= base_url('purchase-invoices/save/' . $pc['id']) ?>" class="btn btn-info btn-sm" title="Edit  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
+                                    <a href="<?= base_url('sales-invoices/save/' . $pc['id']) ?>" class="btn btn-info btn-sm" title="Edit  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
                                     <?php } ?>  
                                 <?php }?> 
                                 </td>

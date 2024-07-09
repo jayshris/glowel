@@ -276,7 +276,12 @@ class Sales extends BaseController
             } else {
                 $this->session->setFlashdata('danger', 'Home branch not set for user');
             }
-            return redirect()->to('/sales/add-products/' . $id);
+            
+            if($this->request->getPost('sales_invoice_verification_form')){
+                return redirect()->to('/sales-invoices-verifivation/save/' . $id);
+            }else{
+                return redirect()->to('/sales/add-products/' . $id);
+            }
         }
 
         $data['token'] = $id;

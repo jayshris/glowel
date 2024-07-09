@@ -103,3 +103,5 @@ define('ORDER_STATUS', ['open'=>0,'ready_for_invoicing'=>1,'in_invoicing'=>2, 'i
 define('invoice_status',['for_verification' => 1,'close'=>2]);
 define('invoice_status_details',[1=>'For Verification',2=>'Closed']);
 define('invoice_status_verify',[1,2]);
+
+define('sales_invoice_filter',[1=>'Ready For Invoicing',5=>'Ready for Delivery']);

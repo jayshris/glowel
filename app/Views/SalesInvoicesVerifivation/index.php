@@ -25,7 +25,7 @@
             <div class="page-header">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h4 class="page-title">Purchase Invoice</h4>
+                  <h4 class="page-title">Sales Invoice</h4>
                 </div>
                 <div class="col-4 text-end">
                   <div class="head-icons">
@@ -37,7 +37,7 @@
             </div>
             <!-- /Page Header -->
 
-            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('purchase-invoices-verifivation'); ?>">
+            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('sales-invoices-verifivation'); ?>">
               <div class="card main-card">
                 <div class="card-body">
                   <h4>Search / Filter</h4>
@@ -58,7 +58,7 @@
 
                     <div class="col-md-7">
                       <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
-                      <a href="./purchase-invoices-verifivation" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp; 
+                      <a href="./sales-invoices-verifivation" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp; 
                     </div>
                   </div>
                 </div>
@@ -110,7 +110,7 @@
                                 <?php if($pc['status'] == invoice_status['close']) { ?>
                                     <a href="3" class="btn btn-info btn-sm disabled" title="Closed" role="button"><i class="ti ti-check"></i></a> 
                                 <?php }else{ ?>
-                                    <a href="<?= base_url('purchase-invoices-verifivation/save/' . $pc['purchase_order_id']) ?>" class="btn btn-info btn-sm " title="Verify  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
+                                    <a href="<?= base_url('sales-invoices-verifivation/save/' . $pc['sales_order_id']) ?>" class="btn btn-info btn-sm " title="Verify  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
                                 <?php }?>
                                 
                                 </td> 

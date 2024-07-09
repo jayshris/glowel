@@ -6,22 +6,20 @@ use App\Models\PartyModel;
 use App\Models\UserModel; 
 use App\Models\InvoiceModel;
 use App\Models\SalesOrderModel;
+use App\Models\SalesInvoiceModel;
 use App\Controllers\BaseController;
-use App\Models\PurchaseInvoiceModel;
-use App\Models\PurchaseOrderModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
-class PurchaseInvoices extends BaseController
+class SalesInvoices extends BaseController
 {
     public $access;
     public $session;
     public $added_by;
     public $added_ip;
-    public $SOModel;
     public $InvoiceModel;
     public $partyModel;
-    public $PurchaseInvoiceModel;
-    public $POModel;
+    public $SalesInvoiceModel;
+    public $SOModel;
 
     public function __construct()
     {
@@ -29,8 +27,7 @@ class PurchaseInvoices extends BaseController
         $this->SOModel = new SalesOrderModel();
         $this->InvoiceModel = new InvoiceModel();
         $this->partyModel = new PartyModel();
-        $this->PurchaseInvoiceModel = new PurchaseInvoiceModel();
-        $this->POModel = new PurchaseOrderModel();
+        $this->SalesInvoiceModel = new SalesInvoiceModel();
         $user = new UserModel();
         $this->access = $user->setPermission();
         $this->added_by = isset($_SESSION['id']) > 0 ? $_SESSION['id'] : '0';
@@ -43,20 +40,23 @@ class PurchaseInvoices extends BaseController
             $this->session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(base_url('/dashboard'));
         } else {
+            $data['selected_status'] = $this->request->getPost('status');
             if ($this->request->getPost('status') != '') {
-                $this->POModel->where('status', $this->request->getPost('status'));
+                $this->SOModel->where('sales_orders.status', $this->request->getPost('status'));
             }
-            $data['orders'] = $this->POModel
-            ->select('purchase_orders.id,purchase_orders.status,pi.invoice_no,pi.status as pi_status,purchase_orders.added_date,purchase_orders.customer_name,purchase_orders.order_no')
-            ->join('purchase_invoices pi','pi.purchase_order_id = purchase_orders.id', 'left')
-            ->whereIn('purchase_orders.status',[1,2,5])->orderBy('purchase_orders.id', 'desc')->findAll(); 
-            return view('PurchaseInvoices/index', $data);
+            $data['orders'] = $this->SOModel
+            ->select('sales_orders.id,sales_orders.status,si.invoice_no,si.status as si_status,sales_orders.added_date,sales_orders.customer_name,sales_orders.order_no')
+            ->join('sales_invoices si','si.sales_order_id = sales_orders.id', 'left')
+            ->whereIn('sales_orders.status',[1,2,5])->orderBy('sales_orders.id', 'desc')->findAll(); 
+            // echo '<pre>';print_r($data);exit;
+            
+            return view('SalesInvoices/index', $data);
         }
     }
 
     public function save($id)
     {
-        $data['invoice_details'] = $this->PurchaseInvoiceModel->where('purchase_order_id', $id)->first();
+        $data['invoice_details'] = $this->SalesInvoiceModel->where('sales_order_id', $id)->first();
         if ($this->request->getPost()) {
             $error = $this->validate([
                 'customer_name' => [ 
@@ -65,25 +65,7 @@ class PurchaseInvoices extends BaseController
                         'regex_match' => 'The customer field only contain alphanumeric characters.',
                     ],
                 ], 
-                'delivery_address'   =>'required',  
-                // 'invoice_doc' => [
-                //     'rules' => 'uploaded[invoice_doc]|mime_in[invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
-                //     'errors' => [
-                //         'mime_in' => 'Image must be in jpeg/png format',
-                //     ]
-                // ],
-                // 'packing_list_doc' => [
-                //     'rules' => 'uploaded[packing_list_doc]|mime_in[packing_list_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
-                //     'errors' => [
-                //         'mime_in' => 'Image must be in jpeg/png format',
-                //     ]
-                // ] ,
-                // 'e_way_bill_doc' => [
-                //     'rules' => 'uploaded[e_way_bill_doc]|mime_in[e_way_bill_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
-                //     'errors' => [
-                //         'mime_in' => 'Image must be in jpeg/png format',
-                //     ]
-                // ]  
+                'delivery_address'   =>'required',   
             ]);
             // echo '<pre>';print_r($this->request->getPost()); 
             // echo '<pre>';print_r($_FILES);
@@ -102,36 +84,36 @@ class PurchaseInvoices extends BaseController
                     'added_ip' => $this->added_ip
                 ];
                 if($this->request->getFile('invoice_doc')->getSize() > 0){
-                    $invoice_data['invoice_doc'] = $this->uploadPurchaseOrderImages($id,$this->request->getPost(),$this->request->getFile('invoice_doc'),'invoice_doc');
+                    $invoice_data['invoice_doc'] = $this->uploadOrderImages($id,$this->request->getPost(),$this->request->getFile('invoice_doc'),'invoice_doc');
                 }
                 if($this->request->getFile('packing_list_doc')->getSize() > 0){
-                    $invoice_data['packing_list_doc'] = $this->uploadPurchaseOrderImages($id,$this->request->getPost(),$this->request->getFile('packing_list_doc'),'packing_list_doc');
+                    $invoice_data['packing_list_doc'] = $this->uploadOrderImages($id,$this->request->getPost(),$this->request->getFile('packing_list_doc'),'packing_list_doc');
                 }
                 if($this->request->getFile('e_way_bill_doc')->getSize() > 0){
-                    $invoice_data['e_way_bill_doc'] = $this->uploadPurchaseOrderImages($id,$this->request->getPost(),$this->request->getFile('e_way_bill_doc'),'e_way_bill_doc');
+                    $invoice_data['e_way_bill_doc'] = $this->uploadOrderImages($id,$this->request->getPost(),$this->request->getFile('e_way_bill_doc'),'e_way_bill_doc');
                 }
                 if($this->request->getFile('other_doc')->getSize() > 0){
-                    $invoice_data['other_doc'] = $this->uploadPurchaseOrderImages($id,$this->request->getPost(),$this->request->getFile('other_doc'),'other_doc');
+                    $invoice_data['other_doc'] = $this->uploadOrderImages($id,$this->request->getPost(),$this->request->getFile('other_doc'),'other_doc');
                 }
-                $invoice_data['purchase_order_id'] = $id;
+                $invoice_data['sales_order_id'] = $id;
                 // echo '<pre>';print_r($invoice_data);exit;
                 if($this->request->getPost('id')){
-                   $result =  $this->PurchaseInvoiceModel->update($this->request->getPost('id'),$invoice_data);
+                   $result =  $this->SalesInvoiceModel->update($this->request->getPost('id'),$invoice_data);
                    $msg = 'Invoice updated Successfully';
                 }else{
-                    $result = $this->PurchaseInvoiceModel->save($invoice_data) ? $this->PurchaseInvoiceModel->getInsertID() : '0';
+                    $result = $this->SalesInvoiceModel->save($invoice_data) ? $this->SalesInvoiceModel->getInsertID() : '0';
                     $msg = 'Invoice generated Successfully';
                 }
                
                 if($result){
                     //update status Ready for Delivery
-                    $this->POModel->update($id,['status'=>ORDER_STATUS['ready_for_delivery']]); 
+                    $this->SOModel->update($id,['status'=>ORDER_STATUS['ready_for_delivery']]); 
                     if($this->request->getPost('for_verification')){ 
-                       $this->PurchaseInvoiceModel->update($this->request->getPost('id'),['status'=>invoice_status['for_verification']]);
+                       $this->SalesInvoiceModel->update($this->request->getPost('id'),['status'=>invoice_status['for_verification']]);
                     }
                 }
                 $this->session->setFlashdata('success', $msg); 
-                return $this->response->redirect(base_url('PurchaseInvoices/index'));
+                return $this->response->redirect(base_url('SalesInvoices/index'));
             }
         }   
       
@@ -150,12 +132,12 @@ class PurchaseInvoices extends BaseController
         $data['last_order'] = $this->InvoiceModel->orderBy('id', 'desc')->first();  
         $data['sale_order_id'] = $id;  
        
-        return view('PurchaseInvoices/save',$data);
+        return view('SalesInvoices/save',$data);
     }
-    function uploadPurchaseOrderImages($id,$postdata,$image,$flag){
-        $imgpath ='public/uploads/PurchaseInvoices/'; 
+    function uploadOrderImages($id,$postdata,$image,$flag){
+        $imgpath ='public/uploads/SalesInvoices/'; 
         //delete old image
-        $sale_details = $this->PurchaseInvoiceModel->where('purchase_order_id', $postdata['id'])->first();
+        $sale_details = $this->SalesInvoiceModel->where('sales_order_id', $postdata['id'])->first();
         if (!empty($sale_details[$flag]) && file_exists($imgpath.$sale_details[$flag])) {
             unlink( $imgpath. $sale_details[$flag]);
         }
@@ -177,7 +159,7 @@ class PurchaseInvoices extends BaseController
     }
 
     function changeStatus($order_id){
-        $result = $this->POModel->update($order_id, [
+        $result = $this->SOModel->update($order_id, [
             'status' => 2
         ]); 
         if($result){ 

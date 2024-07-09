@@ -25,7 +25,7 @@
             <div class="page-header">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h4 class="page-title">Purchase Invoice</h4>
+                  <h4 class="page-title">Inward Invoice</h4>
                 </div>
                 <div class="col-4 text-end">
                   <div class="head-icons">

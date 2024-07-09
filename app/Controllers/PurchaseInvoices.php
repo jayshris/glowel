@@ -44,7 +44,7 @@ class PurchaseInvoices extends BaseController
             return $this->response->redirect(base_url('/dashboard'));
         } else {
             if ($this->request->getPost('status') != '') {
-                $this->POModel->where('status', $this->request->getPost('status'));
+                $this->POModel->where('purchase_orders.status', $this->request->getPost('status'));
             }
             $data['orders'] = $this->POModel
             ->select('purchase_orders.id,purchase_orders.status,pi.invoice_no,pi.status as pi_status,purchase_orders.added_date,purchase_orders.customer_name,purchase_orders.order_no')
