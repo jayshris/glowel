@@ -413,8 +413,25 @@ class Sales extends BaseController
 
     function salesCheckoutPrint($orderId){
         $data['token'] = $orderId;
-        $data['order_details'] = $this->SOModel->where('id', $orderId)->first();
-        $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $orderId)->findAll();
+        $data['order_details'] = $this->SOModel->select('sales_orders.*,p.business_address,p.primary_phone')
+        ->join('party p', ' p.id = sales_orders.party_id','left')->where('sales_orders.id', $orderId)->first();
+        
+        $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id,u.unit')
+        ->join('products', 'products.id = sales_order_products.product_id')
+        ->join('units u', 'u.id = products.unit_id','left')
+        ->where('order_id', $orderId)->findAll();
+
+        $data['total_quantity_per_units'] = $this->SOPModel->select('products.product_name,sum(sales_order_products.quantity) as sop_quantity,u.unit as unit')
+        ->join('products', 'products.id = sales_order_products.product_id')
+        ->join('units u', 'u.id = products.unit_id','left')
+        ->where('order_id', $orderId)
+        ->groupBy('unit')
+        ->findAll();
+
+        //  $db = \Config\Database::connect();  
+        // echo  $db->getLastQuery()->getQuery();
+        //     echo ' res <pre>';print_r($data['added_products']);exit; 
+
         return view('Sales/salesCheckoutPrint', $data);
     }
 }
