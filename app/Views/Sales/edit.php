@@ -49,11 +49,11 @@
 
                             <div class="col-md-3">
                               <label class="col-form-label">Customer Name </label>
-                              <!-- <input type="text" required name="customer_name" class="form-control"> -->
-                              <select class="customer_name form-control" id="customer_name" name="customer_name" >
+                              <input type="hidden"  name="party_id" id="party_id" class="form-control"> 
+                              <select class="customer_name form-control" id="customer_name" name="customer_name"  onchange="changeParty(this)" >
                                 <?php if(!empty($customers)){ ?>
                                   <?php foreach($customers as $key => $c){ ?>
-                                    <option value="<?php echo $c;?>"><?php echo $c;?></option>
+                                    <option value="<?php echo $c;?>" party_id="<?php echo $key;?>"><?php echo $c;?></option>
                                   <?php }?>
                                 <?php } ?>
                               </select>
@@ -196,7 +196,7 @@
   <?= $this->include('partials/vendor-scripts')  ?>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
   <!-- Configure a few settings and attach camera -->
-  <script language="JavaScript"> 
+  <script language="JavaScript">  
     function upload_btn(show,hide){ 
         $("#input_"+hide).val('');
         $("#results_"+hide).html(''); 
@@ -227,7 +227,7 @@
         });
        
     }); 
-    // $("#customer_name").val($('#selected_customer').val()).trigger('change');
+    $("#customer_name").val($('#selected_customer').val()).trigger('change');
 
     $.getCategory = function() {
 
@@ -247,6 +247,11 @@
         }
       });
 
+    }
+
+    function changeParty(thisv){ 
+      var party_id = ($(thisv).find(':selected').attr('party_id')) ? $(thisv).find(':selected').attr('party_id') : 0;
+      $('#party_id').val( party_id)
     }
   </script>
 

@@ -246,6 +246,7 @@ $routes->get('sales/sendToInvoice/(:num)', 'Sales::sendToInvoice/$1');
 $routes->match(['get', 'post'], 'sales/sales-checkout/(:num)', 'Sales::salesCheckout/$1');
 $routes->get('sales/deleteSaleOrder/(:num)', 'Sales::deleteSaleOrder/$1');
 $routes->get('sales/view/(:num)', 'Sales::view/$1');
+$routes->match(['get', 'post'], 'sales/sales-checkout-print/(:num)', 'Sales::salesCheckoutPrint/$1');
 
 //purchase
 $routes->match(['get', 'post'], 'purchase', 'Purchase::index');

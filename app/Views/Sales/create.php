@@ -49,11 +49,11 @@
 
                             <div class="col-md-3">
                               <label class="col-form-label">Customer Name <span class="text-danger">*</span></label>
-                              <!-- <input type="text" required name="customer_name" class="form-control"> -->
-                              <select class="customer_name form-control" name="customer_name" >
+                              <input type="hidden"  name="party_id" id="party_id" class="form-control"> 
+                              <select class="customer_name form-control" name="customer_name" onchange="changeParty(this)">
                                 <?php if(!empty($customers)){ ?>
                                   <?php foreach($customers as $key => $c){ ?>
-                                    <option <?php echo ($key == 0) ? 'selelected': '' ;?> value="<?php echo $c['party_name'];?>"><?php echo $c['party_name'];?></option>
+                                    <option value="<?php echo $c['party_name'];?>" party_id="<?= $c['id']?>"><?php echo $c['party_name'];?></option>
                                   <?php }?>
                                 <?php } ?>
                               </select>
@@ -120,6 +120,11 @@
         $(".customer_name").select2({
       tags: true
       });
+     
+    $(".customer_name").val($(".customer_name option:first").val());
+    $(".customer_name").trigger('change');
+
+
     });
     $.getCategory = function() {
 
@@ -139,6 +144,11 @@
         }
       });
 
+    }
+    
+    function changeParty(thisv){ 
+      var party_id = ($(thisv).find(':selected').attr('party_id')) ? $(thisv).find(':selected').attr('party_id') : 0;
+      $('#party_id').val( party_id)
     }
   </script>
 

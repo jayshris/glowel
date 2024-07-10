@@ -92,7 +92,8 @@ class Sales extends BaseController
                     'added_by' => $this->added_by,
                     'added_ip' => $this->added_ip,
                     'added_date' => $this->request->getPost('order_date'),
-                    'branch_id' => $this->request->getPost('branch_id')
+                    'branch_id' => $this->request->getPost('branch_id'),
+                    'party_id' => $this->request->getPost('party_id')
                 ]) ? $this->SOModel->getInsertID() : '0';
                 $this->session->setFlashdata('success', 'Order Created Successfully'); 
                 return $this->response->redirect(base_url('sales/add-products/' . $insert_id));
@@ -119,13 +120,14 @@ class Sales extends BaseController
         } else if ($this->request->getPost()) {
             $error = $this->validate([
                 'customer_name' => [ 
-                    'rules' => 'trim|regex_match[^[a-zA-Z0-9\s]*$]', 
+                    'rules' => 'regex_match[^[a-zA-Z0-9\s]*$]', 
                     'errors' => [
                         'regex_match' => 'The customer  field only contain alphanumeric characters.',
                     ], 
                 ], 
                 'branch_id'   =>'required'
             ]); 
+            
             //as per discussed max size validation not required
             if($this->request->getFile('img_1')->getSize() > 0) {
                 $this->validateData([], [
@@ -138,6 +140,10 @@ class Sales extends BaseController
                 ]); 
             }
             $validation = \Config\Services::validation(); 
+
+            // echo 'Files<pre>';print_r($_FILES);
+            // echo 'POst dt<pre>';print_r($this->request->getPost());
+            // echo 'getErrors<pre>';print_r($validation->getErrors());exit;
             if (!empty($validation->getErrors())) {
                 $data['error'] = $this->validator;
             } else {   
@@ -146,7 +152,8 @@ class Sales extends BaseController
                     'added_by' => $this->added_by,
                     'added_ip' => $this->added_ip,
                     'added_date' => $this->request->getPost('order_date'),
-                    'branch_id' => $this->request->getPost('branch_id')
+                    'branch_id' => $this->request->getPost('branch_id'),
+                    'party_id' => $this->request->getPost('party_id')
                 ];
                 // update image if found or either upload with webcam
                 if ($this->request->getFile('img_1')->getSize() > 0) {
@@ -168,8 +175,9 @@ class Sales extends BaseController
         //order can be edited only 2 times as per doc
         $this->checkOrderStatus($id); 
         
-        $customers = $this->partyModel->select('party_name')->where('status', 1)->findAll();
-        $data['customers']  = array_column($customers,'party_name');
+        $customers = $this->partyModel->select('id,party_name')->where('status', 1)->findAll();
+        
+        $data['customers']  = array_column($customers,'party_name','id');
         $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
         $data['order_details'] = $this->SOModel->where('id', $id)->first();
         $data['selected_customer'] = $data['order_details']['customer_name'];
@@ -178,6 +186,9 @@ class Sales extends BaseController
         }
         
         $data['branches'] = $this->selectUserBranches();
+
+        // echo '<pre>';print_r($customers);
+        // echo 'customers<pre>';print_r($data['customers']);exit;
         return view('Sales/edit', $data); 
     }
     function uploadFileWithCam($id,$postdata,$flag){ 
@@ -398,5 +409,12 @@ class Sales extends BaseController
             $this->session->setFlashdata('danger', 'Order can be edited only 1 times!!!');
             return $this->response->redirect(base_url('sales/index'));
         }
+    }
+
+    function salesCheckoutPrint($orderId){
+        $data['token'] = $orderId;
+        $data['order_details'] = $this->SOModel->where('id', $orderId)->first();
+        $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $orderId)->findAll();
+        return view('Sales/salesCheckoutPrint', $data);
     }
 }

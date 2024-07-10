@@ -50,12 +50,12 @@
 
                             <div class="col-md-3">
                               <label class="col-form-label">Customer Name</label>
-                              <!-- <input type="text" required name="customer_name" class="form-control"> -->
-                              <select class="customer_name form-control" id="customer_name" name="customer_name" >
+                              <input type="hidden"  name="party_id" id="party_id" class="form-control"> 
+                              <select class="customer_name form-control" id="customer_name" name="customer_name"  onchange="changeParty(this)">
                               <option value="">Not selected value</option>
                                 <?php if(!empty($customers)){ ?>
                                   <?php foreach($customers as $key => $c){ ?>
-                                    <option value="<?php echo $c;?>"><?php echo $c;?></option>
+                                    <option value="<?php echo $c;?>" party_id="<?php echo $key;?>"><?php echo $c;?></option>
                                   <?php }?>
                                 <?php } ?>
                               </select>
@@ -307,6 +307,11 @@
         }
       });
 
+    }
+    
+    function changeParty(thisv){ 
+      var party_id = ($(thisv).find(':selected').attr('party_id')) ? $(thisv).find(':selected').attr('party_id') : 0;
+      $('#party_id').val( party_id)
     }
   </script>
 

@@ -93,7 +93,8 @@ class Purchase extends BaseController
                     'added_by' => $this->added_by,
                     'added_ip' => $this->added_ip,
                     'added_date' => $this->request->getPost('order_date'),
-                    'branch_id' => $this->request->getPost('branch_id')
+                    'branch_id' => $this->request->getPost('branch_id'),
+                    'party_id' => $this->request->getPost('party_id')
                 ]) ? $this->POModel->getInsertID() : '0';
                 $this->session->setFlashdata('success', 'Order Created Successfully');
 
@@ -168,7 +169,8 @@ class Purchase extends BaseController
                             'added_by' => $this->added_by,
                             'added_ip' => $this->added_ip,
                             'added_date' => $this->request->getPost('order_date'),
-                            'branch_id' => $this->request->getPost('branch_id') 
+                            'branch_id' => $this->request->getPost('branch_id'),
+                            'party_id' => $this->request->getPost('party_id')
                             ];
                   // update image if found or either upload with webcam
                 if ($this->request->getFile('img_1')->getSize() > 0) {
@@ -207,7 +209,7 @@ class Purchase extends BaseController
         ->where(['party_type.name'=> 'Vendor','party.status'=> 'Active'])
         ->where('party.status', 'Active')->findAll();
 
-        $data['customers']  = array_column($customers,'party_name');
+        $data['customers']  = array_column($customers,'party_name','id');
 
         $data['last_order'] = $this->POModel->orderBy('id', 'desc')->first();
         $data['order_details'] = $this->POModel->where('id',$id)->orderBy('id', 'desc')->first();
