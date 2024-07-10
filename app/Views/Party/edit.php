@@ -49,11 +49,34 @@
   <?= $this->include('partials/vendor-scripts') ?>
 
   <!-- Profile Upload JS -->
-  <script src="<?php echo base_url(); ?>assets/js/profile-upload.js"></script>
+  <!-- <script src="<?php //echo base_url(); ?>assets/js/profile-upload.js"></script> -->
 
   <!-- Sticky Sidebar JS -->
-  <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
-  <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
+  <!-- <script src="<?php //echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script> -->
+  <!-- <script src="<?php //echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script> -->
+  <script>
+    $(document).ready(function() {
+
+      // $.toggle();
+
+      $("#business_type_id").on(' change', function() {
+        $("#target").empty();
+        var level = $(this).val();
+        if (level) {
+          $.ajax({
+            type: 'POST',
+            url: '../get_flags_fields',
+            data: {
+              business_type: '' + level + ''
+            },
+            success: function(htmlresponse) {
+              $('#target').append(htmlresponse);
+            }
+          });
+        }
+      })
+    });
+  </script>
 </body>
 
 </html>

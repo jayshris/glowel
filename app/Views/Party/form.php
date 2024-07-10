@@ -26,7 +26,19 @@
                                   <label class="col-form-label">
                                     Party Type <span class="text-danger">*</span>
                                   </label>
-                                  <select class="select" required class="js-example-basic-multiple" name="party_type_id[]" multiple="multiple">
+                                  <br/>
+                                  <?php foreach ($partytype as $pt) { ?>
+                                    <div class="form-check form-check-inline">
+                                      <input class="form-check-input checkbx" type="checkbox" name="party_type_id[]" id="chk<?= $pt['name'] ?>" 
+                                      value="<?= $pt['id'] ?>" 
+                                      <?= !isset($pc_data) ? 'required' : '' ?> 
+                                      <?= isset($selected_party_type_ids) && in_array($pt['id'], $selected_party_type_ids) ? 'checked' : '' ?>
+                                      >
+                                      <label class="form-check-label" for="chk<?= $pt['name'] ?>"><?= $pt['name'] ?></label>
+                                    </div>
+                                  <?php } ?>
+
+                                  <!-- <select class="select" required class="js-example-basic-multiple" name="party_type_id[]" multiple="multiple">
                                     <option>Select</option>
                                     <?php
                                     if(isset($partytype)){
@@ -44,7 +56,7 @@
                                       }
                                     }
                                     ?>
-                                  </select>
+                                  </select> -->
                                   <?php
                                     if($validation->getError('party_type_id'))
                                     {
@@ -272,39 +284,19 @@
                                   </select> 
                               </div>
                             </div>
-                            
-                            
-                                    <?php
-                                    if(isset($flags)){
-                                      foreach($flags as $row)
-                                      {
-                                      $title =  strtolower($row['title']);
-                                      $titlename = str_replace(' ', '', $title);
-                                        ?> 
-                                      <div class="col-md-6">
-                                        <div class="form-wrap">
-                                          <label class="col-form-label">
-                                          <?php echo $row['title']; ?>
-                                          </label>
-                                          <input type="text"  name="<?php echo $titlename; ?>" class="form-control" value="<?php
-                                          if(isset($pc_data)){
-                                            echo $pc_data[$titlename];
-                                          }else{
-                                            echo set_value($titlename); 
-                                          }
-                                          ?>">
-                                          <?php
-                                          if($validation->getError($titlename)) {
-                                              echo '<div class="alert alert-danger mt-2">'.$validation->getError($titlename).'</div>';
-                                          }
-                                          ?>
-                                        </div>
-                                      </div>
-
-                                      <?php
-                                      }
+                            <div class="target row" id="target">
+                            </div>
+                            <?php if ($last != 'create') { ?>
+                              <div>
+                                <input type="checkbox" id="approve" class="form-check-input" name="approve" 
+                                <?php if (isset($pc_data)) {
+                                    if ($pc_data['approved'] == 1) {
+                                      echo 'checked';
                                     }
-                                    ?>
+                                  } ?> value="1"> <label for="approve"> Approved</label>
+                              </div>
+                            <?php } ?>
+                            
 
                           </div>
                         </div>
