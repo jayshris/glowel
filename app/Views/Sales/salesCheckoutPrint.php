@@ -167,7 +167,9 @@
                   <div class="col-md-8" >  
                   </div>
                   <div class="col-md-4">
-                    <img src="<?= base_url('public/assets/img/print_invoice_logo.png') ?>"  />
+                    <?php if(!empty($emp_details['digital_sign'])) { ?>
+                    <img src="<?= base_url('public/assets/img/'.$emp_details['digital_sign']) ?>"  />
+                    <?php }?>
                   </div>
               </div>
             </div>

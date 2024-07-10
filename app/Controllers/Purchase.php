@@ -433,4 +433,34 @@ class Purchase extends BaseController
         $data['added_products'] = $this->POPModel->select('*,purchase_order_products.id as sp_id')->join('products', 'products.id = purchase_order_products.product_id')->where('order_id', $orderId)->findAll();
         return view('Purchase/view', $data);
     }
+
+    function purchaseCheckoutPrint($orderId){
+        $data['token'] = $orderId;
+        $data['order_details'] = $this->POModel->select('purchase_orders.*,p.business_address,p.primary_phone')
+        ->join('party p', ' p.id = purchase_orders.party_id','left')->where('purchase_orders.id', $orderId)->first();
+        
+        $data['added_products'] = $this->POPModel->select('*,purchase_order_products.id as sp_id,u.unit')
+        ->join('products', 'products.id = purchase_order_products.product_id')
+        ->join('units u', 'u.id = products.unit_id','left')
+        ->where('order_id', $orderId)->findAll();
+
+        $data['total_quantity_per_units'] = $this->POPModel->select('products.product_name product_name,sum(purchase_order_products.quantity) as sop_quantity,u.unit as unit')
+        ->join('products', 'products.id = purchase_order_products.product_id')
+        ->join('units u', 'u.id = products.unit_id','left')
+        ->where('order_id', $orderId)
+        ->groupBy('unit,product_name')
+        ->findAll();
+ 
+        //Get employee signature
+        $user = new UserModel();
+        $data['emp_details']=  $user->select('e.id, e.digital_sign') 
+        ->join('employee e','e.user_id= users.id')                    
+        ->where(['users.id'=>$_SESSION['id']])->where(['e.status'=>1])->first();
+        // $db = \Config\Database::connect();  
+        // echo  $db->getLastQuery()->getQuery(); 
+        //      echo '  <pre>';print_r($data['emp_details']);exit; 
+        
+
+        return view('Purchase/purchaseCheckoutPrint', $data);
+    }
 }

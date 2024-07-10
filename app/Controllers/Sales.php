@@ -421,17 +421,22 @@ class Sales extends BaseController
         ->join('units u', 'u.id = products.unit_id','left')
         ->where('order_id', $orderId)->findAll();
 
-        $data['total_quantity_per_units'] = $this->SOPModel->select('products.product_name,sum(sales_order_products.quantity) as sop_quantity,u.unit as unit')
+        $data['total_quantity_per_units'] = $this->SOPModel->select('products.product_name as product_name,sum(sales_order_products.quantity) as sop_quantity,u.unit as unit')
         ->join('products', 'products.id = sales_order_products.product_id')
         ->join('units u', 'u.id = products.unit_id','left')
         ->where('order_id', $orderId)
-        ->groupBy('unit')
+        ->groupBy('unit,product_name')
         ->findAll();
 
-        //  $db = \Config\Database::connect();  
-        // echo  $db->getLastQuery()->getQuery();
-        //     echo ' res <pre>';print_r($data['added_products']);exit; 
+        //Get employee signature
+        $user = new UserModel();
+        $data['emp_details']=  $user->select('e.id, e.digital_sign') 
+        ->join('employee e','e.user_id= users.id')                    
+        ->where(['users.id'=>$_SESSION['id']])->where(['e.status'=>1])->first();
 
+        //  $db = \Config\Database::connect();  
+        // echo  $db->getLastQuery()->getQuery(); 
+         //     echo '  <pre>';print_r($data['added_products']);exit; 
         return view('Sales/salesCheckoutPrint', $data);
     }
 }

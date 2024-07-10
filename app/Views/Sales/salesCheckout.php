@@ -137,7 +137,8 @@
       $.confirm = function() {
         if(confirm("Do you want to print & send for invoice?")){
           if(confirm("Do you want to print & send for invoice?")){
-              window.print();
+              // window.print();
+              print_data(<?= $token ?>);
               $.ajax({
                   type: "GET",
                   url: "<?= base_url('sales/sendToInvoice/' . $token ) ?>",
@@ -153,6 +154,17 @@
           }
         }
         window.location.replace("<?= base_url('sales/add-products/' . $token) ?>");
+      }
+
+      function print_data(id){
+        var url = "<?php echo base_url('sales/sales-checkout-print/'); ?>" + id;  
+
+        var printWindow = window.open( url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
+        printWindow.addEventListener('load', function(){
+            printWindow.print();
+            printWindow.close();
+        }, false);
+            
       }
     </script>
 </body>

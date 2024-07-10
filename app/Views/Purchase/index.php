@@ -208,7 +208,7 @@
       }
 
       function print_data(id){
-        var url = "<?php echo base_url('purchase/purchase-checkout/'); ?>" + id;  
+        var url = "<?php echo base_url('purchase/purchase-checkout-print/'); ?>" + id;  
 
         var printWindow = window.open( url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
         printWindow.addEventListener('load', function(){

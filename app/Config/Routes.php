@@ -261,6 +261,7 @@ $routes->match(['get', 'post'], 'purchase/purchase-checkout/(:num)', 'Purchase::
 $routes->get('purchase/deletePurchaseOrder/(:num)', 'Purchase::deletePurchaseOrder/$1');
 $routes->post('purchase/showWebCam', 'Purchase::showWebCam');
 $routes->get('purchase/view/(:num)', 'Purchase::view/$1');
+$routes->match(['get', 'post'], 'purchase/purchase-checkout-print/(:num)', 'Purchase::purchaseCheckoutPrint/$1');
 
 //Purchase/Inward Invoice listing
 $routes->match(['get', 'post'], 'purchase-invoices', 'PurchaseInvoices::index');
