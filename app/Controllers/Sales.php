@@ -293,12 +293,53 @@ class Sales extends BaseController
         return view('Sales/addProducts', $data);
     }
 
+    // public function getProducts()
+    // {
+    //     $category_id = $this->request->getPost('category_id');
+
+    //     $data['products'] = $this->PModel->where('category_id', $category_id)->where('status', '1')->where('is_deleted', '0')->findAll();
+    //     return view('Sales/productTable', $data);
+    // }
+    
     public function getProducts()
     {
-        $category_id = $this->request->getPost('category_id');
+        $category_id = $this->request->getPost('category_id'); 
 
-        $data['products'] = $this->PModel->where('category_id', $category_id)->where('status', '1')->where('is_deleted', '0')->findAll();
+        $UModel = new UserModel();
+        $u_home_branch = $UModel->where('id', $_SESSION['id'])->first()['home_branch']; 
+        $query = "(SELECT IFNULL((sum(qty_in) - sum(qty_out)), 0) FROM  inventories i WHERE i.product_id=products.id and  i.warehouse_id=pwl.warehouse_id) as stock_in_hand";
+
+        $data['products'] = $this->PModel->select('products.*,u.unit, '.$query.'')
+        ->join('product_warehouse_link pwl','pwl.product_id=products.id')
+        ->join('warehouses w','w.id=pwl.warehouse_id')
+        ->join('units u', 'products.unit_id = u.id','left') 
+        ->where('products.category_id', $category_id)
+        ->where('products.status', '1')
+        ->where('products.is_deleted', '0')
+        ->where('w.office_id', $u_home_branch)
+        ->findAll();
+    //     $db = \Config\Database::connect();  
+    // echo  $db->getLastQuery()->getQuery();
+    // echo '   <pre>';
+    // print_r($data['products']);
+    // exit; 
         return view('Sales/productTable', $data);
+    }
+    function checkStockInHand($product_id){
+        $UModel = new UserModel();
+        $u_home_branch = $UModel->where('id', $_SESSION['id'])->first()['home_branch']; 
+        
+        $InventoryModel = new InventoryModel();
+        $product_stock = $this->InventoryModel->select('(IFNULL((sum(qty_in) - sum(qty_out)), 0)) as stock_in_hand')
+        ->join('products','products.id=inventories.product_id')
+        ->join('product_warehouse_link pwl','pwl.product_id=products.id')
+        ->join('warehouses w','w.id=pwl.warehouse_id') 
+        ->where('products.status', '1')
+        ->where('products.is_deleted', '0')
+        ->where('w.office_id', $u_home_branch)
+        ->where('products.id', $product_id)
+        ->first(); 
+        echo json_encode($product_stock);exit;
     }
 
     public function deleteProd($id, $sp_id)
