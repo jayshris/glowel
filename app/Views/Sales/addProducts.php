@@ -161,7 +161,7 @@
 
 
             <button type="button" class="btn btn-primary mt-4"  onclick="$.confirm()">Proceed To Checkout</button>
-
+                        
 
           </div>
 
@@ -172,6 +172,38 @@
 
     </div>
     <!-- /Main Wrapper -->
+
+    <div class="modal fade" id="open-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+            <button type="button" class="close"  data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="showdata">
+              <div class="row">
+                <div class="col-md-12  mt-2">
+                  <input class="form-check-input partychk" type="checkbox" name="confirm_product_qty" id="confirm_product_qty_id" onclick="$.checkConfirm()" />
+                  <label class="form-check-label" for="confirm_product_qty_id">Confirm?</label>
+                </div>
+                <br>
+                <div class="col-md-12 mt-2"> 
+                  <select class="form-select" name="customer_name">
+                     <option >Select</option>>
+                  </select> 
+                </div>
+              </div>
+          </div>
+          <hr>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal" id="cam_modal_close_btn">No</button>
+            <button type="button" class="btn btn-primary disabled" id="confirm_product_qty_btn" >Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- scripts link  -->
     <?= $this->include('partials/vendor-scripts') ?>
@@ -234,6 +266,30 @@
           }
         });
       }
+      
+      $.showConfirm = function(product_id) {  
+        $.ajax({
+          type: "GET",
+          url: "<?= base_url('sales/checkStockInHand/') ?>"+product_id,
+          dataType: "json",
+          success: function(result) {
+            var qty = $('#qty_'+product_id).val(); 
+            if(result.stock_in_hand < qty){
+              $("#open-modal").modal("show"); 
+            } 
+          }
+        });
+      }
+      //confirm_product_qty_id
+
+      $.checkConfirm = function(index) {
+          if ($('#confirm_product_qty_id').is(':checked')) {
+            $('#confirm_product_qty_btn').removeClass('disabled');  
+          } else { 
+            $('#confirm_product_qty_btn').addClass('disabled'); 
+          }
+      }
+
     </script>
 </body>
 

@@ -13,11 +13,12 @@
                 <img src="<?= base_url('public/uploads/products/') . $pc['product_image_1'] ?>" class="card-img" alt="...">
                 <div class="card-body">
                     <div class="card-text mb-0">
-                        <h6>Stock In Hand : XX</h6>
+                        <h6>Stock In Hand : <?= $pc['stock_in_hand'] ?></h6>
 
                         <div class="input-group mt-2">
                             <span class="input-group-text">Qty</span>
-                            <input type="text" class="form-control" name="qty_<?= $pc['id'] ?>" id="qty_<?= $pc['id'] ?>" placeholder="Quantity" aria-label="Order Quantity" readonly>
+                            <input type="number" class="form-control" name="qty_<?= $pc['id'] ?>" id="qty_<?= $pc['id'] ?>" placeholder="Quantity" aria-label="Order Quantity" readonly onChange="$.showConfirm(<?= $pc['id'] ?>);">
+                            <span class="input-group-text"><?= $pc['unit'] ?></span>
                         </div>
                     </div>
                 </div>
