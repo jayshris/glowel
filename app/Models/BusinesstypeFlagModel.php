@@ -12,7 +12,7 @@ class BusinessTypeFlagModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['business_type_id','flags_id'];
+    protected $allowedFields    = ['business_type_id', 'flags_id', 'mandatory'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

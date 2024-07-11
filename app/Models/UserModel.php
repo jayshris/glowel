@@ -113,4 +113,43 @@ class UserModel extends Model
             return false;
           }
     }
+
+	public function getUserRoleModules($roleID=3){
+    try{
+      $sql = "SELECT t2.module_name, t1.* FROM ".ROLE_MODULE." t1 INNER JOIN ".MODULE." t2 ON t2.id=t1.module_id WHERE t1.role_id='".$roleID."' AND t2.status_id='1' AND t2.parent_id=0 ORDER BY t2.sort_order ASC";
+      $query = $this->db->query($sql);
+      $rows = $query->getResult();//echo __LINE__.'<br>'.$sql.'<br><pre>';print_r($rows);die;
+      $result = [];
+      if(!empty($rows)){
+        foreach($rows as $r){
+          $parentId = ($r->module_id) ? $r->module_id : 0;
+          $parentName = ($r->module_name) ? $r->module_name : '';
+          $result[$parentId]['module_id'] = $parentId;
+          $result[$parentId]['parent_name'] = $parentName;
+
+          $ssql = "SELECT t2.module_name, t1.* FROM ".ROLE_MODULE." t1 INNER JOIN ".MODULE." t2 ON t2.id=t1.module_id WHERE t1.role_id='".$roleID."' AND t2.status_id='1' AND t2.parent_id=".$parentId." ORDER BY t2.sort_order ASC";
+          $squery = $this->db->query($ssql);
+          $srows = $squery->getResult();
+          if(!empty($srows)){
+            foreach($srows as $sr){
+              $moduleId   = ($sr->module_id) ? $sr->module_id : 0;
+              $moduleName = ($sr->module_name) ? $sr->module_name : '';
+              $sectionId  = ($sr->section_id) ? $sr->section_id : 0;
+              $result[$parentId]['sub_module'][$moduleId]['module_id']   = $moduleId;
+              $result[$parentId]['sub_module'][$moduleId]['module_name'] = $moduleName;
+              $result[$parentId]['sub_module'][$moduleId]['sections'][]  = $sectionId;
+            }
+          }
+          else{
+            $result[$parentId]['sections'] = [];
+          }
+        }
+      }
+      //echo __LINE__.'<pre>';print_r($result);die;
+      return $result;
+    }
+    catch(Exception $e){
+      echo 'FILE: '.__FILE__.'<br>LINE: '.__LINE__.'<br><pre>';print_r($e->getMessage());die;
+    }
+  }
 }

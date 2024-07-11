@@ -12,7 +12,7 @@ class InvoiceModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['invoice_no','sales_order_id','customer_name','delivery_address','invoice_doc','packing_list_doc','e_way_bill_doc','other_doc','status'];
+    protected $allowedFields    = ['invoice_no','sales_order_id','customer_name','delivery_address','invoice_doc','packing_list_doc','e_way_bill_doc','other_doc'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

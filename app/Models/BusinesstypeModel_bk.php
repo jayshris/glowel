@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class ModulesModel extends Model
+class BusinesstypeModel extends Model
 {
-    protected $table            = 'modules_old';
+    protected $table            = 'business_type';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name','status','created_at','updated_at','deleted_at'];
+    protected $allowedFields    = ['company_structure_name','created_at','condition','updated_at	','deleted_at	'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -43,8 +43,4 @@ class ModulesModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-    public function getModelId($name){
-        return self::where('name',$name)->first();
-    }
 }
