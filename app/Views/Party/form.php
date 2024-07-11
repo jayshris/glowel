@@ -24,17 +24,17 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                   <label class="col-form-label">
-                                    Party Type <span class="text-danger">*</span>
+                                    Party Type <span class="text-danger">*</span> 
                                   </label>
                                   <br/>
                                   <?php foreach ($partytype as $pt) { ?>
                                     <div class="form-check form-check-inline">
-                                      <input class="form-check-input checkbx" type="checkbox" name="party_type_id[]" id="chk<?= $pt['name'] ?>" 
+                                      <input class="form-check-input partychk" onclick='partyRequire("partychk")' type="checkbox" name="party_type_id[]" id="chk<?= $pt['id'] ?>" 
                                       value="<?= $pt['id'] ?>" 
                                       <?= !isset($pc_data) ? 'required' : '' ?> 
                                       <?= isset($selected_party_type_ids) && in_array($pt['id'], $selected_party_type_ids) ? 'checked' : '' ?>
                                       >
-                                      <label class="form-check-label" for="chk<?= $pt['name'] ?>"><?= $pt['name'] ?></label>
+                                      <label class="form-check-label" for="chk<?= $pt['id'] ?>"><?= $pt['name'] ?></label>
                                     </div>
                                   <?php } ?>
 
@@ -264,7 +264,7 @@
                                 <label class="col-form-label">
                                 Business type  
                                 </label>
-                                <select class="select" name = "business_type_id" id="business_type_id">
+                                <select class="select" name = "business_type_id" id="business_type_id" onchange="get_flags_fields()">
                                     <option>Select</option>
                                     <?php
                                     if(isset($businesstype)){
@@ -308,3 +308,27 @@
                     </div>
                   </div>
                 </div>
+<script>
+
+function partyRequire(elClass) {
+          el = document.getElementsByClassName(elClass);
+
+          var atLeastOneChecked = false; //at least one cb is checked
+          for (i = 0; i < el.length; i++) {
+            if (el[i].checked === true) {
+              atLeastOneChecked = true;
+            }
+          }
+
+          if (atLeastOneChecked === true) {
+            for (i = 0; i < el.length; i++) {
+              el[i].required = false;
+              // console.log(el[i]);
+            }
+          } else {
+            for (i = 0; i < el.length; i++) {
+              el[i].required = true;
+            }
+          }
+        }
+</script>

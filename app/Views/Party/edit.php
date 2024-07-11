@@ -55,26 +55,51 @@
   <!-- <script src="<?php //echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script> -->
   <!-- <script src="<?php //echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script> -->
   <script>
-    $(document).ready(function() {
-
-      // $.toggle();
-
-      $("#business_type_id").on(' change', function() {
-        $("#target").empty();
-        var level = $(this).val();
-        if (level) {
+    get_flags_fields('<?= $pc_data['id']; ?>');
+     function get_flags_fields(){
+      $("#target").empty();
+        var level = $("#business_type_id").val();
+        if (level) { 
           $.ajax({
             type: 'POST',
             url: '../get_flags_fields',
             data: {
-              business_type: '' + level + ''
+              business_type: '' + level + '',
+              id:'<?= $pc_data['id']; ?>'
             },
             success: function(htmlresponse) {
               $('#target').append(htmlresponse);
             }
           });
         }
-      })
+    }
+
+    $(document).ready(function() {
+
+      // $.toggle();
+//use fun first send id only on business_type_id
+
+      // $("#business_type_id").on(' change', function() {
+       
+        // $("#target").empty();
+        // var level = $(this).val();
+        
+        // if (level) {
+        //   alert(  level);
+        //   $.ajax({
+        //     type: 'POST',
+        //     url: '../get_flags_fields',
+        //     data: {
+        //       business_type: '' + level + '', 
+        //     },
+        //     success: function(htmlresponse) {
+        //       $('#target').append(htmlresponse);
+        //     }
+        //   });
+        // }
+      // });
+ 
+
     });
   </script>
 </body>

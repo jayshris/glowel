@@ -4,10 +4,8 @@
 <head>
   <?= $this->include('partials/title-meta') ?>
   <?= $this->include('partials/head-css') ?>
-  <!-- Feathericon CSS -->
-  <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/feather.css"> -->
 
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
 
 <body>
@@ -15,7 +13,10 @@
   <!-- Main Wrapper -->
   <div class="main-wrapper">
 
-    <?= $this->include('partials/menu') ?>
+    <?= $this->include('partials/menu');
+
+
+    ?>
 
     <!-- Page Wrapper -->
     <div class="page-wrapper">
@@ -26,10 +27,10 @@
             <?= $this->include('partials/page-title') ?>
             <div class="row">
               <div class="col-xl-12 col-lg-12">
-                  <div class="settings-sub-header">
-                    <h6>Add Party</h6>
-                  </div>
-                  <?= $this->include('Party/form.php') ?>
+                <div class="settings-sub-header">
+                  <h6>Add Party</h6>
+                </div>
+                <?= $this->include('Party/form.php') ?>
               </div>
             </div>
 
@@ -44,22 +45,12 @@
 
   <?= $this->include('partials/vendor-scripts') ?>
 
-  <!-- Profile Upload JS -->
-  <!-- <script src="<?php echo base_url(); ?>assets/js/profile-upload.js"></script> -->
-
-  <!-- Sticky Sidebar JS -->
-  <!-- <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
-  <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script> -->
-
   <script>
-  $(document).ready(function() {
-      $('.js-example-basic-multiple').select2();
-  });
-  </script>
-   <script>
-    function get_flags_fields(){
-      $("#target").empty();
-      var level = $("#business_type_id").val();
+    jQuery(document).ready(function($) {
+
+      $("#business_type_id").on('change', function() {
+        $("#target").empty();
+        var level = $(this).val();
         if (level) {
           $.ajax({
             type: 'POST',
@@ -72,25 +63,7 @@
             }
           });
         }
-    }
-    jQuery(document).ready(function($) {
-
-      // $("#business_type_id").on('change', function() {
-      //   $("#target").empty();
-      //   var level = $(this).val();
-      //   if (level) {
-      //     $.ajax({
-      //       type: 'POST',
-      //       url: 'get_flags_fields',
-      //       data: {
-      //         business_type: '' + level + ''
-      //       },
-      //       success: function(htmlresponse) {
-      //         $('#target').append(htmlresponse);
-      //       }
-      //     });
-      //   }
-      // });
+      });
 
 
       $.validate = function(flag_id) {
@@ -114,12 +87,9 @@
             }
           }
         });
-        
 
-       
       }
 
-      
     });
   </script>
 </body>
