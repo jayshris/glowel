@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class BusinesstypeFlagModel extends Model
+class BusinessTypeFlagModel extends Model
 {
     protected $table            = 'business_type_flags';
     protected $primaryKey       = 'id';

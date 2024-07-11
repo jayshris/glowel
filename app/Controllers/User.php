@@ -1,20 +1,24 @@
 <?php
 namespace App\Controllers;
 use App\Models\UserModel;
-use App\Models\UserTypeModel;
-use App\Models\CompanyModel;
 use App\Models\OfficeModel;
+use App\Models\CompanyModel;
 use App\Models\ModulesModel;
+use App\Models\EmployeeModel;
+use App\Models\UserTypeModel;
 use App\Models\UserBranchModel;
 
 class User extends BaseController {
 
         public $_access;
-
+        public $EmployeeModel;
+        public $session;
         public function __construct()
         {
             $u = new UserModel();
             $access = $u->setPermission();
+            $this->EmployeeModel = new EmployeeModel();
+            $this->session = \Config\Services::session();
             $this->_access = $access; 
         }
 
@@ -244,5 +248,13 @@ class User extends BaseController {
                     }
                 }
                 echo $branches;exit;
+        }
+
+        public function getEmployeess()
+        {  
+                
+                $rows = $this->EmployeeModel->where(['created_by'=>$_SESSION['id']])->orderBy('name','asc')->findAll();
+                echo json_encode($rows);exit;
+                // echo '<pre>';print_r($rows);exit;
         }
 }
