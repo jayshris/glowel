@@ -17,7 +17,7 @@ class Company extends BaseController {
 
         public function index()
         {
-          $access = $this->_access; 
+          $access = $this->_access; //echo __LINE__.'<pre>';print_r($this->view);die;
           if($access === 'false'){
             $session = \Config\Services::session();
             $session->setFlashdata('error', 'You are not permitted to access this page');
@@ -25,14 +25,14 @@ class Company extends BaseController {
           }else{
             $companyModel = new CompanyModel();
   
-            $data['company_data'] = $companyModel->orderBy('id', 'DESC')->paginate(10);
+            $this->view['company_data'] = $companyModel->orderBy('id', 'DESC')->paginate(10);
   
-            $data['pagination_link'] = $companyModel->pager;
+            $this->view['pagination_link'] = $companyModel->pager;
   
-            $data['page_data'] = [
+            $this->view['page_data'] = [
               'page_title' => view( 'partials/page-title', [ 'title' => 'Company','li_1' => '123','li_2' => 'deals' ] )
               ];
-            return view('Company/index',$data);
+            return view('Company/index',$this->view);
           }
         }
 
@@ -44,10 +44,10 @@ class Company extends BaseController {
             $session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(site_url('/dashboard'));
           }else{
-              $data = [
+              $this->view = [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Add Company','li_2' => 'profile' ] )
                 ];
-              return view( 'Company/create',$data );
+              return view( 'Company/create',$this->view );
           }
         }
 
@@ -99,7 +99,7 @@ class Company extends BaseController {
             return $this->response->redirect(site_url('/dashboard'));
           }else{
             $companyModel = new CompanyModel();
-            $data['company_data'] = $companyModel->where('id', $id)->first();
+            $this->view['company_data'] = $companyModel->where('id', $id)->first();
             
             $request = service('request');
             if($this->request->getMethod()=='POST'){
@@ -109,7 +109,7 @@ class Company extends BaseController {
               ]);
               if(!$error)
               {
-                $data['error'] 	= $this->validator;
+                $this->view['error'] 	= $this->validator;
               }else {
                 $officeModel = new CompanyModel();
                 $officeModel->update($id,[
@@ -127,7 +127,7 @@ class Company extends BaseController {
             }
           }
 
-          return view('Company/edit', $data);
+          return view('Company/edit', $this->view);
 
         }
 

@@ -30,9 +30,9 @@ class Login extends BaseController
         //avoid multiple login
         $login_status = $model->where('email', $email)->where('logout_at',NULL)->first();
 
-        if(isset( $login_status )){
+        /*if(isset( $login_status )){
             return redirect()->back()->withInput()->with('error', 'Multiple browser login is not allowed!');
-        }
+        }*/
 
         if(is_null($user)) {
             return redirect()->back()->withInput()->with('error', 'User does not exists!');
@@ -47,7 +47,11 @@ class Login extends BaseController
         $ses_data = [
             'id' => $user['id'],
             'email' => $user['email'],
-            'isLoggedIn' => TRUE
+            'isLoggedIn' => TRUE,
+            'ACCESS' => $user['id'],
+            'ROLE' => $user['role_id'],
+            'PARENT' => $user['parent_id'],
+            'NAME' => $user['first_name'].' '.$user['last_name']
         ];
  
         $session->set($ses_data);

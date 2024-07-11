@@ -26,10 +26,9 @@ class Office extends BaseController {
             $session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(site_url('/dashboard'));
           }else{
-              $officeModel = new OfficeModel(); 
+              $officeModel = new OfficeModel();
               $officeModel->select('office.*,c.name as cname')->join('company c','office.company_id = c.id'); 
               $data['office_data'] = $officeModel->orderBy('id', 'DESC')->paginate(10);
-              // echo '<pre>';print_r($data);exit;
               $data['pagination_link'] = $officeModel->pager;
               $data['page_data'] = [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Company','li_1' => '123','li_2' => 'deals' ] )
@@ -79,7 +78,8 @@ class Office extends BaseController {
                       'office_code'	=>	 $request->getPost('office_code'),
                       'address'	=>	$request->getPost('address'),
                       'state'	=>	$request->getPost('state'),
-                      'postcode'	=>	$request->getPost('postcode'), 
+                      'postcode'	=>	$request->getPost('postcode'),
+                      // 'booking_prefix'	=>	$request->getPost('book_prefix'),
                       'status'  => 1,
                       'created_at'  =>  date("Y-m-d h:i:sa"),
                       'creator_ip_address'=>	$_SERVER['REMOTE_ADDR'],
@@ -140,7 +140,8 @@ class Office extends BaseController {
                     'address'	=>	$request->getPost('address'),
                     'state'	=>	$request->getPost('state'),
                     'city'	=>	$request->getPost('city'),
-                    'postcode'	=>	$request->getPost('postcode'), 
+                    'postcode'	=>	$request->getPost('postcode'),
+                    // 'booking_prefix'	=>	$request->getPost('book_prefix'),
                     'status'  => 1,
                     'created_at'  =>  date("Y-m-d h:i:sa"),
                     'creator_ip_address'=>	$_SERVER['REMOTE_ADDR'],

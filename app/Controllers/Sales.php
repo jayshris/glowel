@@ -2,19 +2,19 @@
 
 namespace App\Controllers;
 
-use App\Models\UserModel;
-use App\Models\PartyModel;
-use App\Models\ProductsModel;
-use App\Models\InventoryModel;
-use App\Models\SalesOrderModel;
-use App\Models\NotificationModel;
-use App\Models\SalesProductModel;
 use App\Controllers\BaseController;
 use App\Models\ProductCategoryModel;
+use App\Models\ProductsModel;
+use App\Models\ProductWarehouseLinkModel;
+use App\Models\SalesOrderModel;
+use App\Models\SalesProductModel;
+use App\Models\UserModel;
+use App\Models\PartyModel;
+use App\Models\NotificationModel;
+use App\Models\InventoryModel;
 use App\Models\OfficeModel;
 
 use CodeIgniter\HTTP\ResponseInterface;
-use App\Models\ProductWarehouseLinkModel;
 
 class Sales extends BaseController
 {
@@ -44,7 +44,6 @@ class Sales extends BaseController
         $this->NModel = new NotificationModel();
         $this->InventoryModel = new InventoryModel();
         $this->OfficeModel = new OfficeModel();
-
         $user = new UserModel();
         $this->access = $user->setPermission();
 
@@ -100,18 +99,18 @@ class Sales extends BaseController
             } 
         }  
         $data['customers'] = $this->partyModel->select('id,party_name')->where('status', 1)->findAll();
-        $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();   
+        $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
         $data['branches'] = $this->selectUserBranches(); 
         return view('Sales/create', $data);
          
     }
     function selectUserBranches(){
-       $user = new UserModel();
-       return $user->select('o.id,o.name')
-        ->join('company c','users.company_id = c.id') 
-        ->join('office o','c.id= o.company_id')                    
-        ->where(['users.id'=>$_SESSION['id']])->where(['o.status'=>1])->orderBy('o.name','asc')->findAll();
-    }
+        $user = new UserModel();
+        return $user->select('o.id,o.name')
+         ->join('company c','users.company_id = c.id') 
+         ->join('office o','c.id= o.company_id')                    
+         ->where(['users.id'=>$_SESSION['id']])->where(['o.status'=>1])->orderBy('o.name','asc')->findAll();
+     }
     public function edit($id)
     {
         if ($this->access === 'false') {
@@ -120,14 +119,13 @@ class Sales extends BaseController
         } else if ($this->request->getPost()) {
             $error = $this->validate([
                 'customer_name' => [ 
-                    'rules' => 'regex_match[^[a-zA-Z0-9\s]*$]', 
+                    'rules' => 'trim|regex_match[^[a-zA-Z0-9\s]*$]', 
                     'errors' => [
                         'regex_match' => 'The customer  field only contain alphanumeric characters.',
-                    ], 
+                    ],
                 ], 
                 'branch_id'   =>'required'
             ]); 
-            
             //as per discussed max size validation not required
             if($this->request->getFile('img_1')->getSize() > 0) {
                 $this->validateData([], [
@@ -140,8 +138,6 @@ class Sales extends BaseController
                 ]); 
             }
             $validation = \Config\Services::validation(); 
-
-            // echo 'Files<pre>';print_r($_FILES);
             // echo 'POst dt<pre>';print_r($this->request->getPost());
             // echo 'getErrors<pre>';print_r($validation->getErrors());exit;
             if (!empty($validation->getErrors())) {
@@ -166,17 +162,15 @@ class Sales extends BaseController
                 }else if($this->request->getPost('image_2')){
                     $so_data['image_2'] = $this->uploadFileWithCam($id,$this->request->getPost(),'image_2');
                 }
-                // echo '<pre>';print_r($so_data);exit;
                 $this->SOModel->update($id,$so_data);
                 $this->session->setFlashdata('success', 'Order Updated Successfully'); 
                 return $this->response->redirect(base_url('sales/add-products/' . $id));
             }
         }  
-        //order can be edited only 2 times as per doc
-        $this->checkOrderStatus($id); 
-        
+       //order can be edited only 2 times as per doc
+       $this->checkOrderStatus($id);  
+
         $customers = $this->partyModel->select('id,party_name')->where('status', 1)->findAll();
-        
         $data['customers']  = array_column($customers,'party_name','id');
         $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
         $data['order_details'] = $this->SOModel->where('id', $id)->first();
@@ -184,13 +178,11 @@ class Sales extends BaseController
         if(!in_array($data['order_details']['customer_name'],$data['customers'])){
             array_push($data['customers'],$data['order_details']['customer_name']);
         }
-        
+        // echo '<pre>';print_r($data);exit;
         $data['branches'] = $this->selectUserBranches();
-
-        // echo '<pre>';print_r($customers);
-        // echo 'customers<pre>';print_r($data['customers']);exit;
         return view('Sales/edit', $data); 
     }
+
     function uploadFileWithCam($id,$postdata,$flag){ 
         $path ='public/uploads/sales/';
         if (!is_dir($path)) {
@@ -244,12 +236,11 @@ class Sales extends BaseController
 
                     // product rate at home branch warehouse
                     $res = $this->PWLModel->join('warehouses', 'warehouses.id = product_warehouse_link.warehouse_id')->where('product_id', $product)->where('office_id', $u_home_branch)->first();
-                    // print_r($res);exit;
-                    if(!$res){
+                     // print_r($res);exit;
+                     if(!$res){
                         $this->session->setFlashdata('danger', 'Home Branch not found, please check!!!');
                         return redirect()->to('/sales/add-products/' . $id);
                     }
-
                     if(isset($sale_order_product) && !empty($sale_order_product)){
                         //edit sales order product 
                         $qty= $this->request->getPost('qty_' . $product) + $sale_order_product['quantity'];
@@ -286,8 +277,7 @@ class Sales extends BaseController
                 $this->session->setFlashdata('success', 'Selected Products Added To Order');
             } else {
                 $this->session->setFlashdata('danger', 'Home branch not set for user');
-            }
-            
+            } 
             if($this->request->getPost('sales_invoice_verification_form')){
                 return redirect()->to('/sales-invoices-verifivation/save/' . $id);
             }else{
@@ -305,43 +295,10 @@ class Sales extends BaseController
 
     public function getProducts()
     {
-        $category_id = $this->request->getPost('category_id'); 
+        $category_id = $this->request->getPost('category_id');
 
-        $UModel = new UserModel();
-        $u_home_branch = $UModel->where('id', $_SESSION['id'])->first()['home_branch']; 
-        $query = "(SELECT IFNULL((sum(qty_in) - sum(qty_out)), 0) FROM  inventories i WHERE i.product_id=products.id and  i.warehouse_id=pwl.warehouse_id) as stock_in_hand";
-
-        $data['products'] = $this->PModel->select('products.*,u.unit, '.$query.'')
-        ->join('product_warehouse_link pwl','pwl.product_id=products.id')
-        ->join('warehouses w','w.id=pwl.warehouse_id')
-        ->join('units u', 'products.unit_id = u.id','left') 
-        ->where('products.category_id', $category_id)
-        ->where('products.status', '1')
-        ->where('products.is_deleted', '0')
-        ->where('w.office_id', $u_home_branch)
-        ->findAll();
-    //     $db = \Config\Database::connect();  
-    // echo  $db->getLastQuery()->getQuery();
-    // echo '   <pre>';
-    // print_r($data['products']);
-    // exit; 
+        $data['products'] = $this->PModel->where('category_id', $category_id)->where('status', '1')->where('is_deleted', '0')->findAll();
         return view('Sales/productTable', $data);
-    }
-    function checkStockInHand($product_id){
-        $UModel = new UserModel();
-        $u_home_branch = $UModel->where('id', $_SESSION['id'])->first()['home_branch']; 
-        
-        $InventoryModel = new InventoryModel();
-        $product_stock = $this->InventoryModel->select('(IFNULL((sum(qty_in) - sum(qty_out)), 0)) as stock_in_hand')
-        ->join('products','products.id=inventories.product_id')
-        ->join('product_warehouse_link pwl','pwl.product_id=products.id')
-        ->join('warehouses w','w.id=pwl.warehouse_id') 
-        ->where('products.status', '1')
-        ->where('products.is_deleted', '0')
-        ->where('w.office_id', $u_home_branch)
-        ->where('products.id', $product_id)
-        ->first(); 
-        echo json_encode($product_stock);exit;
     }
 
     public function deleteProd($id, $sp_id)
@@ -413,7 +370,6 @@ class Sales extends BaseController
     }
 
     function view($orderId){
-        $this->checkOrderStatus($orderId);
         $data['token'] = $orderId;
         $data['order_details'] = $this->SOModel->where('id', $orderId)->first();
         $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $orderId)->findAll();
@@ -443,7 +399,7 @@ class Sales extends BaseController
             return $this->response->redirect(base_url('sales/index'));
         }
     }
-
+    
     function salesCheckoutPrint($orderId){
         $data['token'] = $orderId;
         $data['order_details'] = $this->SOModel->select('sales_orders.*,p.business_address,p.primary_phone')
@@ -454,22 +410,23 @@ class Sales extends BaseController
         ->join('units u', 'u.id = products.unit_id','left')
         ->where('order_id', $orderId)->findAll();
 
-        $data['total_quantity_per_units'] = $this->SOPModel->select('products.product_name as product_name,sum(sales_order_products.quantity) as sop_quantity,u.unit as unit')
+        $data['total_quantity_per_units'] = $this->SOPModel->select('products.product_name product_name,sum(sales_order_products.quantity) as sop_quantity,u.unit as unit')
         ->join('products', 'products.id = sales_order_products.product_id')
         ->join('units u', 'u.id = products.unit_id','left')
         ->where('order_id', $orderId)
         ->groupBy('unit,product_name')
         ->findAll();
-
+ 
         //Get employee signature
         $user = new UserModel();
         $data['emp_details']=  $user->select('e.id, e.digital_sign') 
         ->join('employee e','e.user_id= users.id')                    
         ->where(['users.id'=>$_SESSION['id']])->where(['e.status'=>1])->first();
-
+        
         //  $db = \Config\Database::connect();  
         // echo  $db->getLastQuery()->getQuery(); 
-         //     echo '  <pre>';print_r($data['added_products']);exit; 
+            //  echo '  <pre>';print_r($data['emp_details']);exit; 
+
         return view('Sales/salesCheckoutPrint', $data);
     }
 }

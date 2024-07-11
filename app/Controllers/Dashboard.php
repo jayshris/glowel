@@ -10,7 +10,7 @@ class Dashboard extends BaseController
     public function index()
     {
         if (session()->get('isLoggedIn')) {
-            return view('deals-dashboard');
+            return view('deals-dashboard', $this->view);
         }else{
             return $this->response->redirect(site_url('/'));
         }

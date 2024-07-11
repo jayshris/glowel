@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
@@ -8,6 +7,7 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use App\Libraries\Permission;
 
 /**
  * Class BaseController
@@ -37,6 +37,8 @@ abstract class BaseController extends Controller
      */
     protected $helpers = [];
 
+	public $view  = [];
+
     /**
      * Be sure to declare properties for any property fetch you initialized.
      * The creation of dynamic property is deprecated in PHP 8.2.
@@ -54,5 +56,8 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
+
+		$permission = new Permission();
+        $this->view = $permission->HeaderMenuItems();//echo __LINE__.'<pre>';print_r($this->view);die;
     }
 }
