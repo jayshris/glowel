@@ -4,6 +4,8 @@
 <head>
   <?= $this->include('partials/title-meta') ?>
   <?= $this->include('partials/head-css') ?>
+  <!-- Feathericon CSS -->
+  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/feather.css">
 
 
 </head>
@@ -24,14 +26,10 @@
             <?= $this->include('partials/page-title') ?>
             <div class="row">
               <div class="col-xl-12 col-lg-12">
-
-
-                <div class="settings-sub-header">
-                  <h6>Update Business Type</h6>
-                </div>
-                <?= $this->include('BusinessType/form.php') ?>
-
-
+                  <div class="settings-sub-header">
+                    <h6>Add Vehicle Certificates</h6>
+                  </div>
+                  <?= $this->include('Party/form.php') ?>
               </div>
             </div>
 
@@ -45,22 +43,17 @@
   <!-- /Main Wrapper -->
 
   <?= $this->include('partials/vendor-scripts') ?>
+
+  <!-- Profile Upload JS -->
+  <script src="<?php echo base_url(); ?>assets/js/profile-upload.js"></script>
+
+  <!-- Sticky Sidebar JS -->
+  <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+  <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
   <script>
-    $(document).ready(function() {
-
-      $.flags = function() {
-
-        $('input.form-check-input[type="radio"]').removeAttr('required');
-
-        $('input[name="flags[]"]:checked').each(function() {
-          $('#flag_' + $(this).val() + '_radio1').attr('required', 'required');
-        })
-      }
-
-
-      $.flags();
-
-    });
+  $(document).ready(function() {
+      $('.js-example-basic-multiple').select2();
+  });
   </script>
 </body>
 

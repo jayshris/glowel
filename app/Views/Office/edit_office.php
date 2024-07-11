@@ -231,6 +231,25 @@
                               </div>
                             </div>
 
+                            <!-- <div class="col-md-6">
+                              <div class="form-wrap">
+                                <label class="col-form-label">
+                                  Booking Prefix <span class="text-danger"></span>
+                                </label>
+
+                                <input type="text" name="book_prefix" class="form-control" value="<?php
+                                if(isset($office_data)){
+                                  echo $office_data['booking_prefix'];
+                                }
+                                ?>">
+                                <?php
+                                  if($validation->getError('book_prefix'))
+                                  {
+                                      echo '<div class="alert alert-danger mt-2">'.$validation->getError('book_prefix').'</div>';
+                                  }
+                                 ?>
+                              </div>
+                            </div> -->
 
 
                           </div>

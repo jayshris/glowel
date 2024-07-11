@@ -168,7 +168,7 @@
                   </div>
                   <div class="col-md-4">
                     <?php if(!empty($emp_details['digital_sign'])) { ?>
-                    <img src="<?= base_url('public/assets/img/'.$emp_details['digital_sign']) ?>"  />
+                      <img src="<?= base_url('public/assets/img/'.$emp_details['digital_sign']) ?>"  />
                     <?php }?>
                   </div>
               </div>

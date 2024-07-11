@@ -4,7 +4,7 @@
     foreach ($products as $pc) {
     ?>
 
-        <div class="col-md-4 ml-0">
+        <div class="col-md-2 ml-0">
             <div class="card" id="card_<?= $pc['id'] ?>" style="background-color: #efefef">
                 <div class="card-body">
                     <input class="form-check-input" name="product_id[]" type="checkbox" onclick="$.toggle(<?= $pc['id'] ?>);" value="<?= $pc['id'] ?>" id="product_<?= $pc['id'] ?>" style="width: 20px; height:20px;">

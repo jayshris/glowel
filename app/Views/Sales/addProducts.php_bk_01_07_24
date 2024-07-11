@@ -160,7 +160,7 @@
             </div>
 
 
-            <button type="button" class="btn btn-primary mt-4"  onclick="$.confirm()">Proceed To Checkout</button>
+            <button type="submit" class="btn btn-primary mt-4">Proceed To Checkout</button>
 
 
           </div>
@@ -217,22 +217,6 @@
         if (confirm("Do you want to remove this product from order ?")) {
           window.location.replace("<?= base_url('sales/delete-product/' . $token . '/') ?>" + index);
         }
-      }
-
-      $.confirm = function() {
-        $.ajax({
-          type: "GET",
-          url: "<?= base_url('sales/getOrderProducts/' . $token ) ?>",
-          success: function(status) {
-            if(status>0){
-                if (confirm("Do you want to proceed?")) {
-                  window.location.replace("<?= base_url('sales/sales-checkout/'. $token) ?>");   
-                }
-              }else{
-              alert('Please select category and add products.');
-            }
-          }
-        });
       }
     </script>
 </body>

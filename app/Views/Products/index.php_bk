@@ -25,11 +25,11 @@
             <div class="page-header">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h4 class="page-title">Sales Orders</h4>
+                  <h4 class="page-title">Products</h4>
                 </div>
                 <div class="col-4 text-end">
                   <div class="head-icons">
-                    <a href="<?= base_url('sales') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
+                    <a href="<?= base_url('products') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
                     <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header"><i class="ti ti-chevrons-up"></i></a>
                   </div>
                 </div>
@@ -37,28 +37,38 @@
             </div>
             <!-- /Page Header -->
 
-            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('sales'); ?>">
+            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('products'); ?>">
               <div class="card main-card">
                 <div class="card-body">
                   <h4>Search / Filter</h4>
                   <hr>
                   <div class="row mt-2">
 
+                    <div class="col-md-3">
+                      <label class="col-form-label">Product Type</label>
+                      <select class="form-select" name="product_type" aria-label="Default select example">
+                        <option value="">Select Type</option>
+                        <?php foreach ($product_types as $p) {
+                          echo '<option value="' . $p['id'] . '" ' . (set_value('product_type') == $p['id'] ? 'selected' : '') . '>' . $p['type_name'] . '</option>';
+                        } ?>
+                      </select>
+                    </div>
+
                     <div class="col-md-2">
                       <div class="form-wrap">
                         <label class="col-form-label">Status</label>
                         <select class="form-select" name="status" aria-label="Default select example">
                           <option value="">Select Status</option>
-                          <option value="0">Open</option>
-                          <option value="1">Ready for Invoicing</option>
+                          <option value="1">Active</option>
+                          <option value="0">Inactive</option>
                         </select>
                       </div>
                     </div>
 
                     <div class="col-md-7">
                       <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
-                      <a href="./sales" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
-                      <a href="<?= base_url('sales/create') ?>" class="btn btn-danger mt-4">Add Order</a>
+                      <a href="./products" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
+                      <a href="<?= base_url('products/create') ?>" class="btn btn-danger mt-4">Add New Product</a>
                     </div>
                   </div>
                 </div>
@@ -105,8 +115,10 @@
                       <tr>
                         <th>#</th>
                         <th>Action</th>
-                        <th>Order No</th>
-                        <th>Customer Name</th>
+                        <th>Thumbnail</th>
+                        <th>Product Name</th>
+                        <th>Type</th>
+                        <th>Category</th>
                         <th>Added</th>
                         <th>Updated</th>
                         <th>Status</th>
@@ -115,24 +127,24 @@
                     <tbody>
                       <?php
                       $i = 1;
-                      foreach ($orders as $pc) { ?>
+                      foreach ($products as $pc) { ?>
                         <tr>
                           <td><?= $i++; ?>.</td>
                           <td>
-                          <a href="<?= base_url('sales/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >0) && (!in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-pencil"></i></a>
-                          <a href="<?= base_url('sales/view/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >0) && (!in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-eye"></i></a>
-                             <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
-                             <button type="button" onclick="print_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-printer"></i></button>  
-                             <button type="button" onclick="cancel_status('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm <?php if ($pc['status'] != ORDER_STATUS['open']) { ?> disabled <?php } ?>"> <i class="fa fa-close"></i></button> 
+                            <a href="<?= base_url('products/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
+
+                            <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                           </td>
-                          <td><?= $pc['order_no'] ?></td>
-                          <td><?= $pc['customer_name'] ?></td>
+                          <td><a href="<?= base_url('public/uploads/products/') . $pc['product_image_1'] ?>" target="_blank"><img src="<?= base_url('public/uploads/products/') . $pc['product_image_1'] ?>" style="height: 60px;"></a> </td>
+                          <td><?= $pc['product_name'] ?></td>
+                          <td><?= $pc['type_name'] ?></td>
+                          <td><?= $pc['cat_name'] ?></td>
                           <td><?= date('d M Y', strtotime($pc['added_date'])) ?></td>
                           <td><?= $pc['modify_date'] != '' ? date('d M Y', strtotime($pc['modify_date'])) : '' ?></td>
                           <td>
-                          <?php if (PURCHASE_STATUS_DETAILS[$pc['status']] == ORDER_STATUS['ready_for_invoicing']) {
-                              echo '<span class="badge badge-pill bg-success">'.PURCHASE_STATUS_DETAILS[$pc['status']].'</span>';
-                            } else echo '<span class="badge badge-pill bg-danger">'.PURCHASE_STATUS_DETAILS[$pc['status']].'</span>';
+                            <?php if ($pc['status']) {
+                              echo '<span class="badge badge-pill bg-success">Active</span>';
+                            } else echo '<span class="badge badge-pill bg-danger">Inactive</span>';
                             ?>
                           </td>
                         </tr>
@@ -170,7 +182,7 @@
     <script>
       function delete_data(id) {
         if (confirm("Are you sure you want to remove this product ?")) {
-          window.location.href = "<?php echo base_url('sales/deleteSaleOrder/'); ?>" + id;
+          window.location.href = "<?php echo base_url('products-delete/'); ?>" + id;
         }
         return false;
       }
@@ -198,24 +210,6 @@
             $('.dataTables_length').appendTo('.datatable-length');
           }
         });
-      }
-
-      function print_data(id){
-        var url = "<?php echo base_url('sales/sales-checkout-print/'); ?>" + id;  
-
-        var printWindow = window.open( url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
-        printWindow.addEventListener('load', function(){
-            printWindow.print();
-            printWindow.close();
-        }, false);
-            
-      }
-
-      function cancel_status(id) {
-        if (confirm("Are you sure you want to cancel this order ?")) {
-          window.location.href = "<?php echo base_url('sales/updateStatus/'); ?>" + id;
-        }
-        return false;
       }
     </script>
 </body>

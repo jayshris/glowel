@@ -1,16 +1,3 @@
-<?php
-// $uri = new \CodeIgniter\HTTP\URI(current_url(true));
-// $pages = $uri->getSegments();
-// $page = $uri->getSegment(3);
-
-
-$router = service('router');
-$controller  = class_basename($router->controllerName());
-$page = $controller;
-// $method = $router->methodName();
-?>
-
-<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
@@ -19,20 +6,64 @@ $page = $controller;
                     <a href="<?php echo base_url(); ?>profile">
                         <img src="<?php echo base_url(); ?>public/assets/img/profiles/avatar-14.jpg" class="img-fluid" alt="Profile">
                         <div class="user-names">
-                            <h5>Aubade-Tech</h5>
-                            <h6>Team Lead</h6>
-                            <?php
-                            // var_dump($page);
-                            echo 'Controller : ' . $controller;
-                            // var_dump($method);
-                            ?>
+                            <h5><?php echo isset($logName) ? $logName : 'Guest'; ?></h5>
                         </div>
                     </a>
                 </li>
             </ul>
+
+			<ul>
+				<li>
+					<ul>
+						<li>
+							<a href="<?php echo PANEL.'dashboard';?>" <?php echo ((@$currentController=='dashboard') ? 'class="active"' : '');?>>
+								<i class="ti ti-layout-2"></i><span>Dashboard</span>
+							</a>
+						</li>
+						<?php
+						if(isset($menus) && !empty($menus)){
+							foreach($menus as $m){
+								if(isset($m['submodule']) && !empty($m['submodule'])){
+						?>
+						<li class="submenu">
+							<a href="javascript:void(0);" <?php echo (($m['controller']==$parent_menu) ? 'class="subdrop active"' : '');?>>
+								<i class="<?php echo(!empty($m['icon']) ? $m['icon'] : 'ti ti-layout-2');?>"></i><span><?php echo ucwords($m['name']);?></span><span class="menu-arrow"></span>
+							</a>
+							<ul>
+								<?php foreach($m['submodule'] as $s){?>
+								<li>
+									<a href="<?php echo PANEL . strtolower($s->module_controller) . (!empty($s->module_action) ? '/' . strtolower($s->module_action) : ''); ?>" <?php echo ((strtolower($s->module_controller)==strtolower($currentController)) ? 'class="active"' : '');?>><?php echo ucwords($s->module_name);?></a>
+								</li>
+								<?php } ?>
+							</ul>
+						</li>
+						<?php } else{ ?>
+						<li>
+							<a href="<?php echo PANEL.strtolower($m['controller']) . (!empty($m['action']) ? '/' . strtolower($m['action']) : '');?>" <?php echo ((strtolower($m['controller'])==strtolower($currentController)) ? 'class="active"' : '');?>>
+								<i class="<?php echo(!empty($m['icon']) ? $m['icon'] : 'ti ti-layout-2');?>"></i><span><?php echo ucwords($m['name']);?></span>
+							</a>
+						</li>
+						<?php } } } ?>
+
+						<!-- google Translate block  -->
+						<li>
+							<script type="text/javascript">
+								function googleTranslateElementInit() {
+									new google.translate.TranslateElement({
+										pageLanguage: 'en',
+										includedLanguages: 'hi,en'
+									}, 'google_translate_element');
+								}
+							</script>
+							<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+							<div id="google_translate_element"></div>
+						</li>
+					</ul>
+				</li>
+			</ul>
+
+			<?php /*?>
             <ul>
-
-
                 <li>
                     <h6 class="submenu-hdr">Main Menu</h6>
                     <ul>
@@ -47,7 +78,7 @@ $page = $controller;
                             <a href="javascript:void(0);" class="<?php echo ($page == 'ProductType' || $page == 'ProductCategory' || $page == 'Products') ? 'active subdrop' : ''; ?>"><i class="ti ti-brand-airtable"></i><span>Product</span><span class="menu-arrow"></span></a>
                             <ul>
                                 <!-- Product Types  -->
-                                <!-- <li><a class="<?php echo ($page == 'ProductType') ? 'active' : ''; ?>" href="<?php echo base_url('product-types'); ?>">Product Types</a></li> -->
+                                <!-- <li><a class="<?php //echo ($page == 'ProductType') ? 'active' : ''; ?>" href="<?php //echo base_url('product-types'); ?>">Product Types</a></li> -->
 
                                 <!-- Product Categories  -->
                                 <li><a class="<?php echo ($page == 'ProductCategory') ? 'active' : ''; ?>" href="<?php echo base_url('product-categories'); ?>">Product Categories</a></li>
@@ -86,7 +117,7 @@ $page = $controller;
                                 <li><a class="<?php echo ($page == 'Company') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>company">Company Listing Screen</a></li>
                                 <li><a class="<?php echo ($page == 'Office') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>office/create">Add Office</a></li>
                                 <li><a class="<?php echo ($page == 'Office') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>office">Office Listing Screen</a></li>
-                                
+
                                 <!-- Warehouses -->
                                 <li><a class="<?php echo ($page == 'Warehouses') ? 'active' : ''; ?>" href="<?php echo base_url('warehouses'); ?>">Warehouses</a></li>
 
@@ -99,6 +130,7 @@ $page = $controller;
                                 <li><a class="<?php echo ($page == 'businesstype') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>businesstype">Business Type</a></li>
                                 <li><a class="<?php echo ($page == 'businesstype/create') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>businesstype/create">Add Business Type</a></li>
 
+                                
                                 <li><a class="<?php echo ($page == 'Units') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>units">Unit Listing Screen</a></li>
                                 <li><a class="<?php echo ($page == 'Units') ? 'active' : ''; ?>" href="<?php echo base_url(); ?>units/create">Add Unit</a></li>
                             </ul>
@@ -161,6 +193,7 @@ $page = $controller;
                     <div id="google_translate_element"></div>
                 </li>
             </ul>
+			<?php */ ?>
         </div>
     </div>
 </div>

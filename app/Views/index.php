@@ -62,9 +62,9 @@
                                <button type="submit" class="btn btn-primary">Sign In</button>
                            </div>
                            
-                           <div class="text-end">
-                                   <a href="<?php echo base_url('/register');?>" class="forgot-link">Register?</a>
-                               </div>
+                           <!-- <div class="text-end">
+                               <a href="<?php echo base_url('/register');?>" class="forgot-link">Register?</a>
+                           </div> -->
                            
                        </div>
                     </form>

@@ -77,12 +77,12 @@ use App\Models\PartyClassificationModel;
                               
                               $pcustomertype = new PartytypeModel();
                               // $pcustomertype = $pcustomertype->where('id', $party['party_type_id'])->first();
-
                               $PartyTypePartyModel = new PartyTypePartyModel();
                               $pcustomertype = $PartyTypePartyModel
                               ->join('party p','p.id= party_type_party_map.party_id')
                               ->join('party_type pt','pt.id= party_type_party_map.party_type_id')
                               ->where('p.id', $party['id'])->first();
+      
                               if($party['status'] == 'Inactive'){
                                 $status= '<span class="badge badge-pill bg-danger">Inactive</span>';
                               }else{

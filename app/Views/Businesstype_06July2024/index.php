@@ -50,11 +50,8 @@
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
-                        <th>Company Structure Type</th>
-                        <th>Flags</th>
-                        <th>Added</th>
+                        <th>Name</th>
                         <th>Status</th>
-
                       </tr>
                     </thead>
                     <tbody>
@@ -69,18 +66,6 @@
                               }elseif($business['condition'] == 'Disable'){
                                 $btn = 'Enable';
                               }
-                              $created_at_str = '';
-                              $updated_at_str='';
-                              if(isset($business["created_at"])){
-                                $created_at_str = strtotime($business["created_at"]) ;
-                                $strtime = date('d-m-Y',$created_at_str);
-                              }
-                              if(isset($business["updated_at"]) && ($business["updated_at"]!='0000-00-00 00:00:00')){
-                                $updated_at_str = strtotime($business["updated_at"]);
-                                $strtime1 = date('d-m-Y',$updated_at_str);
-                              }else{
-                                $strtime1 = '-';
-                              }
                                 echo '
                                 <tr>
                                     <td>
@@ -89,9 +74,7 @@
                                     <a href="'.base_url().'businesstype/edit/'.$business['id'].'"  class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
                                     <button type="button"   onclick="delete_data('.$business["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                                     </td>
-                                    <td>'.ucwords($business["company_structure_name"]).'</td>
-                                    <td>'.$business["flags_names"].'</td>
-                                    <td>'.$strtime.'</td>
+                                    <td>'.$business["company_structure_name"].'</td>
                                     <td>'.$business["condition"].'</td>
                                 </tr>';
                             }

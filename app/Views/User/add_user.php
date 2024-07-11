@@ -5,7 +5,7 @@
   <?= $this->include('partials/title-meta') ?>
   <?= $this->include('partials/head-css') ?>
   <!-- Feathericon CSS -->
-  <!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/feather.css"> -->
+  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/feather.css">
 
 
 </head>
@@ -53,7 +53,7 @@
                                   <label class="col-form-label">
                                     User Type <span class="text-danger">*</span>
                                   </label>
-                                  <select class="select" name ="user_type">
+                                  <select class="select" name = "user_type">
                                     <option>Select</option>
                                     <?php
                                     if(isset($user_type)){
@@ -72,18 +72,6 @@
                                   ?>
                               </div>
                             </div>
-
-                            <!-- Add employee list -->
-                            <!-- <div class="col-md-6">
-                              <div class="form-wrap">
-                                  <label class="col-form-label">
-                                      Employees <span class="text-danger"></span>
-                                  </label><br>
-                                  <select class="select" name ="employees" id="employees" required>
-                                  </select>
-                              </div>
-                            </div>    -->
-
 
                             <div class="col-md-6">
                               <div class="form-wrap">
@@ -256,11 +244,11 @@
   <?= $this->include('partials/vendor-scripts') ?>
 
   <!-- Profile Upload JS -->
-  <!-- <script src="<?php echo base_url(); ?>assets/js/profile-upload.js"></script> -->
+  <script src="<?php echo base_url(); ?>assets/js/profile-upload.js"></script>
 
   <!-- Sticky Sidebar JS -->
-  <!-- <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
-  <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script> -->
+  <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/ResizeSensor.js"></script>
+  <script src="<?php echo base_url(); ?>assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"></script>
 
   <script type="text/javascript">
     $.getBranch = function() {
@@ -300,20 +288,6 @@
         $('#id_'+home_branch).attr('checked','checked');
       }
     }
-
-    $('select[name="user_type"]').on('change', function() { 
-      $.ajax({
-          method: "POST",
-          url: '<?php echo base_url('user/getEmployeess');?>',
-          data: {
-            user_type: this.value
-          },
-          success: function(resp) {
-            $('#employees').html(resp);
-          }
-      });
-    }); 
-
   </script>
 </body>
 
