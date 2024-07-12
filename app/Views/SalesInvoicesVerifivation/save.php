@@ -57,7 +57,7 @@
                     <h4>Invoice Details</h4>
                     <hr>
                     <div class="settings-form">  
-                      <form method="post" enctype="multipart/form-data" id="invoices_form" action="<?php echo base_url('sales-invoices-verifivation/save/'.$sales_order_id.''); ?>">
+                      <form method="post" enctype="multipart/form-data" id="invoices_form" action="<?php echo base_url('sales-invoices-verifivation/edit/'.$sales_order_id.''); ?>">
                       <input type="hidden" name="for_verification" id="for_verification" value=""/>
                         <div class="row g-3"> 
                             <div class="col-md-6">

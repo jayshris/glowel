@@ -31325,4 +31325,7 @@ table.table.dataTable > thead > tr th {
 .min-h{
   min-height: 10px;
 }
+.mrg-sub-4 ul{
+  margin-top: 23px;
+}
 /*# sourceMappingURL=style.css.map */

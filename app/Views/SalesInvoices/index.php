@@ -116,11 +116,12 @@
                                     <?php } ?>  
                                   
                                 <?php }else{ ?>
-                                  <?php if(empty($pc['invoice_no'])){ ?> 
-                                    <a href="<?= base_url('sales-invoices/save/' . $pc['id']) ?>" class="btn btn-info btn-sm " title="Generate  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
-                                  <?php }else{?>
-                                    <a href="<?= base_url('sales-invoices/save/' . $pc['id']) ?>" class="btn btn-info btn-sm" title="Edit  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
-                                    <?php } ?>  
+                                  <?php //if(empty($pc['invoice_no'])){ ?> 
+                                    <!-- <a href="<?= base_url('sales-invoices/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm " title="Generate  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a>  -->
+                                  <?php //}else{?>
+                                    <!-- <a href="<?= base_url('sales-invoices/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm" title="Edit  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a>  -->
+                                    <?php // } ?> 
+                                    <?php echo makeListActions($currentController, $Action, $pc['id'], 2);?> 
                                 <?php }?> 
                                 </td>
                                 <td><?= $pc['order_no'] ?></td>

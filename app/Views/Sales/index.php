@@ -3,12 +3,7 @@
 
 <head>
   <?= $this->include('partials/title-meta') ?>
-  <?= $this->include('partials/head-css') ?>
-  <style>
-    .mrg-sub-4 ul{
-      margin-top: 23px;
-    }
-  </style>
+  <?= $this->include('partials/head-css') ?> 
 </head>
 
 

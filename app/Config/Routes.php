@@ -272,10 +272,10 @@ $routes->match(['get', 'post'], 'purchase-invoices-verifivation/save/(:num)', 'P
 
 //Sales/Outward Invoice listing
 $routes->match(['get', 'post'], 'sales-invoices', 'SalesInvoices::index');
-$routes->match(['get', 'post'], 'sales-invoices/save/(:num)', 'SalesInvoices::save/$1');
+$routes->match(['get', 'post'], 'sales-invoices/edit/(:num)', 'SalesInvoices::edit/$1');
 
 $routes->match(['get', 'post'], 'sales-invoices-verifivation', 'SalesInvoicesVerifivation::index');
-$routes->match(['get', 'post'], 'sales-invoices-verifivation/save/(:num)', 'SalesInvoicesVerifivation::save/$1');
+$routes->match(['get', 'post'], 'sales-invoices-verifivation/edit/(:num)', 'SalesInvoicesVerifivation::edit/$1');
 
 //Units listing
 $routes->match(['get', 'post'], 'units', 'Units::index');

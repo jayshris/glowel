@@ -25,7 +25,7 @@
                 <div class="card">
                   <div class="card-body">
                     <div class="settings-form">  
-                      <form method="post" enctype="multipart/form-data" id="invoices_form" action="<?php echo base_url('sales-invoices/save/'.$sale_order_id.''); ?>">
+                      <form method="post" enctype="multipart/form-data" id="invoices_form" action="<?php echo base_url('sales-invoices/edit/'.$sale_order_id.''); ?>">
                         <div class="settings-sub-header">
                           <h6>
                              <?php echo (isset($invoice_details['id']) && ($invoice_details['id']>0)) ? 'Edit Invoice': 'Generate Invoice';?>
