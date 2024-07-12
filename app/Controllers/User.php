@@ -1,21 +1,27 @@
 <?php
 namespace App\Controllers;
 use App\Models\UserModel;
-use App\Models\UserTypeModel;
-use App\Models\CompanyModel;
 use App\Models\OfficeModel;
+use App\Models\CompanyModel;
+use App\Models\EmployeeModel;
+use App\Models\UserTypeModel;
 use App\Models\UserBranchModel;
 use App\Models\UserModulesModel;
+use App\Models\UserEmployeeModel;
 
 class User extends BaseController
 {
         public $_access;
         public $model = '';
+        public $EmployeeModel;
+        public $session;
 
         public function __construct(){
             $this->model = new UserModel();
             $access = $this->model->setPermission();
             $this->_access = $access;
+            $this->EmployeeModel = new EmployeeModel();
+            $this->session = \Config\Services::session();
         }
 
         public function index(){
@@ -42,6 +48,7 @@ class User extends BaseController
                         $session->setFlashdata('error', 'You are not permitted to access this page');
                         return $this->response->redirect(site_url('/dashboard'));
                 }else{  
+                        // echo '<pre>';print_r($this->request->getVar('employees')); 
                         $userTypeModel = new UserTypeModel();
                         $this->view['user_type'] = $userTypeModel->where(['status'=>'Active'])->orderBy('user_type_name','ASC')->findAll();
 
@@ -88,7 +95,14 @@ class User extends BaseController
                                                 ];  
                                                 $userBranch->save($userBranchData);   
                                         }
-
+                                         //update employee details
+                                        if($this->request->getVar('employees')){   
+                                                $this->EmployeeModel->update($this->request->getVar('employees'),['user_id'=>$user_id]);   
+                                                $UserEmployeeModel = new UserEmployeeModel();
+                                                $userEmployees['user_id']= $user_id;  
+                                                $userEmployees['employee_id']= $this->request->getVar('employees');  
+                                                $UserEmployeeModel->save($userEmployees);   
+                                        } 
                                         $session = \Config\Services::session();
                                         $session->setFlashdata('success', 'User Added');
                                         return redirect()->to('/User/index');
@@ -309,5 +323,12 @@ class User extends BaseController
 
                         return view('User/permission',$this->view);
                 }
+        }
+
+        public function getEmployeess()
+        {   
+                $rows = $this->EmployeeModel->select('id,name')->where(['status'=>'Active'])->orderBy('name','asc')->findAll();
+                echo json_encode($rows);exit;
+                // echo '<pre>';print_r($rows);exit;
         }
 }

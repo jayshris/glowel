@@ -42,7 +42,7 @@
                 <div class="card">
                   <div class="card-body">
                     <div class="settings-form">
-                      <form method="post" action="<?php echo base_url(); ?>user/add_user">
+                      <form method="post" action="<?php echo base_url(); ?>user/create">
                         <div class="settings-sub-header">
                           <h6>Add User</h6>
                         </div>
@@ -72,6 +72,17 @@
                                   ?>
                               </div>
                             </div>
+
+                            <!-- Add employee list -->
+                            <div class="col-md-6" id="employees-div">
+                              <div class="form-wrap">
+                                  <label class="col-form-label">
+                                      Employees <span class="text-danger">*</span>
+                                  </label><br>
+                                  <select class="select" name ="employees" id="employees">
+                                  </select>
+                              </div>
+                            </div>   
 
                             <div class="col-md-6">
                               <div class="form-wrap">
@@ -288,6 +299,34 @@
         $('#id_'+home_branch).attr('checked','checked');
       }
     }
+    $('#employees-div').css('display','none');
+    $('select[name="user_type"]').on('change', function() { 
+      $('#employees').html('');$('#employees').removeAttr('required');
+      $('#employees-div').css('display','none');
+      if(this.value == 1){
+        $.ajax({
+            method: "POST",
+            url: '<?php echo base_url('user/getEmployeess');?>',
+            data: {
+              user_type: this.value
+            },
+            success: function(resp) {
+              console.log(resp);
+              var html = '<option value="">Select</option>';
+              if(resp){ 
+                var obj = jQuery.parseJSON(resp);
+                $.each(obj, function(key,val) {
+                  html +='<option value="'+val.id+'">'+val.name+'</option>';
+                });
+              } 
+              $('#employees').attr('required',true);
+              $('#employees').html(html);
+              $('#employees-div').css('display','block');
+            }
+        });
+      } 
+    }); 
+
   </script>
 </body>
 

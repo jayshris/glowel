@@ -1,18 +1,20 @@
 <?php
+
 namespace App\Models;
 
 use CodeIgniter\Model;
 
-class EmployeeModel extends Model
+class UserEmployeeModel extends Model
 {
-	protected $table = 'employee';
-	protected $primaryKey = 'id';
-	protected $useAutoIncrement = true;
+    protected $table            = 'user_employees';
+    protected $primaryKey       = 'id';
+    protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-	protected $useSoftDeletes        = true;
-	protected $protectFields    = true;
-	protected $allowedFields = ['company_id', 'branch_id','user_id', 'name','adhaar_number_map_id','mobile','email','bank_account_number','bank_ifsc_code','profile_image1','profile_image2','joining_date','upi_id','department_id','reporting_manager_id','status','created_at','updated_at','office_location','deleted_at','approved','approval_user_id','approval_user_type','approval_date','approval_ip_address'];
-	protected bool $allowEmptyInserts = false;
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields    = ['user_id','employee_id'];
+
+    protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
 
     protected array $casts = [];
@@ -41,8 +43,4 @@ class EmployeeModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-	
-	
 }
-
-?>
