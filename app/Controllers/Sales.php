@@ -60,9 +60,9 @@ class Sales extends BaseController
             if ($this->request->getPost('status') != '') {
                 $this->SOModel->where('status', $this->request->getPost('status'));
             }
-            $data['orders'] = $this->SOModel->orderBy('id', 'desc')->findAll();
+            $this->view['orders'] = $this->SOModel->orderBy('id', 'desc')->findAll();
 
-            return view('Sales/index', $data);
+            return view('Sales/index', $this->view);
         }
     } 
      
@@ -83,7 +83,7 @@ class Sales extends BaseController
             ]);
             $validation = \Config\Services::validation(); 
             if (!empty($validation->getErrors())) {
-                $data['error'] = $this->validator;
+                $this->view['error'] = $this->validator;
             } else {
                 $insert_id = $this->SOModel->save([
                     'order_no' => $this->request->getPost('order_no'),
@@ -98,10 +98,10 @@ class Sales extends BaseController
                 return $this->response->redirect(base_url('sales/add-products/' . $insert_id));
             } 
         }  
-        $data['customers'] = $this->partyModel->select('id,party_name')->where('status', 1)->findAll();
-        $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
-        $data['branches'] = $this->selectUserBranches(); 
-        return view('Sales/create', $data);
+        $this->view['customers'] = $this->partyModel->select('id,party_name')->where('status', 1)->findAll();
+        $this->view['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
+        $this->view['branches'] = $this->selectUserBranches(); 
+        return view('Sales/create', $this->view);
          
     }
     function selectUserBranches(){
@@ -141,7 +141,7 @@ class Sales extends BaseController
             // echo 'POst dt<pre>';print_r($this->request->getPost());
             // echo 'getErrors<pre>';print_r($validation->getErrors());exit;
             if (!empty($validation->getErrors())) {
-                $data['error'] = $this->validator;
+                $this->view['error'] = $this->validator;
             } else {   
                 $so_data =  [
                     'customer_name' => $this->request->getPost('customer_name'),
@@ -171,16 +171,16 @@ class Sales extends BaseController
        $this->checkOrderStatus($id);  
 
         $customers = $this->partyModel->select('id,party_name')->where('status', 1)->findAll();
-        $data['customers']  = array_column($customers,'party_name','id');
-        $data['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
-        $data['order_details'] = $this->SOModel->where('id', $id)->first();
-        $data['selected_customer'] = $data['order_details']['customer_name'];
-        if(!in_array($data['order_details']['customer_name'],$data['customers'])){
-            array_push($data['customers'],$data['order_details']['customer_name']);
+        $this->view['customers']  = array_column($customers,'party_name','id');
+        $this->view['last_order'] = $this->SOModel->orderBy('id', 'desc')->first();
+        $this->view['order_details'] = $this->SOModel->where('id', $id)->first();
+        $this->view['selected_customer'] = $this->view['order_details']['customer_name'];
+        if(!in_array($this->view['order_details']['customer_name'],$this->view['customers'])){
+            array_push($this->view['customers'],$this->view['order_details']['customer_name']);
         }
-        // echo '<pre>';print_r($data);exit;
-        $data['branches'] = $this->selectUserBranches();
-        return view('Sales/edit', $data); 
+        // echo '<pre>';print_r($this->view);exit;
+        $this->view['branches'] = $this->selectUserBranches();
+        return view('Sales/edit', $this->view); 
     }
 
     function uploadFileWithCam($id,$postdata,$flag){ 
@@ -285,20 +285,20 @@ class Sales extends BaseController
             }
         }
 
-        $data['token'] = $id;
-        $data['categories'] = $this->PCModel->orderBy('cat_name', 'asc')->findAll();
-        $data['order_details'] = $this->SOModel->where('id', $id)->first();
-        $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $id)->findAll();
+        $this->view['token'] = $id;
+        $this->view['categories'] = $this->PCModel->orderBy('cat_name', 'asc')->findAll();
+        $this->view['order_details'] = $this->SOModel->where('id', $id)->first();
+        $this->view['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $id)->findAll();
 
-        return view('Sales/addProducts', $data);
+        return view('Sales/addProducts', $this->view);
     }
 
     // public function getProducts()
     // {
     //     $category_id = $this->request->getPost('category_id');
 
-    //     $data['products'] = $this->PModel->where('category_id', $category_id)->where('status', '1')->where('is_deleted', '0')->findAll();
-    //     return view('Sales/productTable', $data);
+    //     $this->view['products'] = $this->PModel->where('category_id', $category_id)->where('status', '1')->where('is_deleted', '0')->findAll();
+    //     return view('Sales/productTable', $this->view);
     // }
     
     public function getProducts()
@@ -309,7 +309,7 @@ class Sales extends BaseController
         $u_home_branch = $UModel->where('id', $_SESSION['id'])->first()['home_branch']; 
         $query = "(SELECT IFNULL((sum(qty_in) - sum(qty_out)), 0) FROM  inventories i WHERE i.product_id=products.id and  i.warehouse_id=pwl.warehouse_id) as stock_in_hand";
 
-        $data['products'] = $this->PModel->select('products.*,u.unit, '.$query.'')
+        $this->view['products'] = $this->PModel->select('products.*,u.unit, '.$query.'')
         ->join('product_warehouse_link pwl','pwl.product_id=products.id')
         ->join('warehouses w','w.id=pwl.warehouse_id')
         ->join('units u', 'products.unit_id = u.id','left') 
@@ -321,9 +321,9 @@ class Sales extends BaseController
     //     $db = \Config\Database::connect();  
     // echo  $db->getLastQuery()->getQuery();
     // echo '   <pre>';
-    // print_r($data['products']);
+    // print_r($this->view['products']);
     // exit; 
-        return view('Sales/productTable', $data);
+        return view('Sales/productTable', $this->view);
     }
     function checkStockInHand($product_id){
         $UModel = new UserModel();
@@ -362,10 +362,10 @@ class Sales extends BaseController
     }
 
     function salesCheckout($orderId){
-        $data['token'] = $orderId;
-        $data['order_details'] = $this->SOModel->where('id', $orderId)->first();
-        $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $orderId)->findAll();
-        return view('Sales/salesCheckout', $data);
+        $this->view['token'] = $orderId;
+        $this->view['order_details'] = $this->SOModel->where('id', $orderId)->first();
+        $this->view['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $orderId)->findAll();
+        return view('Sales/salesCheckout', $this->view);
     }
 
     function sendToInvoice($order_id){
@@ -411,29 +411,29 @@ class Sales extends BaseController
     }
 
     function view($orderId){
-        $data['token'] = $orderId;
-        $data['order_details'] = $this->SOModel->where('id', $orderId)->first();
-        $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $orderId)->findAll();
-        return view('Sales/view', $data);
+        $this->view['token'] = $orderId;
+        $this->view['order_details'] = $this->SOModel->where('id', $orderId)->first();
+        $this->view['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id')->join('products', 'products.id = sales_order_products.product_id')->where('order_id', $orderId)->findAll();
+        return view('Sales/view', $this->view);
     }
 
     function checkOrderStatus($id){
         //order can be edited only 2 times as per doc and only update if status is open, ready_for_invoicing, in_invoicing
-        $data['order_details'] = $this->SOModel->where('id', $id)->first();
-        if (!in_array($data['order_details']['status'],PURCHASE_STATUS_EDIT_PERMITIONS)) {
+        $this->view['order_details'] = $this->SOModel->where('id', $id)->first();
+        if (!in_array($this->view['order_details']['status'],PURCHASE_STATUS_EDIT_PERMITIONS)) {
             $this->session->setFlashdata('danger', 'Order can not be editable!!!'); 
             return $this->response->redirect(base_url('sales/index'));
         }
-        if(isset($data['order_details']['edit_count']) && $data['order_details']['edit_count'] < 1){
+        if(isset($this->view['order_details']['edit_count']) && $this->view['order_details']['edit_count'] < 1){
             $this->SOModel->update($id, [ 
-                'edit_count' => ( $data['order_details']['edit_count']+1),
+                'edit_count' => ( $this->view['order_details']['edit_count']+1),
                 'status'=>0
             ]);
             //send notification to all user for order is open for edit
             $this->NModel->save([
                 'order_id' => $id, 
                 'user_id'=>$_SESSION['id'],
-                'message' => $data['order_details']['order_no'].' order has been opened for edit'
+                'message' => $this->view['order_details']['order_no'].' order has been opened for edit'
             ]);
         }else{
             $this->session->setFlashdata('danger', 'Order can be edited only 1 times!!!');
@@ -442,16 +442,16 @@ class Sales extends BaseController
     }
     
     function salesCheckoutPrint($orderId){
-        $data['token'] = $orderId;
-        $data['order_details'] = $this->SOModel->select('sales_orders.*,p.business_address,p.primary_phone')
+        $this->view['token'] = $orderId;
+        $this->view['order_details'] = $this->SOModel->select('sales_orders.*,p.business_address,p.primary_phone')
         ->join('party p', ' p.id = sales_orders.party_id','left')->where('sales_orders.id', $orderId)->first();
         
-        $data['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id,u.unit')
+        $this->view['added_products'] = $this->SOPModel->select('*,sales_order_products.id as sp_id,u.unit')
         ->join('products', 'products.id = sales_order_products.product_id')
         ->join('units u', 'u.id = products.unit_id','left')
         ->where('order_id', $orderId)->findAll();
 
-        $data['total_quantity_per_units'] = $this->SOPModel->select('products.product_name product_name,sum(sales_order_products.quantity) as sop_quantity,u.unit as unit')
+        $this->view['total_quantity_per_units'] = $this->SOPModel->select('products.product_name product_name,sum(sales_order_products.quantity) as sop_quantity,u.unit as unit')
         ->join('products', 'products.id = sales_order_products.product_id')
         ->join('units u', 'u.id = products.unit_id','left')
         ->where('order_id', $orderId)
@@ -460,14 +460,34 @@ class Sales extends BaseController
  
         //Get employee signature
         $user = new UserModel();
-        $data['emp_details']=  $user->select('e.id, e.digital_sign') 
+        $this->view['emp_details']=  $user->select('e.id, e.digital_sign') 
         ->join('employee e','e.user_id= users.id')                    
         ->where(['users.id'=>$_SESSION['id']])->where(['e.status'=>1])->first();
         
         //  $db = \Config\Database::connect();  
         // echo  $db->getLastQuery()->getQuery(); 
-            //  echo '  <pre>';print_r($data['emp_details']);exit; 
+            //  echo '  <pre>';print_r($this->view['emp_details']);exit; 
 
-        return view('Sales/salesCheckoutPrint', $data);
+        return view('Sales/salesCheckoutPrint', $this->view);
     }
+
+    public function delete($id){
+        $access = $this->access; 
+        if($access === 'false'){
+          $session = \Config\Services::session();
+          $session->setFlashdata('error', 'You are not permitted to access this page');
+          return $this->response->redirect(site_url('/dashboard'));
+        }else{ 
+            //delete inventory
+            $this->InventoryModel->where('sales_order_id', $id)->delete();
+
+            //delete order product first 
+            $this->SOPModel->where('order_id', $id)->delete();
+            //delete order
+            $this->SOModel->delete($id);
+            $this->session->setFlashdata('success', 'Order deleted succefully.');
+
+            return $this->response->redirect(base_url('sales'));
+        }
+      }
 }
