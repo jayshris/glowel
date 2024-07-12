@@ -110,7 +110,8 @@
                                 <?php if($pc['status'] == invoice_status['close']) { ?>
                                     <a href="3" class="btn btn-info btn-sm disabled" title="Closed" role="button"><i class="ti ti-check"></i></a> 
                                 <?php }else{ ?>
-                                    <a href="<?= base_url('purchase-invoices-verifivation/save/' . $pc['purchase_order_id']) ?>" class="btn btn-info btn-sm " title="Verify  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a> 
+                                    <!-- <a href="<?= base_url('purchase-invoices-verifivation/edit/' . $pc['purchase_order_id']) ?>" class="btn btn-info btn-sm " title="Verify  Invoice" role="button"><i class="ti ti-brand-airtable"></i></a>  -->
+                                    <?php echo makeListActions($currentController, $Action, $pc['id'], 2);?> 
                                 <?php }?>
                                 
                                 </td> 

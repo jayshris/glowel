@@ -34,12 +34,12 @@ class Party extends BaseController
       return $this->response->redirect(site_url('/dashboard'));
     } else {
       $partyModel = new PartyModel();
-      $data['party_data'] = $partyModel->orderBy('id', 'DESC')->paginate(10);
-      $data['pagination_link'] = $partyModel->pager;
-      $data['page_data'] = [
+      $this->view['party_data'] = $partyModel->orderBy('id', 'DESC')->paginate(10);
+      $this->view['pagination_link'] = $partyModel->pager;
+      $this->view['page_data'] = [
         'page_title' => view('partials/page-title', ['title' => 'Party', 'li_1' => '123', 'li_2' => 'deals'])
       ];
-      return view('Party/index', $data);
+      return view('Party/index', $this->view);
     }
   }
 
@@ -52,12 +52,12 @@ class Party extends BaseController
       return $this->response->redirect(site_url('/dashboard'));
     } else {
       $pcModel = new PartyModel();
-      $data['pc_data'] = $pcModel->where('id', $id)->first();
+      $this->view['pc_data'] = $pcModel->where('id', $id)->first();
 
       $partytype = new PartytypeModel();
-      $data['partytype'] = $partytype->orderby('name', 'ASC')->where('status', 'Active')->findAll();
+      $this->view['partytype'] = $partytype->orderby('name', 'ASC')->where('status', 'Active')->findAll();
       $partyTypes = new PartyTypePartyModel();
-      $data['partyTypes'] = $partyTypes->where('party_id', $id)->findAll();
+      $this->view['partyTypes'] = $partyTypes->where('party_id', $id)->findAll();
 
        /**Add code */
        $PartyTypePartyModel = new PartyTypePartyModel();
@@ -65,14 +65,14 @@ class Party extends BaseController
          ->join('party p','p.id= party_type_party_map.party_id')
          ->join('party_type pt','pt.id= party_type_party_map.party_type_id')
          ->where('p.id', $id)->findAll(); 
-       // echo '<pre>';print_r($data['pc_data']);exit;
-       $data['selected_party_type_ids'] = ($party_type_ids) ? array_column($party_type_ids,'party_type_id') : [];
+       // echo '<pre>';print_r($this->view['pc_data']);exit;
+       $this->view['selected_party_type_ids'] = ($party_type_ids) ? array_column($party_type_ids,'party_type_id') : [];
       /** End */
       
       $stateModel = new StateModel();
-      $data['state'] = $stateModel->where(['isStatus' => '1'])->orderBy('state_id')->findAll();
+      $this->view['state'] = $stateModel->where(['isStatus' => '1'])->orderBy('state_id')->findAll();
       $businesstypeModel = new BusinessTypeModel();
-      $data['businesstype'] = $businesstypeModel->orderBy('id')->findAll();
+      $this->view['businesstype'] = $businesstypeModel->orderBy('id')->findAll();
       $request = service('request');
       if ($this->request->getMethod() == 'POST') {
         $id = $this->request->getVar('id');
@@ -83,7 +83,7 @@ class Party extends BaseController
           'primary_phone'             =>  'required|numeric'
         ]);
         if (!$error) {
-          $data['error']   = $this->validator;
+          $this->view['error']   = $this->validator;
         } else {
           // echo '<pre>';print_r($this->request->getVar());
           // echo '<pre>';print_r($_FILES);// exit;
@@ -285,7 +285,7 @@ class Party extends BaseController
       }
     }
 
-    return view('Party/edit', $data);
+    return view('Party/edit', $this->view);
   }
   
 
@@ -298,26 +298,26 @@ class Party extends BaseController
       return $this->response->redirect(site_url('/dashboard'));
     } else {
       $pcModel = new PartyModel();
-      $data['pc_data'] = $pcModel->where('id', $id)->first();
+      $this->view['pc_data'] = $pcModel->where('id', $id)->first();
 
       $partytype = new PartytypeModel();
-      $data['partytype'] = $partytype->orderby('name', 'ASC')->where('status', 'Active')->findAll();
+      $this->view['partytype'] = $partytype->orderby('name', 'ASC')->where('status', 'Active')->findAll();
       $partyTypes = new PartyTypePartyModel();
-      $data['partyTypes'] = $partyTypes->where('party_id', $id)->findAll();
+      $this->view['partyTypes'] = $partyTypes->where('party_id', $id)->findAll();
 
          /**Add code */
          $PartyTypePartyModel = new PartyTypePartyModel();
-         $data['pc_data']['party_type_id'] = $PartyTypePartyModel
+         $this->view['pc_data']['party_type_id'] = $PartyTypePartyModel
            ->join('party p','p.id= party_type_party_map.party_id')
            ->join('party_type pt','pt.id= party_type_party_map.party_type_id')
            ->where('p.id', $id)->first();
          /** End */
-         // echo '<pre>';print_r($data['pc_data']);exit;
+         // echo '<pre>';print_r($this->view['pc_data']);exit;
 
       $stateModel = new StateModel();
-      $data['state'] = $stateModel->where(['isStatus' => '1'])->orderBy('state_id')->findAll();
+      $this->view['state'] = $stateModel->where(['isStatus' => '1'])->orderBy('state_id')->findAll();
       $businesstypeModel = new BusinessTypeModel();
-      $data['businesstype'] = $businesstypeModel->orderBy('id')->findAll();
+      $this->view['businesstype'] = $businesstypeModel->orderBy('id')->findAll();
       $request = service('request');
       if ($this->request->getMethod() == 'POST') {
         $id = $this->request->getVar('id');
@@ -332,7 +332,7 @@ class Party extends BaseController
           'business_type_id'          =>  'required',
         ]);
         if (!$error) {
-          $data['error']   = $this->validator;
+          $this->view['error']   = $this->validator;
         } else {
 
 
@@ -472,7 +472,7 @@ class Party extends BaseController
       }
     }
 
-    return view('Party/approval', $data);
+    return view('Party/approval', $this->view);
   }
 
 
@@ -485,20 +485,20 @@ class Party extends BaseController
       return $this->response->redirect(site_url('/dashboard'));
     } else {
       helper(['form', 'url']);
-      $data['page_data'] = [
+      $this->view['page_data'] = [
         'page_title' => view('partials/page-title', ['title' => 'Add Party', 'li_2' => 'profile'])
       ];
       $partytype = new PartytypeModel();
-      $data['partytype'] = $partytype->orderby('name', 'ASC')->findAll();
+      $this->view['partytype'] = $partytype->orderby('name', 'ASC')->findAll();
 
       $stateModel = new StateModel();
-      $data['state'] = $stateModel->where(['isStatus' => '1'])->orderBy('state_name', 'ASC')->findAll();
+      $this->view['state'] = $stateModel->where(['isStatus' => '1'])->orderBy('state_name', 'ASC')->findAll();
 
       $businesstypeModel = new BusinessTypeModel();
-      $data['businesstype'] = $businesstypeModel->orderBy('company_structure_name', 'ASC')->findAll();
+      $this->view['businesstype'] = $businesstypeModel->orderBy('company_structure_name', 'ASC')->findAll();
 
       $flagsmodel = new FlagsModel();
-      $data['flags'] = $flagsmodel->where('status', 'Active')->orderBy('id')->findAll();
+      $this->view['flags'] = $flagsmodel->where('status', 'Active')->orderBy('id')->findAll();
 
       $request = service('request');
       if ($this->request->getMethod() == 'POST') {
@@ -514,7 +514,7 @@ class Party extends BaseController
         // echo 'getErrors<pre>';print_r($validation->getErrors());exit;
 
         if (!$error) {
-          $data['error']   = $this->validator;
+          $this->view['error']   = $this->validator;
         } else {
           $partyModel = new PartyModel();
  
@@ -599,7 +599,7 @@ class Party extends BaseController
           return $this->response->redirect(site_url('/party'));
         }
       }
-      return view('Party/create', $data);
+      return view('Party/create', $this->view);
     }
   }
 
@@ -704,11 +704,11 @@ class Party extends BaseController
     if ($this->request->getMethod() == 'POST') {
       $status = $this->request->getVar('status');
       $partModel = new PartyModel();
-      $data['party_data'] = $partModel->where('status', $status)->orderBy('id', 'DESC')->findAll();
-      $data['page_data'] = [
+      $this->view['party_data'] = $partModel->where('status', $status)->orderBy('id', 'DESC')->findAll();
+      $this->view['page_data'] = [
         'page_title' => view('partials/page-title', ['title' => 'Party', 'li_1' => '123', 'li_2' => 'deals'])
       ];
-      return view('Party/search', $data);
+      return view('Party/search', $this->view);
     }
   }
 
@@ -790,18 +790,18 @@ class Party extends BaseController
   public function kyc()
   {
     $partytype = new PartytypeModel();
-    $data['partytype'] = $partytype->where('status', 'Active')->orderby('name', 'ASC')->findAll();
+    $this->view['partytype'] = $partytype->where('status', 'Active')->orderby('name', 'ASC')->findAll();
 
     $stateModel = new StateModel();
-    $data['state'] = $stateModel->where(['isStatus' => '1'])->orderBy('state_name', 'ASC')->findAll();
+    $this->view['state'] = $stateModel->where(['isStatus' => '1'])->orderBy('state_name', 'ASC')->findAll();
 
     $businesstypeModel = new BusinessTypeModel();
-    $data['businesstype'] = $businesstypeModel->orderBy('company_structure_name', 'ASC')->findAll();
+    $this->view['businesstype'] = $businesstypeModel->orderBy('company_structure_name', 'ASC')->findAll();
 
     $flagsmodel = new FlagsModel();
-    $data['flags'] = $flagsmodel->where('status', 'Active')->orderBy('id')->findAll();
+    $this->view['flags'] = $flagsmodel->where('status', 'Active')->orderBy('id')->findAll();
 
 
-    return view('Party/kyc_form', $data);
+    return view('Party/kyc_form', $this->view);
   }
 }

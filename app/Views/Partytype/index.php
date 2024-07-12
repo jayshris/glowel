@@ -69,10 +69,10 @@
 
                                 echo '
                                 <tr>
-                                    <td>
-                                    <a href="'.base_url().'partytype/edit/'.$partytype['id'].'"  class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
-
-                                    <button type="button"   onclick="delete_data('.$partytype["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
+                                    <td>' 
+                                    // <a href="'.base_url().'partytype/edit/'.$partytype['id'].'"  class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
+                                    // <button type="button"   onclick="delete_data('.$partytype["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
+                                      .makeListActions($currentController, $Action, $partytype['id'], 2).'
                                     </td>
                                     
                                     <td>'.$partytype['name'].'</td>

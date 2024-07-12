@@ -246,6 +246,7 @@ $routes->get('sales/sendToInvoice/(:num)', 'Sales::sendToInvoice/$1');
 $routes->match(['get', 'post'], 'sales/sales-checkout/(:num)', 'Sales::salesCheckout/$1');
 $routes->get('sales/deleteSaleOrder/(:num)', 'Sales::deleteSaleOrder/$1');
 $routes->get('sales/view/(:num)', 'Sales::view/$1');
+$routes->get('sales/preview/(:num)', 'Sales::view/$1');
 $routes->match(['get', 'post'], 'sales/sales-checkout-print/(:num)', 'Sales::salesCheckoutPrint/$1');
 
 //purchase
@@ -261,14 +262,16 @@ $routes->match(['get', 'post'], 'purchase/purchase-checkout/(:num)', 'Purchase::
 $routes->get('purchase/deletePurchaseOrder/(:num)', 'Purchase::deletePurchaseOrder/$1');
 $routes->post('purchase/showWebCam', 'Purchase::showWebCam');
 $routes->get('purchase/view/(:num)', 'Purchase::view/$1');
+$routes->get('purchase/preview/(:num)', 'Purchase::view/$1');
+
 $routes->match(['get', 'post'], 'purchase/purchase-checkout-print/(:num)', 'Purchase::purchaseCheckoutPrint/$1');
 
 //Purchase/Inward Invoice listing
 $routes->match(['get', 'post'], 'purchase-invoices', 'PurchaseInvoices::index');
-$routes->match(['get', 'post'], 'purchase-invoices/save/(:num)', 'PurchaseInvoices::save/$1');
+$routes->match(['get', 'post'], 'purchase-invoices/edit/(:num)', 'PurchaseInvoices::edit/$1');
 
 $routes->match(['get', 'post'], 'purchase-invoices-verifivation', 'PurchaseInvoicesVerifivation::index');
-$routes->match(['get', 'post'], 'purchase-invoices-verifivation/save/(:num)', 'PurchaseInvoicesVerifivation::save/$1');
+$routes->match(['get', 'post'], 'purchase-invoices-verifivation/edit/(:num)', 'PurchaseInvoicesVerifivation::edit/$1');
 
 //Sales/Outward Invoice listing
 $routes->match(['get', 'post'], 'sales-invoices', 'SalesInvoices::index');
@@ -283,6 +286,9 @@ $routes->match(['get', 'post'], 'units/create', 'Units::create');
 $routes->match(['get', 'post'], 'units/edit/(:num)', 'Units::edit/$1');
 $routes->match(['get', 'post'], 'units/view/(:num)', 'Units::view/$1');
 $routes->match(['get', 'post'], 'units/delete/(:num)', 'Units::delete/$1');
+
+//party
+$routes->get('party/preview/(:num)', 'Party::view/$1');
 
 // auto routes must be set false... for security
 $routes->setAutoRoute(true);

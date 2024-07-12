@@ -27,12 +27,12 @@ class Partyclassification extends BaseController
             return $this->response->redirect(site_url('/dashboard'));
         }else{
             $partyclassModel = new PartyClassificationModel();
-            $data['partyclass_data'] = $partyclassModel->orderBy('id', 'DESC')->paginate(10);
-            $data['pagination_link'] = $partyclassModel->pager;
-            $data['page_data'] = [
+            $this->view['partyclass_data'] = $partyclassModel->orderBy('id', 'DESC')->paginate(10);
+            $this->view['pagination_link'] = $partyclassModel->pager;
+            $this->view['page_data'] = [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Party','li_1' => '123','li_2' => 'deals'])
             ];
-            return view('Partyclassification/index',$data);
+            return view('Partyclassification/index',$this->view);
         }
     }
 
@@ -45,7 +45,7 @@ class Partyclassification extends BaseController
             return $this->response->redirect(site_url('/dashboard'));
           }else{
               helper(['form', 'url']);
-              $data ['page_data']= [
+              $this->view ['page_data']= [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Add Vehicle Certificate','li_2' => 'profile' ] )
                 ];
                 $request = service('request');
@@ -55,7 +55,7 @@ class Partyclassification extends BaseController
                   ]);
 
                   if(!$error){
-                    $data['error'] 	= $this->validator;
+                    $this->view['error'] 	= $this->validator;
                   }else {
                     $partyclassModel = new PartyClassificationModel();
                     $partyclassModel->save([
@@ -67,7 +67,7 @@ class Partyclassification extends BaseController
                     return $this->response->redirect(site_url('/partyclassification'));
                   }
                 }
-                return view('Partyclassification/create',$data);
+                return view('Partyclassification/create',$this->view);
           }
     }
 
@@ -80,7 +80,7 @@ class Partyclassification extends BaseController
             return $this->response->redirect(site_url('/dashboard'));
           }else{
             $pcModel = new PartyClassificationModel();
-            $data['pc_data'] = $pcModel->where('id', $id)->first();
+            $this->view['pc_data'] = $pcModel->where('id', $id)->first();
             
             $request = service('request');
             if($this->request->getMethod()=='POST'){
@@ -89,7 +89,7 @@ class Partyclassification extends BaseController
                 'name'	=>	'required',
               ]);
               if(!$error) {
-                $data['error'] 	= $this->validator;
+                $this->view['error'] 	= $this->validator;
               }else {
                 $pcModel = new PartyClassificationModel();
                 $pcModel->update($id,[
@@ -103,7 +103,7 @@ class Partyclassification extends BaseController
             }
           }
 
-        return view('Partyclassification/edit', $data);
+        return view('Partyclassification/edit', $this->view);
 
     }
 

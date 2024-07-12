@@ -24,12 +24,12 @@ class Partytype extends BaseController
             return $this->response->redirect(site_url('/dashboard'));
         }else{
             $partyModel = new PartytypeModel();
-            $data['partytype_data'] = $partyModel->orderBy('id', 'DESC')->paginate(50);
-            $data['pagination_link'] = $partyModel->pager;
-            $data['page_data'] = [
+            $this->view['partytype_data'] = $partyModel->orderBy('id', 'DESC')->paginate(50);
+            $this->view['pagination_link'] = $partyModel->pager;
+            $this->view['page_data'] = [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Party Type','li_1' => '123','li_2' => 'deals' ] )
             ];
-            return view('Partytype/index',$data);
+            return view('Partytype/index',$this->view);
         }
     }
 
@@ -42,7 +42,7 @@ class Partytype extends BaseController
             return $this->response->redirect(site_url('/dashboard'));
           }else{
               helper(['form', 'url']);
-              $data ['page_data']= [
+              $this->view ['page_data']= [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Add Driver','li_2' => 'profile' ] )
                 ];
                 $request = service('request');
@@ -52,7 +52,7 @@ class Partytype extends BaseController
                   ]);
 
                   if(!$error){
-                    $data['error'] 	= $this->validator;
+                    $this->view['error'] 	= $this->validator;
                   }else {
                     $partyModel = new PartytypeModel();
                     $partyModel->save([
@@ -66,7 +66,7 @@ class Partytype extends BaseController
                     return $this->response->redirect(site_url('/partytype'));
                   }
                 }
-                return view( 'Partytype/create',$data );
+                return view( 'Partytype/create',$this->view );
           }
     }
 
@@ -79,7 +79,7 @@ class Partytype extends BaseController
             return $this->response->redirect(site_url('/dashboard'));
           }else{
             $partyModel = new PartytypeModel();
-            $data['partytype_data'] = $partyModel->where('id', $id)->first();
+            $this->view['partytype_data'] = $partyModel->where('id', $id)->first();
             
             $request = service('request');
             if($this->request->getMethod()=='POST'){
@@ -89,7 +89,7 @@ class Partytype extends BaseController
               ]);
               if(!$error)
               {
-                $data['error'] 	= $this->validator;
+                $this->view['error'] 	= $this->validator;
               }else {
                 $partyModel = new PartytypeModel();
                 $partyModel->update($id,[
@@ -103,7 +103,7 @@ class Partytype extends BaseController
             }
           }
 
-        return view('Partytype/edit', $data);
+        return view('Partytype/edit', $this->view);
 
     }
 

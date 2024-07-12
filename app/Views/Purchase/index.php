@@ -54,12 +54,18 @@
                         </select>
                       </div>
                     </div>
-
-                    <div class="col-md-7">
-                      <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
-                      <a href="./purchase" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
-                      <a href="<?= base_url('purchase/create') ?>" class="btn btn-danger mt-4">Add Order</a>
+ 
+                    <div class="col-md-1">
+                      <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;                     
+                      <!-- <a href="<?= base_url('purchase/create') ?>" class="btn btn-danger mt-4">Add Order</a> -->
                     </div>
+                    <div class="col-md-1 ">
+                      <a href="./sales" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
+                    </div>
+                    <div class="col-md-1 mrg-sub-4">
+                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -119,11 +125,12 @@
                         <tr>
                           <td><?= $i++; ?>.</td>
                           <td>
-                             <a href="<?= base_url('purchase/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >1) && (!in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-pencil"></i></a>
+                            <?php echo makeListActions($currentController, $Action, $pc['id'], 2);?>
+                             <!-- <a href="<?= base_url('purchase/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >1) && (!in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-pencil"></i></a>
                              <a href="<?= base_url('purchase/view/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >1) && (!in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-eye"></i></a>
                              <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
                              <button type="button" onclick="print_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-printer"></i></button>  
-                             <button type="button" onclick="cancel_status('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm <?php if ($pc['status'] != ORDER_STATUS['open']) { ?> disabled <?php } ?>"> <i class="fa fa-close"></i></button> 
+                             <button type="button" onclick="cancel_status('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm <?php if ($pc['status'] != ORDER_STATUS['open']) { ?> disabled <?php } ?>"> <i class="fa fa-close"></i></button>  -->
                           </td>
                           <td><?= $pc['order_no'] ?></td>
                           <td><?= $pc['customer_name'] ?></td>

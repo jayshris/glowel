@@ -46,18 +46,18 @@ class PurchaseInvoices extends BaseController
             if ($this->request->getPost('status') != '') {
                 $this->POModel->where('purchase_orders.status', $this->request->getPost('status'));
             }
-            $data['orders'] = $this->POModel
+            $this->view['orders'] = $this->POModel
             ->select('purchase_orders.id,purchase_orders.status,pi.invoice_no,pi.status as pi_status,purchase_orders.added_date,purchase_orders.customer_name,purchase_orders.order_no')
             ->join('purchase_invoices pi','pi.purchase_order_id = purchase_orders.id', 'left')
             ->whereIn('purchase_orders.status',[1,2,5])->orderBy('purchase_orders.id', 'desc')->findAll(); 
-            return view('PurchaseInvoices/index', $data);
+            return view('PurchaseInvoices/index', $this->view);
         }
     }
 
-    public function save($id)
+    public function edit($id)
     {
-        $data['invoice_details'] = $this->PurchaseInvoiceModel->where('purchase_order_id', $id)->first();
-        $inoice_id = isset($data['invoice_details']['id']) ? $data['invoice_details']['id'] : 0;
+        $this->view['invoice_details'] = $this->PurchaseInvoiceModel->where('purchase_order_id', $id)->first();
+        $inoice_id = isset($this->view['invoice_details']['id']) ? $this->view['invoice_details']['id'] : 0;
         if ($this->request->getPost()) {
             $error = $this->validate([
                 'customer_name' => [ 
@@ -70,12 +70,12 @@ class PurchaseInvoices extends BaseController
             ]); 
 
             if($inoice_id >0){
-                if((empty($data['invoice_details']['invoice_doc']) && $this->request->getFile('invoice_doc')->getSize() < 1)){
+                if((empty($this->view['invoice_details']['invoice_doc']) && $this->request->getFile('invoice_doc')->getSize() < 1)){
                     $this->validateData([], [
                         'invoice_doc' => 'uploaded[invoice_doc]|mime_in[invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
                     ]);
                 } 
-                if((empty($data['invoice_details']['tally_invoice_doc']) && $this->request->getFile('tally_invoice_doc')->getSize() < 1)){
+                if((empty($this->view['invoice_details']['tally_invoice_doc']) && $this->request->getFile('tally_invoice_doc')->getSize() < 1)){
                     $this->validateData([], [
                         'tally_invoice_doc' => 'uploaded[tally_invoice_doc]|mime_in[tally_invoice_doc,image/png,image/PNG,image/jpg,image/jpeg,image/JPEG]',
                     ]);
@@ -94,7 +94,7 @@ class PurchaseInvoices extends BaseController
 
             $validation = \Config\Services::validation(); 
             if (!empty($validation->getErrors())) {
-                $data['error'] = $this->validator;
+                $this->view['error'] = $this->validator;
             } else {  
                 $invoice_data =  [
                     'customer_name' => $this->request->getPost('customer_name'),
@@ -144,21 +144,21 @@ class PurchaseInvoices extends BaseController
         }   
       
         $customers  = $this->partyModel->select('id,party_name')->where('status', 1)->findAll();
-        $data['customers']  = array_column( $customers ,'party_name','id'); 
-        //   echo '<pre>';print_r($data); 
-        if( $data['invoice_details']){ 
-            $data['selected_customer'] = $data['invoice_details']['customer_name'];
-            if(!empty($data['invoice_details']['customer_name'])){
-                if(!in_array($data['invoice_details']['customer_name'],$data['customers'])){
-                    array_unshift($data['customers'],$data['invoice_details']['customer_name']);
+        $this->view['customers']  = array_column( $customers ,'party_name','id'); 
+        //   echo '<pre>';print_r($this->view); 
+        if( $this->view['invoice_details']){ 
+            $this->view['selected_customer'] = $this->view['invoice_details']['customer_name'];
+            if(!empty($this->view['invoice_details']['customer_name'])){
+                if(!in_array($this->view['invoice_details']['customer_name'],$this->view['customers'])){
+                    array_unshift($this->view['customers'],$this->view['invoice_details']['customer_name']);
                 }
             } 
         }
-        //   echo '<pre>';print_r($data);exit;
-        $data['last_order'] = $this->InvoiceModel->orderBy('id', 'desc')->first();  
-        $data['sale_order_id'] = $id;  
+        //   echo '<pre>';print_r($this->view);exit;
+        $this->view['last_order'] = $this->InvoiceModel->orderBy('id', 'desc')->first();  
+        $this->view['sale_order_id'] = $id;  
        
-        return view('PurchaseInvoices/save',$data);
+        return view('PurchaseInvoices/save',$this->view);
     }
     function uploadPurchaseOrderImages($id,$postdata,$image,$flag){
         $imgpath ='public/uploads/PurchaseInvoices/'; 
