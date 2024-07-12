@@ -162,7 +162,7 @@ class User extends BaseController
                                         'mobile'        =>'required|is_unique[users.mobile,users.id,'.$id.']',
                                         'home_branch'   =>'required',
                                 ];
-
+                              
                                 if($this->validate($rules)){
                                         
                                         $model = new UserModel();

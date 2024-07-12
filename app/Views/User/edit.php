@@ -56,7 +56,8 @@
                                   <label class="col-form-label">
                                     User Type <span class="text-danger">*</span>
                                   </label>
-                                  <select class="select" name = "user_type">
+                                  <input type="hidden" value="<?= $userdata['usertype']; ?>" name="user_type"/>
+                                  <select class="select" name = "user_type" disabled>
                                     <option>Select</option>
                                     <?php
                                     if(isset($user_type)){
