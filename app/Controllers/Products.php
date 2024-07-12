@@ -70,12 +70,12 @@ class Products extends BaseController
             }
 
             $this->PModel->where('is_deleted', '0')->orderBy('products.id', 'desc');
-            $data['products'] =  $this->PModel->findAll();
-            // echo '<pre>';print_r($data);exit;
-            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-            $data['post_data'] = $this->request->getPost();
+            $this->view['products'] =  $this->PModel->findAll();
+            // echo '<pre>';print_r($this->view);exit;
+            // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            $this->view['post_data'] = $this->request->getPost();
 
-            return view('Products/index', $data);
+            return view('Products/index', $this->view);
         }
     }
 
@@ -128,16 +128,16 @@ class Products extends BaseController
             // die;
 
             if (!$error) {
-                $data['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
-              // $data['offices'] = $this->OModel->where('status', 1)->findAll();
-                 $data['offices'] = $this->userSelectedBranches(); 
-                $data['WModel'] = $this->WModel;
-                $data['PWLModel'] = $this->PWLModel;
-                // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-                $data['error'] = $this->validator;
-                $data['product_categories'] = $this->PCModel->where('status', 1)->findAll();
-                $data['units'] = $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
-                return view('Products/create', $data);
+                $this->view['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
+              // $this->view['offices'] = $this->OModel->where('status', 1)->findAll();
+                 $this->view['offices'] = $this->userSelectedBranches(); 
+                $this->view['WModel'] = $this->WModel;
+                $this->view['PWLModel'] = $this->PWLModel;
+                // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+                $this->view['error'] = $this->validator;
+                $this->view['product_categories'] = $this->PCModel->where('status', 1)->findAll();
+                $this->view['units'] = $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
+                return view('Products/create', $this->view);
             } else {
 
                 // echo '<pre>';
@@ -204,16 +204,16 @@ class Products extends BaseController
                 return $this->response->redirect(base_url('/products'));
             }
         } else {
-            $data['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
-            // $data['offices'] = $this->OModel->where('status', 1)->findAll();
-            $data['offices'] = $this->userSelectedBranches(); 
-            $data['WModel'] = $this->WModel;
-            $data['PWLModel'] = $this->PWLModel;
-            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-            $data['units'] = $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
-            $data['product_categories'] = $this->PCModel->where('status', 1)->findAll();
-            // echo '<pre>';print_r($data);exit;
-            return view('Products/create', $data);
+            $this->view['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
+            // $this->view['offices'] = $this->OModel->where('status', 1)->findAll();
+            $this->view['offices'] = $this->userSelectedBranches(); 
+            $this->view['WModel'] = $this->WModel;
+            $this->view['PWLModel'] = $this->PWLModel;
+            // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            $this->view['units'] = $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
+            $this->view['product_categories'] = $this->PCModel->where('status', 1)->findAll();
+            // echo '<pre>';print_r($this->view);exit;
+            return view('Products/create', $this->view);
         }
     }
  
@@ -282,18 +282,18 @@ class Products extends BaseController
             ]);
 
             if (!$error) {
-                $data['offices'] = $this->OModel->where('status', 1)->findAll();
-                $data['WModel'] = $this->WModel;
-                $data['PWLModel'] = $this->PWLModel;
-                $data['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
-                // $data['user_offices'] = $this->UBModel->select()->where('user_id', 2)->findAll();
+                $this->view['offices'] = $this->OModel->where('status', 1)->findAll();
+                $this->view['WModel'] = $this->WModel;
+                $this->view['PWLModel'] = $this->PWLModel;
+                $this->view['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
+                // $this->view['user_offices'] = $this->UBModel->select()->where('user_id', 2)->findAll();
 
-                // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-                $data['product_categories'] = $this->PCModel->where('status', 1)->findAll();
-                $data['product_details'] = $this->PModel->where('id', $id)->first();
-                $data['error'] = $this->validator;
+                // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+                $this->view['product_categories'] = $this->PCModel->where('status', 1)->findAll();
+                $this->view['product_details'] = $this->PModel->where('id', $id)->first();
+                $this->view['error'] = $this->validator;
 
-                return view('Products/edit', $data);
+                return view('Products/edit', $this->view);
             } else {
 
                 // echo '<pre>';
@@ -375,18 +375,18 @@ class Products extends BaseController
                 return $this->response->redirect(base_url('/products'));
             }
         } else {
-            // $data['offices'] = $this->OModel->where('status', 1)->findAll();
-            $data['offices'] = $this->userSelectedBranches(); 
-            $data['WModel'] = $this->WModel;
-            $data['PWLModel'] = $this->PWLModel;
-            $data['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
-            // $data['user_offices'] = $this->UBModel->select()->where('user_id', 2)->findAll();
+            // $this->view['offices'] = $this->OModel->where('status', 1)->findAll();
+            $this->view['offices'] = $this->userSelectedBranches(); 
+            $this->view['WModel'] = $this->WModel;
+            $this->view['PWLModel'] = $this->PWLModel;
+            $this->view['user_offices'] = $this->UBModel->select()->where('user_id', $_SESSION['id'] ? $_SESSION['id'] : 0)->findAll();
+            // $this->view['user_offices'] = $this->UBModel->select()->where('user_id', 2)->findAll();
 
-            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-            $data['product_categories'] = $this->PCModel->where('status', 1)->findAll();
-            $data['product_details'] = $this->PModel->where('id', $id)->first();
-            $data['units'] = $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
-            return view('Products/edit', $data);
+            // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            $this->view['product_categories'] = $this->PCModel->where('status', 1)->findAll();
+            $this->view['product_details'] = $this->PModel->where('id', $id)->first();
+            $this->view['units'] = $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
+            return view('Products/edit', $this->view);
         }
     }
 

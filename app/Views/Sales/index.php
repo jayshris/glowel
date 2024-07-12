@@ -65,6 +65,7 @@
                     <div class="col-md-1 mrg-sub-4">
                       <?php echo makeListActions($currentController, $Action, 0, 1);?>
                     </div>
+                    
                   </div>
                 </div>
               </div>

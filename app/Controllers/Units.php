@@ -34,8 +34,8 @@ class Units extends BaseController
                 $this->UnitModel->where('unit', $this->request->getPost('unit'));
             }  
            
-            $data['data'] =  $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
-            return view('Unit/index',$data);
+            $this->view['data'] =  $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
+            return view('Unit/index',$this->view);
         }
     }
     public function create()
@@ -67,7 +67,7 @@ class Units extends BaseController
                 return $this->response->redirect(base_url('/units'));
             }
         } else {
-            return view('Unit/create');
+            return view('Unit/create',$this->view);
         }
     }
 
@@ -100,9 +100,9 @@ class Units extends BaseController
                 return $this->response->redirect(site_url('/units'));
             }
         } else {
-            $data['data'] = $this->UnitModel->where('id', $id)->first();
+            $this->view['data'] = $this->UnitModel->where('id', $id)->first();
 
-            return view('Unit/edit', $data);
+            return view('Unit/edit', $this->view);
         }
     }
 
@@ -111,9 +111,9 @@ class Units extends BaseController
             $this->session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(site_url('/dashboard'));
         }else {
-            $data['data'] = $this->UnitModel->where('id', $id)->first();
+            $this->view['data'] = $this->UnitModel->where('id', $id)->first();
 
-            return view('Unit/view', $data);
+            return view('Unit/view', $this->view);
         }
     }
 

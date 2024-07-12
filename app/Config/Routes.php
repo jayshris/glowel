@@ -285,6 +285,7 @@ $routes->match(['get', 'post'], 'units', 'Units::index');
 $routes->match(['get', 'post'], 'units/create', 'Units::create');
 $routes->match(['get', 'post'], 'units/edit/(:num)', 'Units::edit/$1');
 $routes->match(['get', 'post'], 'units/view/(:num)', 'Units::view/$1');
+$routes->match(['get', 'post'], 'units/preview/(:num)', 'Units::view/$1');
 $routes->match(['get', 'post'], 'units/delete/(:num)', 'Units::delete/$1');
 
 //party

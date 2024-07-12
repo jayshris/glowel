@@ -48,12 +48,18 @@
                       <label class="col-form-label">Unit</label>
                       <input type="text" class="form-control" name="unit" value="<?= set_value('unit'); ?>" />
                     </div> 
-
-                    <div class="col-md-7">
-                      <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
-                      <a href="./units" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
-                      <a href="<?= base_url('units/create') ?>" class="btn btn-danger mt-4">Add New Unit</a>
+ 
+                    <div class="col-md-1">
+                      <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;                     
+                      <!-- <a href="<?= base_url('purchase/create') ?>" class="btn btn-danger mt-4">Add Order</a> -->
                     </div>
+                    <div class="col-md-1 ">
+                      <a href="./units" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
+                    </div>
+                    <div class="col-md-1 mrg-sub-4">
+                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -110,7 +116,7 @@
                                     <td><?= $i++; ?>.</td>
                                     <td>
                                     <div class="drop-down">
-                                        <a href="javascript:void(0);" class="dropdown-toggle min-h"    data-bs-toggle="dropdown"><i class="ti ti-settings"></i> </a>
+                                        <!-- <a href="javascript:void(0);" class="dropdown-toggle min-h"    data-bs-toggle="dropdown"><i class="ti ti-settings"></i> </a>
                                         <div class="dropdown-menu  dropdown-menu-start">
                                             <ul>
                                                 <li>
@@ -123,7 +129,9 @@
                                                     <a href="javascript:void(0);"  onclick="delete_data('<?= $val['id'] ?>')"> <i class="ti ti-trash"></i>Delete</a>
                                                 </li> 
                                             </ul>
-                                        </div>
+                                        </div> -->
+
+                                        <?php echo makeListActions($currentController, $Action, $val['id'], 2);?>
                                     </div> 
                                         
                                     </td>
