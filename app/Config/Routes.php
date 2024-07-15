@@ -291,5 +291,8 @@ $routes->match(['get', 'post'], 'units/delete/(:num)', 'Units::delete/$1');
 //party
 $routes->get('party/preview/(:num)', 'Party::view/$1');
 
+//Reports
+$routes->match(['get', 'post'], 'stock-report-products', 'StockReportProducts::index'); 
+
 // auto routes must be set false... for security
 $routes->setAutoRoute(true);

@@ -32,11 +32,14 @@ use App\Models\OfficeModel;
                 <!-- Search -->
                 <div class="search-section">
                   <div class="row">
-                    <div class="col-md-5 col-sm-4">
+                    <!-- <div class="col-md-5 col-sm-4">
                       <div class="form-wrap icon-form">
                         <span class="form-icon"><i class="ti ti-search"></i></span>
                         <input type="text" class="form-control" placeholder="Search Deals">
                       </div>
+                    </div> -->
+                    <div class="col-md-1 mrg-sub-4">
+                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
                     </div>
                     <?php
                     $session = \Config\Services::session();

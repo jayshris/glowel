@@ -43,4 +43,11 @@ class InventoryModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function call_stock_report_products($from_date,$to_date,$product_category)
+    { 
+        $sql = "CALL stock_report_products('$from_date','$to_date',$product_category)"; 
+        $squery = $this->db->query($sql);
+        return $squery->getResult('array');
+    }
 }

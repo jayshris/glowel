@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Exception;
 use CodeIgniter\Model;
+use App\Models\ModulesModel;
 use App\Models\UserTypeModel;
 use App\Models\UserTypePermissionModel;
-use App\Models\ModulesModel;
 
 class UserModel extends Model
 {
