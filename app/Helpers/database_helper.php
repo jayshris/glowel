@@ -74,13 +74,24 @@ function makeListActions($module='', $actions=[], $token=0, $pos='2'){
 			if(isset($act->show_position) && $act->show_position==$pos){
 				$secName  = isset($act->section_name) ? $act->section_name : '';
 				$cssClass = isset($act->section_icon) ? $act->section_icon : '';
-				$confirm  = ($act->alert_msg=='1') ? "return confirm('Are you sure want to delete this record?')" : '';
+				$confirm = '';
+				if($act->alert_msg=='1'){
+					$confirm  = "return confirm('Are you sure want to delete this record?')";
+				}
+				// $confirm  = ($act->alert_msg=='1') ? "return confirm('Are you sure want to delete this record?')" : '';
+				if($act->alert_msg=='3'){
+					$confirm  = "print_data($token)";
+				} 
 				
 				if($pos==1){
 					$menu .= '<li>'.anchor(PANEL.$module.'/'.strtolower($secName),'<i class="'.$cssClass.'"></i> &nbsp;'.ucfirst($secName), ['class'=>'btn btn-primary']).'</li>';
 				}
 				elseif($pos==2 && !empty($token)){
-					$menu .= anchor(PANEL.$module.'/'.strtolower($secName).'/'.$token,'<i class="'.$cssClass.'"></i> '.ucfirst($secName), ['class'=>'dropdown-item', 'onclick'=>$confirm]);
+					if($act->alert_msg=='3'){
+						$menu .= '<a href="#" class="dropdown-item" onclick="'.$confirm.'"><i class="ti ti-trash text-danger"></i> '.ucfirst($secName).'</a>';
+					}else{
+						$menu .= anchor(PANEL.$module.'/'.strtolower($secName).'/'.$token,'<i class="'.$cssClass.'"></i> '.ucfirst($secName), ['class'=>'dropdown-item', 'onclick'=>$confirm]);
+					}
 				}
 			}
 		}
