@@ -38,7 +38,7 @@ use App\Models\OfficeModel;
                         <input type="text" class="form-control" placeholder="Search Deals">
                       </div>
                     </div> -->
-                    <div class="col-md-1 mrg-sub-4">
+                    <div class="col-md-12 mrg-sub-4">
                       <?php echo makeListActions($currentController, $Action, 0, 1);?>
                     </div>
                     <?php

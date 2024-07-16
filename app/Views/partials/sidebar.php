@@ -3,7 +3,7 @@
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
                 <li class="clinicdropdown">
-                    <a href="<?php echo base_url(); ?>profile">
+                    <a href="<?php echo base_url(); ?>dashboard">
                         <img src="<?php echo base_url(); ?>public/assets/img/profiles/avatar-14.jpg" class="img-fluid" alt="Profile">
                         <div class="user-names">
                             <h5><?php echo isset($logName) ? $logName : 'Guest'; ?></h5>

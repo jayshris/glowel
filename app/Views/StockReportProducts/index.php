@@ -4,9 +4,19 @@
 <head>
   <?= $this->include('partials/title-meta') ?>
   <?= $this->include('partials/head-css') ?>
+  <style>
+        @media print {
+           .noprint {
+              visibility: hidden;
+              display: none;
+           }
+           .hide-td{
+            display: none;
+           }
+        } 
+    </style>
 </head>
-
-
+ 
 <body>
 
   <!-- Main Wrapper -->
@@ -36,7 +46,7 @@
             </div>
             <!-- /Page Header -->
 
-            <form method="post"  action="<?php echo base_url('stock-report-products'); ?>">
+            <form method="post"  action="<?php echo base_url('stock-report-products'); ?>" class="noprint">
               <div class="card main-card">
                 <div class="card-body">
                   <h4>Search / Filter</h4>
@@ -45,7 +55,7 @@
 
                     <div class="col-md-4">
                       <div class="form-wrap">
-                        <label class="col-form-label">Category Name</label>
+                        <label class="col-form-label">Category Name<span class="text-danger">*</span></label>
                         <select class="form-select" name="product_category" required aria-label="Default select example">
                           <option value="">Select</option> 
                           <?php foreach($product_categories as $v){ ?>
@@ -68,14 +78,18 @@
                     <div class="col-md-7">
                       <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
                       <a href="./stock-report-products" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp; 
-                    </div>
+                      <?php if(!empty($data)){ ?>
+                        <button class="btn btn-info mt-4" onclick="window.print();">Print</button>&nbsp;&nbsp;
+                      <?php }?>
+                    </div> 
+
                   </div>
                 </div>
               </div>
             </form>
 
 
-            <div class="card main-card">
+            <div class="card main-card ">
               <div class="card-body">
 
                 <!-- Search -->
@@ -125,7 +139,7 @@
                         </tbody>
                       </table>
                     </div>
-                    <div class="row align-items-center">
+                    <div class="row align-items-center noprint">
                       <div class="col-md-6">
                         <div class="datatable-length"></div>
                       </div>

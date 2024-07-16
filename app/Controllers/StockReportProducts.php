@@ -47,7 +47,7 @@ class StockReportProducts extends BaseController
             $this->view['data']='';
             if (isset($_POST['product_category']) && isset($_POST['from_date']) && isset($_POST['to_date'])) {
                 $this->view['data'] = $this->InventoryModel->call_stock_report_products($_POST['from_date'], $_POST['to_date'],$_POST['product_category']);
-                // echo '<pre>';print_r($this->view['data']);exit;
+                echo $_POST['from_date'].' / '. $_POST['to_date'].' / '.$_POST['product_category'].'<pre>';print_r($this->view['data']);exit;
             }    
 
             $this->view['product_categories'] = $this->PCModel->where('status', 1)->findAll();

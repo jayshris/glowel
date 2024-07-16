@@ -40,17 +40,24 @@
 									<div class="card-body">
 										<div class="settings-form">
 											<form  action="<?php echo base_url(); ?>profile/update" method="post" enctype="multipart/form-data">
-												<div class="settings-sub-header">
+												<input type="hidden" name="id" value="<?= isset($profile_data['id']) ? $profile_data['id'] : 0 ?>"	
+											<div class="settings-sub-header">
 													<h6>Company Information</h6>
 												</div>
 												<div class="form-wrap">
 													<div class="profile-upload">
 														<div class="profile-upload-img">
-															<span><i class="ti ti-photo"></i></span>
-															<img id="ImgPreview" src="<?php echo base_url(); ?>assets/img/profiles/avatar-02.jpg" alt="img" name="company_logo" class="preview1">
-    														<button type="button" id="removeImage1" class="profile-remove">
+															
+															<?php $logo = isset($profile_data['company_logo']) && !empty($profile_data['company_logo']) ? $profile_data['company_logo'] : '' ?>
+															<?php if($logo) { ?>
+																<img  id="ImgPreview" src="<?php echo $logo; ?>" alt="img" name="company_logo"  class="preview1" style="display:block;">
+															<?php }else{ ?>
+																<span><i class="ti ti-photo"></i></span>
+															 <img id="ImgPreview" src="<?php echo  base_url() . 'assets/img/profiles/avatar-02.jpg'; ?>" alt="img" name="company_logo" class="preview1">
+															 <button type="button" id="removeImage1" class="profile-remove">
     															<i class="feather-x"></i>
     														</button>
+															<?php }?>
 														</div>
 														<div class="profile-upload-content">
 															<strong style="font-weight: 500;">Company Logo</strong> <br>
@@ -75,10 +82,10 @@
 																<label class="col-form-label">
 																	Company Name  <span class="text-danger">*</span>
 																</label>
-																<input type="text" name="company_name" value="<?php
+																<input type="text" pattern="[a-zA-Z0-9\s]+" title="Please enter only alphanumeric characters" required name="company_name" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['company_name'];
-                                }  ?>" class="form-control">
+                                }else{ echo set_value('company_name'); }  ?>" class="form-control">
 																<?php
                                 if($validation->getError('company_name'))
                                 {
@@ -92,10 +99,10 @@
 																<label class="col-form-label">
 																	Abbreviation  <span class="text-danger">*</span>
 																</label>
-																<input type="text" name="abbreviation" value="<?php
+																<input type="text" pattern="[a-zA-Z0-9\s]+" title="Please enter only alphanumeric characters" name="abbreviation" required value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['abbreviation'];
-                                }
+                                }else{ echo set_value('abbreviation'); } 
                                 ?>" class="form-control">
 																<?php
                                 if($validation->getError('abbreviation'))
@@ -110,10 +117,10 @@
 																<label class="col-form-label">
 																	Email id<span class="text-danger">*</span>
 																</label>
-																<input type="text" class="form-control" name="email" value="<?php
+																<input type="email" class="form-control" required name="email" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['email'];
-                                }
+                                }else{ echo set_value('email'); } 
                                 ?>">
 																<?php
                                 if($validation->getError('email'))
@@ -128,10 +135,10 @@
 																<label class="col-form-label">
 																	Phone No.  <span class="text-danger">*</span>
 																</label>
-																<input type="text" class="form-control" name="phone_number" value="<?php
+																<input type="text" class="form-control" required name="phone_number" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['phone_number'];
-                                }
+                                }else{ echo set_value('phone_number'); } 
                                 ?>">
 																<?php
                                 if($validation->getError('phone_number'))
@@ -146,10 +153,10 @@
 																<label class="col-form-label">
 																	GST Number  <span class="text-danger">*</span>
 																</label>
-																<input type="text" class="form-control" name="gst" value="<?php
+																<input type="text" class="form-control" required name="gst" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['gst'];
-                                }
+                                }else{ echo set_value('gst'); } 
                                 ?>">
 																<?php
                                 if($validation->getError('gst'))
@@ -165,10 +172,10 @@
 																<label class="col-form-label">
 																	IT PAN No.  <span class="text-danger">*</span>
 																</label>
-																<input type="text" class="form-control" name="pan_no" value="<?php
+																<input type="text" class="form-control" required name="pan_no" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['pan_no'];
-                                }
+                                }else{ echo set_value('pan_no'); } 
                                 ?>">
 																<?php
                                 if($validation->getError('pan_no'))
@@ -188,10 +195,10 @@
 																<label class="col-form-label">
 																	Address  <span class="text-danger">*</span>
 																</label>
-																<input type="text" class="form-control" name="company_business_address" value="<?php
+																<input type="text" class="form-control" required name="company_business_address" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['company_business_address'];
-                                } ?>">
+                                }else{ echo set_value('company_business_address'); }  ?>">
 																<?php
                                 if($validation->getError('company_business_address'))
                                 {
@@ -205,10 +212,10 @@
 																<label class="col-form-label">
 																	Country <span class="text-danger">*</span>
 																</label>
-																<input type="text" value="India" readonly class="form-control" name="country" value="<?php
+																<input type="text" value="India" required readonly class="form-control" name="country" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['country'];
-                                } ?>">
+                                }else{ echo set_value('country'); } ?>">
 																<?php
                                 if($validation->getError('country'))
                                 {
@@ -222,7 +229,7 @@
 																<label class="col-form-label">
 																	State / Province <span class="text-danger">*</span>
 																</label>
-																<select class="select" name="state">
+																<select class="select" required name="state">
                                   <option>Select</option>
                               <?php
                                 if (isset($state)) {
@@ -232,7 +239,10 @@
                                     <?php 
                                     if(isset($profile_data)){
                                     if($profile_data['state'] == $row["state_id"]) echo 'selected';
-                                       } ?>><?php echo $row["state_name"] ?></option>  
+                                       }else{
+										 echo set_select('state', $row['state_id']);
+									   } 
+									   ?>><?php echo $row["state_name"] ?></option>  
                                   <?php
                                   }
                                 }
@@ -251,10 +261,10 @@
 																<label class="col-form-label">
 																	City <span class="text-danger">*</span>
 																</label>
-																<input type="text" class="form-control" name="city" value="<?php
+																<input type="text" class="form-control" required name="city" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['city'];
-                                } ?>">
+                                }else{ echo set_value('city'); } ?>">
 																<?php
                                 if($validation->getError('city'))
                                 {
@@ -268,10 +278,10 @@
 																<label class="col-form-label">
 																	Postal Code <span class="text-danger">*</span>
 																</label>
-																<input type="text" class="form-control" name="pincode" value="<?php
+																<input type="text" class="form-control" required name="pincode" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['pincode'];
-                                } ?>">
+                                }else{ echo set_value('pincode'); } ?>">
 																<?php
                                 if($validation->getError('pincode'))
                                 {
@@ -286,10 +296,10 @@
 																<label class="col-form-label">
 																Purchase Order Prefix <span class="text-danger">*</span>
 																</label>
-																<input type="text" class="form-control" name="purchase_order_prefix" value="<?php
+																<input type="text" class="form-control" required name="purchase_order_prefix" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['purchase_order_prefix'];
-                                } ?>">
+                                }else{ echo set_value('purchase_order_prefix'); } ?>">
 																<?php
                                 if($validation->getError('purchase_order_prefix'))
                                 {
@@ -303,10 +313,10 @@
 																<label class="col-form-label">
 																Invoice Prefix <span class="text-danger">*</span>
 																</label>
-																<input type="text" class="form-control" name="invoice_prefix" value="<?php
+																<input type="text" class="form-control" required name="invoice_prefix" value="<?php
                                 if(isset($profile_data)){
                                   echo $profile_data['invoice_prefix'];
-                                } ?>">
+                                }else{ echo set_value('invoice_prefix'); } ?>">
 																<?php
                                 if($validation->getError('invoice_prefix'))
                                 {
