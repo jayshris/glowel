@@ -101,7 +101,7 @@
                                 <div class="form-wrap">
                                   <label class="col-form-label">Aadhaar Image - Front<span class="text-danger">*</span></label>
                                   <input class="form-control" name="aadhaarfront" type="file" title="Image size should be less than 100 KB" required>
-                                  <p style="color:#00f"><em>Image less than 100 KB</em></p>
+                                  <span class="text-info ">(PNG,JPEG,JPG,PDF)</span>
                                   <?php if ($validation->getError('aadhaarfront')) {
                                     echo '<div class="alert alert-danger mt-2">' . $validation->getError('aadhaarfront') . '</div>';
                                   } ?>
@@ -112,7 +112,7 @@
                                 <div class="form-wrap">
                                   <label class="col-form-label">Aadhaar Image - Back<span class="text-danger"></span></label>
                                   <input class="form-control" name="aadhaarback" type="file" title="Image size should be less than 100 KB">
-                                  <p style="color:#00f"><em>Image less than 100 KB</em></p>
+                                  <span class="text-info ">(PNG,JPEG,JPG,PDF)</span>
                                   <?php if ($validation->getError('aadhaarback')) {
                                     echo '<div class="alert alert-danger mt-2">' . $validation->getError('aadhaarback') . '</div>';
                                   } ?>
@@ -177,7 +177,7 @@
                                 <div class="form-wrap">
                                   <label class="col-form-label">Profile Image 1</label>
                                   <input class="form-control" name="image1" type="file" title="Image size should be less than 100 KB" accept="image/*">
-                                  <p style="color:#00f"><em>Image less than 100 KB</em></p>
+                                  <span class="text-info ">(PNG,JPEG,JPG,PDF)</span>
                                   <?php if ($validation->getError('image1')) {
                                     echo '<div class="alert alert-danger mt-2">' . $validation->getError('image1') . '</div>';
                                   } ?>
@@ -188,7 +188,7 @@
                                 <div class="form-wrap">
                                   <label class="col-form-label">Profile Image 2</label>
                                   <input class="form-control" name="image2" type="file" title="Image size should be less than 100 KB" accept="image/*">
-                                  <p style="color:#00f"><em>Image less than 100 KB</em></p>
+                                  <span class="text-info ">(PNG,JPEG,JPG,PDF)</span>
                                   <?php if ($validation->getError('image2')) {
                                     echo '<div class="alert alert-danger mt-2">' . $validation->getError('image2') . '</div>';
                                   } ?>
@@ -209,7 +209,7 @@
                                 <div class="form-wrap">
                                   <label class="col-form-label">Digital Signature</label>
                                   <input class="form-control" name="digital_sign" type="file" title="Image size should be less than 100 KB" accept="image/*" <?= set_value('digital_sign') ?>>
-                                  <p style="color:#00f"><em>Image less than 100 KB</em></p>
+                                  <span class="text-info ">(PNG,JPEG,JPG,PDF)</span>
                                   <?php if ($validation->getError('digital_sign')) {
                                     echo '<div class="alert alert-danger mt-2">' . $validation->getError('digital_sign') . '</div>';
                                   } ?>
@@ -227,7 +227,7 @@
                                 <div class="form-wrap">
                                   <label class="col-form-label">UPI ID Image<span class="text-danger"></span></label>
                                   <input class="form-control" name="upi_id" type="file" title="Image size should be less than 100 KB" <?= set_value('upi_id') ?>>
-                                  <p style="color:#00f"><em>Image less than 100 KB</em></p>
+                                  <span class="text-info ">(PNG,JPEG,JPG,PDF)</span>
                                   <?php if ($validation->getError('upi_id')) {
                                     echo '<div class="alert alert-danger mt-2">' . $validation->getError('upi_id') . '</div>';
                                   } ?>

@@ -12,7 +12,13 @@ use App\Models\OfficeModel;
 class Employee extends BaseController
 {
   public $_access;
-
+  public $employeeModel;
+  public $companyModel;
+  public $aadhaarModel;
+  public $user;
+  public $officeModel;
+  public $added_by;
+  public $added_ip;
   public function __construct()
   {
     $u = new UserModel();
@@ -68,12 +74,13 @@ class Employee extends BaseController
           'office_location' => 'required',
           'name' => 'required|min_length[3]|max_length[50]',
           'mobile' => 'required|numeric|min_length[10]|max_length[15]',
-          'image1' => 'max_size[image1,100]|ext_in[image1,jpg,jpeg,png]',
-          'image2' => 'max_size[image2,100]|ext_in[image2,jpg,jpeg,png]',
-          'aadhaarfront' => 'max_size[aadhaarfront,100]|ext_in[aadhaarfront,jpg,jpeg,png,pdf]',
-          'aadhaarback' => 'max_size[aadhaarback,100]|ext_in[aadhaarback,jpg,jpeg,png,pdf]',
           'joiningdate' => 'required',
-          'upi_id' => 'max_size[upi_id,100]|ext_in[upi_id,jpg,jpeg,png]',
+          'image1' => 'ext_in[image1,jpg,jpeg,png,pdf]',
+          'image2' => 'ext_in[image2,jpg,jpeg,png,pdf]',
+          'aadhaarfront' => 'ext_in[aadhaarfront,jpg,jpeg,png,pdf]',
+          'aadhaarback' => 'ext_in[aadhaarback,jpg,jpeg,png,pdf]',          
+          'upi_id' => 'ext_in[upi_id,jpg,jpeg,png,pdf]',
+          'digital_sign' => 'ext_in[upi_id,jpg,jpeg,png,pdf]'
         ]);
         if (!$error) {
           $this->view['error'] = $this->validator;
@@ -235,12 +242,13 @@ class Employee extends BaseController
           'name' => 'required|min_length[3]|max_length[50]',
           'mobile' => 'required|numeric|min_length[10]|max_length[15]',
           'aadhaar' => 'required|numeric|max_length[16]',
-          'image1' => 'max_size[image1,100]|ext_in[image1,jpg,jpeg,png]',
-          'image2' => 'max_size[image2,100]|ext_in[image2,jpg,jpeg,png]',
-          'aadhaarfront' => 'max_size[aadhaarfront,100]|ext_in[aadhaarfront,jpg,jpeg,png,pdf]',
-          'aadhaarback' => 'max_size[aadhaarback,100]|ext_in[aadhaarback,jpg,jpeg,png,pdf]',
           'joiningdate' => 'required',
-          'upi_id' => 'max_size[upi_id,100]|ext_in[upi_id,jpg,jpeg,png]'
+          'image1' => 'ext_in[image1,jpg,jpeg,png,pdf]',
+          'image2' => 'ext_in[image2,jpg,jpeg,png,pdf]',
+          'aadhaarfront' => 'ext_in[aadhaarfront,jpg,jpeg,png,pdf]',
+          'aadhaarback' => 'ext_in[aadhaarback,jpg,jpeg,png,pdf]',
+          'upi_id' => 'ext_in[upi_id,jpg,jpeg,png,pdf]',
+          'digital_sign' => 'ext_in[upi_id,jpg,jpeg,png,pdf]'
         ]);
         if (!$error) {
           $this->view['error'] = $this->validator;
