@@ -21,6 +21,55 @@
 
             <?= $this->include('partials/page-title') ?>
 
+             <!-- Page Header -->
+             <div class="page-header">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h4 class="page-title">Employee</h4>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="head-icons">
+                    <a href="<?= base_url('employee') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
+                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header"><i class="ti ti-chevrons-up"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /Page Header -->
+
+            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('employee'); ?>">
+              <div class="card main-card">
+                <div class="card-body">
+                  <h4>Search / Filter</h4>
+                  <hr>
+                  <div class="row mt-2"> 
+
+                    <div class="col-md-2">
+                      <div class="form-wrap">
+                        <label class="col-form-label">Status</label>
+                        <select class="form-select" name="status" aria-label="Default select example">
+                          <option value="">Select Status</option>
+                          <option value="1">Active</option>
+                          <option value="0">Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-1">
+                      <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;      
+                    </div>
+                    <div class="col-md-1 ">
+                      <a href="./employee" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
+                    </div>
+                    <div class="col-md-1 mrg-sub-4">
+                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </form>
+
             <div class="card main-card">
               <div class="card-body">
 
@@ -36,15 +85,15 @@
                     }
                     ?>
 
-                    <div class="col-md-5 col-sm-4">
+                    <!-- <div class="col-md-5 col-sm-4">
                       <div class="form-wrap icon-form">
                         <span class="form-icon"><i class="ti ti-search"></i></span>
                         <input type="text" class="form-control" placeholder="Search Deals">
                       </div>
-                    </div>
-                    <div class="col-md-7 text-end">
+                    </div> -->
+                    <!-- <div class="col-md-7 text-end">
                       <?php echo makeListActions($currentController, $Action, 0, 1); ?>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
                 <!-- /Search -->

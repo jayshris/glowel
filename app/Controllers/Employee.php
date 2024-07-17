@@ -43,7 +43,9 @@ class Employee extends BaseController
       $session->setFlashdata('error', 'You are not permitted to access this page');
       return $this->response->redirect(site_url('/dashboard'));
     } else {
-
+      if ($this->request->getPost('status') != '') {
+          $this->employeeModel->where('status', $this->request->getPost('status'));
+      }
       $this->view['employee_data'] = $this->employeeModel->orderBy('id', 'DESC')->paginate(10);
       $this->view['pagination_link'] = $this->employeeModel->pager;
       $this->view['page_data'] = ['page_title' => view('partials/page-title', ['title' => 'Employee', 'li_1' => '123', 'li_2' => 'deals'])];
