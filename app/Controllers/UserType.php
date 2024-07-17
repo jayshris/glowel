@@ -28,12 +28,16 @@ class UserType extends BaseController
         return $this->response->redirect(site_url('/dashboard'));
       }else{  
         $userTypeModel = new UserTypeModel();
-        $data['usertype_data'] = $userTypeModel->orderBy('id', 'DESC')->paginate(10);
-        $data['pagination_link'] = $userTypeModel->pager;
-        $data['page_data'] = [
+        
+        if ($this->request->getPost('status') != '') {
+            $userTypeModel->where('status', $this->request->getPost('status'));
+        }
+        $this->view['usertype_data'] = $userTypeModel->orderBy('id', 'DESC')->findAll();
+        $this->view['pagination_link'] = $userTypeModel->pager;
+        $this->view['page_data'] = [
           'page_title' => view( 'partials/page-title', [ 'title' => 'User Types','li_1' => '123','li_2' => 'deals' ] )
           ];
-        return view('UserType/index',$data);
+        return view('UserType/index',$this->view);
       }
     }
 
@@ -46,7 +50,7 @@ class UserType extends BaseController
         return $this->response->redirect(site_url('/dashboard'));
       }else{ 
         $modules = new ModulesModel();
-        $data['modules'] = $modules->where('status','Active')->findAll();
+        $this->view['modules'] = $modules->where('status','Active')->findAll();
 
         if($this->request->getMethod()=='POST'){
             $id = $this->request->getVar('id');
@@ -55,7 +59,7 @@ class UserType extends BaseController
             ]);
             
             if(!$error){
-              $data['error'] 	= $this->validator;
+              $this->view['error'] 	= $this->validator;
             }else {
               $usertypeModel = new UserTypeModel();
               $usertypeModel->save([
@@ -83,7 +87,7 @@ class UserType extends BaseController
             }
           }
 
-        return view('UserType/create', $data);
+        return view('UserType/create', $this->view);
       }
     }
 
@@ -96,12 +100,12 @@ class UserType extends BaseController
         return $this->response->redirect(site_url('/dashboard'));
       }else{ 
         $userTypeModel = new UserTypeModel();
-        $data['usertype_data'] = $userTypeModel->where('id', $id)->first();
+        $this->view['usertype_data'] = $userTypeModel->where('id', $id)->first();
         
         $permissions = new UserTypePermissionModel();
-        $data['permissiondata'] = $permissions->where('user_type_id', $id)->findAll();
+        $this->view['permissiondata'] = $permissions->where('user_type_id', $id)->findAll();
         $modules = new ModulesModel();
-        $data['modules'] = $modules->where('status','Active')->findAll();
+        $this->view['modules'] = $modules->where('status','Active')->findAll();
         $request = service('request');
         if($this->request->getMethod()=='POST'){
           $id = $this->request->getVar('id');
@@ -110,7 +114,7 @@ class UserType extends BaseController
           ]);
           if(!$error)
           {
-            $data['error'] 	= $this->validator;
+            $this->view['error'] 	= $this->validator;
           }else {
             $usertypeModel = new UserTypeModel();
             $usertypeModel->update($id,[
@@ -135,7 +139,7 @@ class UserType extends BaseController
             return $this->response->redirect(site_url('/usertype'));
           }
         }
-        return view('UserType/edit', $data);
+        return view('UserType/edit', $this->view);
       }
     }
 

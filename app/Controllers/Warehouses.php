@@ -56,13 +56,13 @@ class Warehouses extends BaseController
                 $this->WModel->where('warehouses.status', $this->request->getPost('status'));
             }
             $this->WModel->where('is_deleted', '0')->orderBy('warehouses.id', 'desc');
-            $data['warehouses'] = $this->WModel->findAll();
+            $this->view['warehouses'] = $this->WModel->findAll();
 
-            $data['companies'] = $this->CModel->select('id,name')->where('status', 'Active')->findAll();
-            $data['offices'] = $this->OModel->select('id,name')->where('status', '1')->findAll();
-            $data['post_data'] = $this->request->getPost();
+            $this->view['companies'] = $this->CModel->select('id,name')->where('status', 'Active')->findAll();
+            $this->view['offices'] = $this->OModel->select('id,name')->where('status', '1')->findAll();
+            $this->view['post_data'] = $this->request->getPost();
 
-            return view('Warehouses/index', $data);
+            return view('Warehouses/index', $this->view);
         }
     }
 
@@ -89,9 +89,9 @@ class Warehouses extends BaseController
             // die;
 
             if (!$error) {
-                $data['companies'] = $this->CModel->select('id,name')->where('status', 1)->findAll();
-                $data['error'] = $this->validator;
-                return view('Warehouses/create', $data);
+                $this->view['companies'] = $this->CModel->select('id,name')->where('status', 1)->findAll();
+                $this->view['error'] = $this->validator;
+                return view('Warehouses/create', $this->view);
             } else {
 
                 $this->WModel->save([
@@ -106,8 +106,8 @@ class Warehouses extends BaseController
                 return $this->response->redirect(base_url('/warehouses'));
             }
         } else {
-            $data['companies'] = $this->CModel->select('id,name')->where('status', 1)->findAll();
-            return view('Warehouses/create', $data);
+            $this->view['companies'] = $this->CModel->select('id,name')->where('status', 1)->findAll();
+            return view('Warehouses/create', $this->view);
         }
     }
 
@@ -144,11 +144,11 @@ class Warehouses extends BaseController
 
             if (!$error) {
 
-                $data['companies'] = $this->CModel->select('id,name')->where('status', 1)->findAll();
-                $data['warehouse_details'] = $this->WModel->where('id', $id)->first();
-                $data['error'] = $this->validator;
+                $this->view['companies'] = $this->CModel->select('id,name')->where('status', 1)->findAll();
+                $this->view['warehouse_details'] = $this->WModel->where('id', $id)->first();
+                $this->view['error'] = $this->validator;
 
-                return view('Warehouses/create', $data);
+                return view('Warehouses/create', $this->view);
             } else {
 
                 $this->WModel->update($id, [
@@ -167,11 +167,11 @@ class Warehouses extends BaseController
             }
         } else {
 
-            $data['companies'] = $this->CModel->select('id,name')->where('status', 'Active')->findAll();
-            $data['offices'] = $this->OModel->select('id,name')->where('status', 1)->findAll();
-            $data['warehouse_details'] = $this->WModel->where('id', $id)->first();
+            $this->view['companies'] = $this->CModel->select('id,name')->where('status', 'Active')->findAll();
+            $this->view['offices'] = $this->OModel->select('id,name')->where('status', 1)->findAll();
+            $this->view['warehouse_details'] = $this->WModel->where('id', $id)->first();
 
-            return view('Warehouses/edit', $data);
+            return view('Warehouses/edit', $this->view);
         }
     }
 

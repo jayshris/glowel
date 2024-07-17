@@ -75,11 +75,22 @@
                       </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <!-- <div class="col-md-4">
                       <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
                       <a href="./warehouses" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
                       <a href="<?= base_url('warehouses/create') ?>" class="btn btn-danger mt-4">Add Warehouse</a>
+                    </div> -->
+
+                    <div class="col-md-1">
+                      <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;      
                     </div>
+                    <div class="col-md-1 ">
+                      <a href="./warehouses" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
+                    </div>
+                    <div class="col-md-1 mrg-sub-4">
+                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -132,9 +143,9 @@
                         <tr>
                           <td><?= $i++; ?>.</td>
                           <td>
-                            <a href="<?= base_url('warehouses/edit/' . $w['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
-
-                            <button type="button" onclick="delete_data('<?= $w['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
+                          <?php echo makeListActions($currentController, $Action, $w['id'], 2);?>
+                            <!-- <a href="<?= base_url('warehouses/edit/' . $w['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
+                            <button type="button" onclick="delete_data('<?= $w['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button> -->
                           </td>
                           <td><?= $w['name'] ?></td>
                           <td><?= $w['company_name'] ?></td>
@@ -208,7 +219,11 @@
           initComplete: (settings, json) => {
             $('.dataTables_paginate').appendTo('.datatable-paginate');
             $('.dataTables_length').appendTo('.datatable-length');
-          }
+          },
+          "aoColumnDefs": [
+              { "bSortable": false, "aTargets": [ 1,7] } 
+          ]
+
         });
       }
     </script>

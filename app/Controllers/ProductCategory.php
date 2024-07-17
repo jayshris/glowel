@@ -50,12 +50,12 @@ class ProductCategory extends BaseController
             }
 
             $this->PCModel->orderBy('product_categories.id', 'desc');
-            $data['product_categories'] =  $this->PCModel->findAll();
+            $this->view['product_categories'] =  $this->PCModel->findAll();
 
-            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-            $data['post_data'] = $this->request->getPost();
+            // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            $this->view['post_data'] = $this->request->getPost();
 
-            return view('ProductCategory/index', $data);
+            return view('ProductCategory/index', $this->view);
         }
     }
 
@@ -90,9 +90,9 @@ class ProductCategory extends BaseController
             ]);
 
             if (!$error) {
-                // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-                $data['error'] = $this->validator;
-                return view('ProductCategory/create', $data);
+                // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+                $this->view['error'] = $this->validator;
+                return view('ProductCategory/create', $this->view);
             } else {
 
                 // process image
@@ -120,8 +120,8 @@ class ProductCategory extends BaseController
                 return $this->response->redirect(base_url('/product-categories'));
             }
         } else {
-            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-            return view('ProductCategory/create');
+            // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            return view('ProductCategory/create',$this->view);
         }
     }
 
@@ -156,11 +156,11 @@ class ProductCategory extends BaseController
             ]);
 
             if (!$error) {
-                // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-                $data['category_details'] = $this->PCModel->where('id', $id)->first();
-                $data['error'] = $this->validator;
+                // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+                $this->view['category_details'] = $this->PCModel->where('id', $id)->first();
+                $this->view['error'] = $this->validator;
 
-                return view('ProductCategory/edit', $data);
+                return view('ProductCategory/edit', $this->view);
             } else {
 
                 $this->PCModel->update($id, [
@@ -198,9 +198,9 @@ class ProductCategory extends BaseController
                 return $this->response->redirect(base_url('/product-categories'));
             }
         } else {
-            $data['category_details'] = $this->PCModel->where('id', $id)->first();
-            // $data['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-            return view('ProductCategory/edit', $data);
+            $this->view['category_details'] = $this->PCModel->where('id', $id)->first();
+            // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+            return view('ProductCategory/edit', $this->view);
         }
     }
 

@@ -25,21 +25,25 @@ class User extends BaseController
         }
 
         public function index(){
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{  
-                $userModel = new UserModel();
-                $this->view['user_data'] = $userModel->orderBy('id', 'DESC')->paginate(10);
-                $this->view['pagination_link'] = $userModel->pager;
-                $this->view['page_data'] = [
-                'page_title' => view( 'partials/page-title', [ 'title' => 'Company','li_1' => '123','li_2' => 'deals' ] )
-                ];
-                return view('User/index',$this->view);
-          }
-        }
+                $access = $this->_access; 
+                if($access === 'false'){
+                  $session = \Config\Services::session();
+                  $session->setFlashdata('error', 'You are not permitted to access this page');
+                  return $this->response->redirect(site_url('/dashboard'));
+                }else{  
+                      $userModel = new UserModel();
+                      if ($this->request->getPost('status') != '') {
+                              $userModel->where('status', $this->request->getPost('status'));
+                      }
+              
+                      $this->view['user_data'] = $userModel->orderBy('id', 'DESC')->findAll();
+                      $this->view['pagination_link'] = $userModel->pager;
+                      $this->view['page_data'] = [
+                      'page_title' => view( 'partials/page-title', [ 'title' => 'Company','li_1' => '123','li_2' => 'deals' ] )
+                      ];
+                      return view('User/index',$this->view);
+                }
+              }
 
         public function create(){
                 $access = $this->_access; 

@@ -30,12 +30,12 @@
 
                 <div class="search-section">
                   <div class="row">
-                    <div class="col-md-5 col-sm-4">
+                    <!-- <div class="col-md-5 col-sm-4">
                       <div class="form-wrap icon-form">
                         <span class="form-icon"><i class="ti ti-search"></i></span>
                         <input type="text" class="form-control" placeholder="Search Deals">
                       </div>
-                    </div>
+                    </div> -->
                     <?php
                     $session = \Config\Services::session();
                     if($session->getFlashdata('success'))
@@ -50,39 +50,40 @@
 
                 <div class="row">
                   <div class="col-md-9">
-                    <form method="post" action="<?php echo base_url() ?>company/searchByStatus" >
+                    <form method="post" action="<?php echo base_url() ?>company" >
                           <!-- Search -->
                           <div class="search-section">
                             <div class="row">
-                              <div class="col-md-2 col-sm-3">
+                              <div class="col-md-3 col-sm-3  ">
                                   <label class="col-form-label">
-                                    Search By Status
+                                    Search By Status:
                                   </label>
                               </div>
                               <div class="col-md-3 col-sm-3">
                                   <div class="form-wrap">
-                                        <select class="form-control" name="status">
+                                        <select class="form-control select" name="status">
                                         <option>Select</option>
                                           <option value="Active">Active</option>
                                           <option value="Inactive">Inactive</option>
                                         </select>
                                   </div>
                               </div>
-                              <div class="col-md-3 col-sm-3">
+                              <div class="col-md-2 col-sm-2">
                                 <input type="submit" value="Submit" class="btn btn-primary">
+                              </div>
+                              <div class="col-md-3"><?php //echo __LINE__.'<pre>';print_r($Action);die;?>
+                                  <!-- <a href="<?php echo base_url();?>company/create" class="btn btn-dark " role="button">Add New Company</a> -->
+                                  <?php echo makeListActions($currentController, $Action, 0, 1);?>
                               </div>
                             </div>
                           </div>
                     </form>
                   </div>
-                  <div class="col-md-3"><?php //echo __LINE__.'<pre>';print_r($Action);die;?>
-                      <!-- <a href="<?php echo base_url();?>company/create" class="btn btn-dark " role="button">Add New Company</a> -->
-                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
-                  </div>
+                 
                 </div>
                 
                 <div class="table-responsive custom-table">
-                  <table class="table">
+                  <table class="table" id="company-table">
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
@@ -166,6 +167,32 @@
       }
       return false;
     }
+    // datatable init
+    if ($('#company-table').length > 0) {
+        $('#company-table').DataTable({
+          "bFilter": false,
+          "bInfo": false,
+          "autoWidth": true,
+          "language": {
+            search: ' ',
+            sLengthMenu: '_MENU_',
+            searchPlaceholder: "Search",
+            info: "_START_ - _END_ of _TOTAL_ items",
+            "lengthMenu": "Show _MENU_ entries",
+            paginate: {
+              next: 'Next <i class=" fa fa-angle-right"></i> ',
+              previous: '<i class="fa fa-angle-left"></i> Prev '
+            },
+          },
+          initComplete: (settings, json) => {
+            $('.dataTables_paginate').appendTo('.datatable-paginate');
+            $('.dataTables_length').appendTo('.datatable-length');
+          },
+          "aoColumnDefs": [
+              { "bSortable": false, "aTargets": [ 0,4] } 
+          ]
+        });
+      }
   </script>
 </body>
 </html>

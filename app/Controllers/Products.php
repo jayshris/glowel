@@ -55,8 +55,8 @@ class Products extends BaseController
             $this->session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(base_url('/dashboard'));
         } else {
-            $this->PModel->select('products.*,product_types.type_name,product_categories.cat_name,u.first_name as added_by,u1.first_name as modify_by');
-            $this->PModel->join('product_types', 'product_types.id = products.type_id');
+            $this->PModel->select('products.*,product_categories.cat_name,u.first_name as added_by,u1.first_name as modify_by');
+            // $this->PModel->join('product_types', 'product_types.id = products.type_id');
             $this->PModel->join('users u', 'u.id = products.added_by','left');
             $this->PModel->join('users u1', 'u1.id = products.modify_by','left');
             $this->PModel->join('product_categories', 'product_categories.id = products.category_id');

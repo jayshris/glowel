@@ -27,13 +27,16 @@ class Office extends BaseController {
             return $this->response->redirect(site_url('/dashboard'));
           }else{
               $officeModel = new OfficeModel();
+              if ($this->request->getPost('status') != '') {
+                  $officeModel->where('status', $this->request->getPost('status'));
+              }
               $officeModel->select('office.*,c.name as cname')->join('company c','office.company_id = c.id'); 
-              $data['office_data'] = $officeModel->orderBy('id', 'DESC')->paginate(10);
-              $data['pagination_link'] = $officeModel->pager;
-              $data['page_data'] = [
+              $this->view['office_data'] = $officeModel->orderBy('id', 'DESC')->paginate(10);
+              $this->view['pagination_link'] = $officeModel->pager;
+              $this->view['page_data'] = [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Company','li_1' => '123','li_2' => 'deals' ] )
                 ];
-              return view('Office/index',$data);
+              return view('Office/index',$this->view);
           }
         }
 
@@ -46,15 +49,15 @@ class Office extends BaseController {
             return $this->response->redirect(site_url('/dashboard'));
           }else{
               helper(['form', 'url']);
-              $data ['page_data']= [
+              $this->view['page_data']= [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Add Office','li_2' => 'profile' ] )
                 ];
 
                 $companyModel = new CompanyModel();
                 $stateModel = new StateModel();
                 
-                $data['company'] = $companyModel->where(['status'=>'Active'])->orderBy('id')->findAll();
-                $data['state'] = $stateModel->where(['isStatus'=>'1'])->orderBy('state_id')->findAll();
+                $this->view['company'] = $companyModel->where(['status'=>'Active'])->orderBy('id')->findAll();
+                $this->view['state'] = $stateModel->where(['isStatus'=>'1'])->orderBy('state_id')->findAll();
                 $request = service('request');
                 if($this->request->getMethod()=='POST'){
                   $error = $this->validate([
@@ -68,7 +71,7 @@ class Office extends BaseController {
                   ]);
                   if(!$error)
                   {
-                    $data['error'] 	= $this->validator;
+                    $this->view['error'] 	= $this->validator;
                   }else {
                     $officeModel = new OfficeModel();
                     $officeModel->save([
@@ -94,7 +97,7 @@ class Office extends BaseController {
         
                   
                 }
-                return view( 'Office/create',$data );
+                return view( 'Office/create',$this->view );
           }
         }
 
@@ -109,11 +112,11 @@ class Office extends BaseController {
               $companyModel = new CompanyModel();
               $stateModel = new StateModel();
                 
-              $data['company'] = $companyModel->where(['status'=>'Active'])->orderBy('id')->findAll();
-              $data['state'] = $stateModel->where(['isStatus'=>'1'])->orderBy('state_id')->findAll();
+              $this->view['company'] = $companyModel->where(['status'=>'Active'])->orderBy('id')->findAll();
+              $this->view['state'] = $stateModel->where(['isStatus'=>'1'])->orderBy('state_id')->findAll();
 
               $officeModel = new OfficeModel();
-              $data['office_data'] = $officeModel->where('id', $id)->first();
+              $this->view['office_data'] = $officeModel->where('id', $id)->first();
               
               $request = service('request');
               if($this->request->getMethod()=='POST'){
@@ -128,7 +131,7 @@ class Office extends BaseController {
                 ]);
                 if(!$error)
                 {
-                  $data['error'] 	= $this->validator;
+                  $this->view['error'] 	= $this->validator;
                   
                 }else {
                   $officeModel = new OfficeModel();
@@ -156,7 +159,7 @@ class Office extends BaseController {
                 
               }
 
-              return view('Office/edit_office', $data);
+              return view('Office/edit_office', $this->view);
           }
 
          }
@@ -189,13 +192,13 @@ class Office extends BaseController {
               $companyModel = new CompanyModel();
               $stateModel = new StateModel();
                 
-              $data['company'] = $companyModel->where(['status'=>'Active'])->orderBy('id')->findAll();
-              $data['state'] = $stateModel->where(['isStatus'=>'1'])->orderBy('state_id')->findAll();
+              $this->view['company'] = $companyModel->where(['status'=>'Active'])->orderBy('id')->findAll();
+              $this->view['state'] = $stateModel->where(['isStatus'=>'1'])->orderBy('state_id')->findAll();
 
               $officeModel = new OfficeModel();
-              $data['office_data'] = $officeModel->where('id', $id)->first();
+              $this->view['office_data'] = $officeModel->where('id', $id)->first();
               
-              return view('Office/details', $data);
+              return view('Office/details', $this->view);
           }
         }
 }

@@ -34,6 +34,10 @@ class Party extends BaseController
       return $this->response->redirect(site_url('/dashboard'));
     } else {
       $partyModel = new PartyModel();
+      
+      if ($this->request->getPost('status') != '') {
+        $partyModel->where('status', $this->request->getPost('status'));
+      }
       $this->view['party_data'] = $partyModel->orderBy('id', 'DESC')->paginate(10);
       $this->view['pagination_link'] = $partyModel->pager;
       $this->view['page_data'] = [

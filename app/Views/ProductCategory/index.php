@@ -67,11 +67,22 @@
                       </div>
                     </div>
 
-                    <div class="col-md-7">
+                    <!-- <div class="col-md-7">
                       <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
                       <a href="./product-categories" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
                       <a href="<?= base_url('product-categories/create') ?>" class="btn btn-danger mt-4"><i class="ti ti-square-rounded-plus"></i>Add New Category</a>
+                    </div> -->
+
+                    <div class="col-md-1">
+                      <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;      
                     </div>
+                    <div class="col-md-1 ">
+                      <a href="./product-categories" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
+                    </div>
+                    <div class="col-md-1 mrg-sub-4">
+                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
+                    </div>
+                    
                   </div>
                 </div>
               </div>
@@ -133,9 +144,9 @@
                         <tr>
                           <td><?= $i++; ?>.</td>
                           <td>
-                            <a href="<?= base_url('product-categories/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
-
-                            <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
+                          <?php echo makeListActions($currentController, $Action, $pc['id'], 2);?>
+                            <!-- <a href="<?= base_url('product-categories/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
+                            <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button> -->
                           </td>
                           <td><a href="<?= base_url('public/uploads/product_categories/') . $pc['cat_image'] ?>" target="_blank"><img src="<?= base_url('public/uploads/product_categories/') . $pc['cat_image'] ?>" style="height: 60px;"></a> </td>
                           <td><?= $pc['cat_name'] ?></td>
@@ -206,12 +217,15 @@
           paginate: {
             next: 'Next <i class=" fa fa-angle-right"></i> ',
             previous: '<i class="fa fa-angle-left"></i> Prev '
-          },
+          } 
         },
         initComplete: (settings, json) => {
           $('.dataTables_paginate').appendTo('.datatable-paginate');
           $('.dataTables_length').appendTo('.datatable-length');
-        }
+        },
+          "aoColumnDefs": [
+              { "bSortable": false, "aTargets": [ 1,2,7 ] } 
+          ]
       });
     }
   </script>

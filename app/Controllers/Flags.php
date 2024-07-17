@@ -7,7 +7,7 @@ use App\Models\ModulesModel;
 
 class Flags extends BaseController {
       public $_access;
-
+      public $flagsModel;
       public function __construct()
       {
           $u = new UserModel();
@@ -25,13 +25,18 @@ class Flags extends BaseController {
             return $this->response->redirect(site_url('/dashboard'));
           }else{
 
-          $data['flags_data'] = $this->flagsModel->where(['status'=>'Active'])->orderBy('id', 'DESC')->paginate(10);
-          $data['pagination_link'] = $this->flagsModel->pager;
+            if ($this->request->getPost('status') != '') {
+              $this->flagsModel->where('status', $this->request->getPost('status'));
+            }else{
+              $this->flagsModel->where(['status'=>'Active']);
+            }
+          $this->view['flags_data'] = $this->flagsModel->orderBy('id', 'DESC')->findAll();
+          // $this->view['pagination_link'] = $this->flagsModel->pager;
 
-          $data['page_data'] = [
+          $this->view['page_data'] = [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Flags','li_1' => '123','li_2' => 'deals' ] )
             ];
-          return view('Flags/index',$data);
+          return view('Flags/index',$this->view);
           }
         }
 
@@ -45,11 +50,11 @@ class Flags extends BaseController {
           return $this->response->redirect(site_url('/dashboard'));
         }else{
           helper(['form', 'url']);
-          $data ['page_data']= [
+          $this->view ['page_data']= [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Add Flags','li_2' => 'profile' ] )
             ];
             
-		        $data['flags_data'] = $this->flagsModel->where(['status'=>'Active'])->orderBy('id')->findAll();
+		        $this->view['flags_data'] = $this->flagsModel->where(['status'=>'Active'])->orderBy('id')->findAll();
         
 
             $request = service('request');
@@ -59,7 +64,7 @@ class Flags extends BaseController {
               ]);
               if(!$error)
               {
-                $data['error'] 	= $this->validator;
+                $this->view['error'] 	= $this->validator;
               }else {
                  $this->flagsModel->save([
                   'title'	=>	$this->request->getVar('title'),
@@ -76,7 +81,7 @@ class Flags extends BaseController {
     
               
             }
-            return view( 'Flags/create',$data );
+            return view( 'Flags/create',$this->view );
           }
         }
 
@@ -89,16 +94,16 @@ class Flags extends BaseController {
             return $this->response->redirect(site_url('/dashboard'));
           }else{
           $request = service('request');
-          $data['flags_data'] = $this->flagsModel->where('id', $id)->first();
+          $this->view['flags_data'] = $this->flagsModel->where('id', $id)->first();
           if($this->request->getMethod()=='POST'){
             $id = $this->request->getVar('id');
-            $data['flags_data'] = $this->flagsModel->where('id', $id)->first();
+            $this->view['flags_data'] = $this->flagsModel->where('id', $id)->first();
             $error = $this->validate([
               'title'   =>  'required|min_length[3]|max_length[50]|alpha_numeric_space',
             ]);
             if(!$error)
             {
-              $data['error'] 	= $this->validator;
+              $this->view['error'] 	= $this->validator;
               
             }else {
               
@@ -115,7 +120,7 @@ class Flags extends BaseController {
   
             
           }
-          return view('Flags/edit', $data);
+          return view('Flags/edit', $this->view);
          }
          }
 

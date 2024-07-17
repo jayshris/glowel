@@ -27,7 +27,55 @@ use App\Models\OfficeModel;
         <div class="row">
           <div class="col-md-12">
 
-            <?= $this->include('partials/page-title') ?>
+          <?php //echo  $this->include('partials/page-title') ?>
+            <!-- Page Header -->
+            <div class="page-header">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h4 class="page-title">User Type</h4>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="head-icons">
+                    <a href="<?= base_url('usertype') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
+                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header"><i class="ti ti-chevrons-up"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /Page Header -->
+
+            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('usertype'); ?>">
+              <div class="card main-card">
+                <div class="card-body">
+                  <h4>Search / Filter</h4>
+                  <hr>
+                  <div class="row mt-2"> 
+
+                    <div class="col-md-2">
+                      <div class="form-wrap">
+                        <label class="col-form-label">Status</label>
+                        <select class="form-select" name="status" aria-label="Default select example">
+                          <option value="">Select Status</option>
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-1">
+                      <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;      
+                    </div>
+                    <div class="col-md-1 ">
+                      <a href="./usertype" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
+                    </div>
+                    <div class="col-md-1 mrg-sub-4">
+                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </form>
             
             <div class="card main-card">
               <div class="card-body">
@@ -35,12 +83,12 @@ use App\Models\OfficeModel;
                 <!-- Search -->
                 <div class="search-section">
                   <div class="row">
-                    <div class="col-md-5 col-sm-4">
+                    <!-- <div class="col-md-5 col-sm-4">
                       <div class="form-wrap icon-form">
                         <span class="form-icon"><i class="ti ti-search"></i></span>
                         <input type="text" class="form-control" placeholder="Search Deals">
                       </div>
-                    </div>
+                    </div> -->
                     <?php
 
         $session = \Config\Services::session();
@@ -88,7 +136,7 @@ use App\Models\OfficeModel;
 
                 <!-- Contact List -->
                 <div class="table-responsive custom-table">
-                  <table class="table" id="deal_list">
+                  <table class="table" id="usertype-table">
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
@@ -109,11 +157,10 @@ use App\Models\OfficeModel;
                               }
                                 echo '
                                 <tr>
-                                <td>
-                                <a href="'.base_url().'usertype/edit/'.$user['id'].'" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
-
-                                <button type="button" onclick="delete_data('.$user["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></>
-                                </td>
+                                <td>'
+                                // <a href="'.base_url().'usertype/edit/'.$user['id'].'" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
+                                // <button type="button" onclick="delete_data('.$user["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></>
+                                .makeListActions($currentController, $Action, $user['id'], 2).'</td>
                                 <td>'.ucwords($user["user_type_name"]).'</td>
                                 <td>'.$status.'</td>
                                 </tr>';
@@ -160,6 +207,31 @@ use App\Models\OfficeModel;
         }
         return false;
     }
+    if ($('#usertype-table').length > 0) {
+        $('#usertype-table').DataTable({
+          "bFilter": false,
+          "bInfo": false,
+          "autoWidth": true,
+          "language": {
+            search: ' ',
+            sLengthMenu: '_MENU_',
+            searchPlaceholder: "Search",
+            info: "_START_ - _END_ of _TOTAL_ items",
+            "lengthMenu": "Show _MENU_ entries",
+            paginate: {
+              next: 'Next <i class=" fa fa-angle-right"></i> ',
+              previous: '<i class="fa fa-angle-left"></i> Prev '
+            },
+          },
+          initComplete: (settings, json) => {
+            $('.dataTables_paginate').appendTo('.datatable-paginate');
+            $('.dataTables_length').appendTo('.datatable-length');
+          },
+          "aoColumnDefs": [
+              { "bSortable": false, "aTargets": [0,2] } 
+          ]
+        });
+      }
 </script>
 </body>
 

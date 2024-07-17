@@ -23,534 +23,87 @@
         <div class="row">
           <div class="col-md-12">
 
-            <?= $this->include('partials/page-title') ?>
-            
+            <?php //echo  $this->include('partials/page-title') ?>
+            <!-- Page Header -->
+            <div class="page-header">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h4 class="page-title">Office</h4>
+                </div>
+                <div class="col-4 text-end">
+                  <div class="head-icons">
+                    <a href="<?= base_url('office') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
+                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header"><i class="ti ti-chevrons-up"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /Page Header -->
+
+            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('office'); ?>">
+              <div class="card main-card">
+                <div class="card-body">
+                  <h4>Search / Filter</h4>
+                  <hr>
+                  <div class="row mt-2"> 
+
+                    <div class="col-md-2">
+                      <div class="form-wrap">
+                        <label class="col-form-label">Status</label>
+                        <select class="form-select" name="status" aria-label="Default select example">
+                          <option value="">Select Status</option>
+                          <option value="1">Active</option>
+                          <option value="0">Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="col-md-1">
+                      <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;      
+                    </div>
+                    <div class="col-md-1 ">
+                      <a href="./office" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
+                    </div>
+                    <div class="col-md-1 mrg-sub-4">
+                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </form>
+
+
             <div class="card main-card">
               <div class="card-body">
 
                 <!-- Search -->
                 <div class="search-section">
                   <div class="row">
-                    <div class="col-md-5 col-sm-4">
+                    <!-- <div class="col-md-5 col-sm-4">
                       <div class="form-wrap icon-form">
                         <span class="form-icon"><i class="ti ti-search"></i></span>
                         <input type="text" class="form-control" placeholder="Search Deals">
                       </div>
-                    </div>
+                    </div> -->
                     <?php
 
-        $session = \Config\Services::session();
+                          $session = \Config\Services::session();
 
-        if($session->getFlashdata('success'))
-        {
-            echo '
-            <div class="alert alert-success">'.$session->getFlashdata("success").'</div>
-            ';
-        }
+                          if($session->getFlashdata('success'))
+                          {
+                              echo '
+                              <div class="alert alert-success">'.$session->getFlashdata("success").'</div>
+                              ';
+                          }
 
-        ?>
+                      ?>
                   </div>
                 </div>
-                <!-- /Search -->
-
-                <!-- Filter 
-                <div class="filter-section filter-flex">
-                  <div class="sortby-list">
-                    <ul>
-                      <li>
-                        <div class="sort-dropdown drop-down">
-                          <a href="javascript:void(0);" class="dropdown-toggle" data-bs-toggle="dropdown"><i
-                              class="ti ti-sort-ascending-2"></i>Sort </a>
-                          <div class="dropdown-menu  dropdown-menu-start">
-                            <ul>
-                              <li>
-                                <a href="javascript:void(0);">
-                                  <i class="ti ti-circle-chevron-right"></i>Ascending
-                                </a>
-                              </li>
-                              <li>
-                                <a href="javascript:void(0);">
-                                  <i class="ti ti-circle-chevron-right"></i>Descending
-                                </a>
-                              </li>
-                              <li>
-                                <a href="javascript:void(0);">
-                                  <i class="ti ti-circle-chevron-right"></i>Recently Viewed
-                                </a>
-                              </li>
-                              <li>
-                                <a href="javascript:void(0);">
-                                  <i class="ti ti-circle-chevron-right"></i>Recently Added
-                                </a>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="form-wrap icon-form">
-                          <span class="form-icon"><i class="ti ti-calendar"></i></span>
-                          <input type="text" class="form-control bookingrange" placeholder="">
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="filter-list">
-                    <ul>
-                      <li>
-                        <div class="manage-dropdwon">
-                          <a href="javascript:void(0);" class="btn btn-purple-light" data-bs-toggle="dropdown"
-                            data-bs-auto-close="false"><i class="ti ti-columns-3"></i>Manage Columns</a>
-                          <div class="dropdown-menu  dropdown-menu-xl-end">
-                            <h4>Want to manage datatables?</h4>
-                            <p>Please drag and drop your column to reorder your table and enable see option as you want.
-                            </p>
-                            <ul>
-                              <li>
-                                <p><i class="ti ti-grip-vertical"></i>Action</p>
-                                <div class="status-toggle">
-                                  <input type="checkbox" id="col-action" class="check">
-                                  <label for="col-action" class="checktoggle"></label>
-                                </div>
-                              </li>
-                              <li>
-                                <p><i class="ti ti-grip-vertical"></i>Name</p>
-                                <div class="status-toggle">
-                                  <input type="checkbox" id="col-name" class="check">
-                                  <label for="col-name" class="checktoggle"></label>
-                                </div>
-                              </li>
-                              <li>
-                                <p><i class="ti ti-grip-vertical"></i>Added</p>
-                                <div class="status-toggle">
-                                  <input type="checkbox" id="col-loc" class="check">
-                                  <label for="col-loc" class="checktoggle"></label>
-                                </div>
-                              </li>
-                              <li>
-                                <p><i class="ti ti-grip-vertical"></i>Updated</p>
-                                <div class="status-toggle">
-                                  <input type="checkbox" id="col-loc" class="check">
-                                  <label for="col-loc" class="checktoggle"></label>
-                                </div>
-                              </li>
-
-                              <li>
-                                <p><i class="ti ti-grip-vertical"></i>Status</p>
-                                <div class="status-toggle">
-                                  <input type="checkbox" id="col-status" class="check">
-                                  <label for="col-status" class="checktoggle"></label>
-                                </div>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="form-sorts dropdown">
-                          <a href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="false"><i
-                              class="ti ti-filter-share"></i>Filter</a>
-                          <div class="filter-dropdown-menu dropdown-menu  dropdown-menu-xl-end">
-                            <div class="filter-set-view">
-                              <div class="filter-set-head">
-                                <h4><i class="ti ti-filter-share"></i>Filter</h4>
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#save_view">Save View</a>
-                              </div>
-                              <div class="header-set">
-                                <select class="select">
-                                  <option>Select a View</option>
-                                  <option>Contact View List</option>
-                                  <option>Contact Location View</option>
-                                </select>
-                                <div class="radio-btn-items">
-                                  <div class="radio-btn">
-                                    <input type="radio" class="status-radio" id="pdf" name="export-type" checked="">
-                                    <label for="pdf">Just For Me</label>
-                                  </div>
-                                  <div class="radio-btn">
-                                    <input type="radio" class="status-radio" id="share" name="export-type">
-                                    <label for="share">Share Filter with Everyone </label>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="accordion" id="accordionExample">
-                                <div class="filter-set-content">
-                                  <div class="filter-set-content-head">
-                                    <a href="#" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                                      aria-expanded="true" aria-controls="collapseTwo">Deals Name</a>
-                                  </div>
-                                  <div class="filter-set-contents accordion-collapse collapse show" id="collapseTwo"
-                                    data-bs-parent="#accordionExample">
-                                    <div class="filter-content-list">
-                                      <div class="form-wrap icon-form">
-                                        <span class="form-icon"><i class="ti ti-search"></i></span>
-                                        <input type="text" class="form-control" placeholder="Search Country">
-                                      </div>
-                                      <ul>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox" checked>
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Collins</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Konopelski</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Adams</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Gutkowski</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Walter</h5>
-                                          </div>
-                                        </li>
-
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="filter-set-content">
-                                  <div class="filter-set-content-head">
-                                    <a href="#" class="collapsed" data-bs-toggle="collapse" data-bs-target="#owner"
-                                      aria-expanded="false" aria-controls="owner">Owner</a>
-                                  </div>
-                                  <div class="filter-set-contents accordion-collapse collapse" id="owner"
-                                    data-bs-parent="#accordionExample">
-                                    <div class="filter-content-list">
-                                      <div class="form-wrap icon-form">
-                                        <span class="form-icon"><i class="ti ti-search"></i></span>
-                                        <input type="text" class="form-control" placeholder="Search Owner">
-                                      </div>
-                                      <ul>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox" checked>
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Hendry</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Guillory</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Jami</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Theresa</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Espinosa</h5>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="filter-set-content">
-                                  <div class="filter-set-content-head">
-                                    <a href="#" class="collapsed" data-bs-toggle="collapse" data-bs-target="#Status"
-                                      aria-expanded="false" aria-controls="Status">Status</a>
-                                  </div>
-                                  <div class="filter-set-contents accordion-collapse collapse" id="Status"
-                                    data-bs-parent="#accordionExample">
-                                    <div class="filter-content-list">
-                                      <ul>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox" checked>
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Won</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Open</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Lost</h5>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="filter-set-content">
-                                  <div class="filter-set-content-head">
-                                    <a href="#" class="collapsed" data-bs-toggle="collapse"
-                                      data-bs-target="#collapseOne" aria-expanded="false"
-                                      aria-controls="collapseOne">Rating</a>
-                                  </div>
-                                  <div class="filter-set-contents accordion-collapse collapse" id="collapseOne"
-                                    data-bs-parent="#accordionExample">
-                                    <div class="filter-content-list">
-                                      <ul>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox" checked>
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="rating">
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star filled"></i>
-                                            <span>5.0</span>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="rating">
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star"></i>
-                                            <span>4.0</span>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="rating">
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <span>3.0</span>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="rating">
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <span>2.0</span>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="rating">
-                                            <i class="fa fa-star filled"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <span>1.0</span>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="filter-set-content">
-                                  <div class="filter-set-content-head">
-                                    <a href="#" class="collapsed" data-bs-toggle="collapse"
-                                      data-bs-target="#collapseThree" aria-expanded="false"
-                                      aria-controls="collapseThree">Tags</a>
-                                  </div>
-                                  <div class="filter-set-contents accordion-collapse collapse" id="collapseThree"
-                                    data-bs-parent="#accordionExample">
-                                    <div class="filter-content-list">
-                                      <ul>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox" checked>
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Promotion</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Rated</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Rejected</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Collab</h5>
-                                          </div>
-                                        </li>
-                                        <li>
-                                          <div class="filter-checks">
-                                            <label class="checkboxs">
-                                              <input type="checkbox">
-                                              <span class="checkmarks"></span>
-                                            </label>
-                                          </div>
-                                          <div class="collapse-inside-text">
-                                            <h5>Calls</h5>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="filter-reset-btns">
-                                <div class="row">
-                                  <div class="col-6">
-                                    <a href="#" class="btn btn-light">Reset</a>
-                                  </div>
-                                  <div class="col-6">
-                                    <a href="<?php echo base_url();?>deals" class="btn btn-primary">Filter</a>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                 /Filter -->
 
                 <!-- Contact List -->
                 <div class="table-responsive custom-table">
-                  <table class="table" id="deal_list">
+                  <table class="table" id="company-table">
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
@@ -574,12 +127,9 @@
                               $strtime = strtotime($office["created_at"]);
                                 echo '
                                 <tr>
-                                    <td>
-                                    <a title="Edit" type="button" href="'.base_url().'office/edit/'.$office['id'].'" class="btn btn-success btn-sm"><i class="ti ti-pencil"></i> </a>
-                                    
-                                    <a title="View" type="button" href="'.base_url().'office/view/'.$office['id'].'" class="btn btn-primary btn-sm"><i class="ti ti-arrow-right"></i> </a>
-                                    <button title="Delete" type="button" onclick="delete_data('.$office["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
-                                    </td>
+                                    <td>  
+                                    '. makeListActions($currentController, $Action, $office['id'], 2).'
+                                     </td>
                                     <td>'.$office["cname"].'</td>
                                     <td>'.$office["name"].'</td>
                                     <td>'.date('d-m-Y',$strtime).'</td>
@@ -588,6 +138,9 @@
                             }
                         }
                         ?>
+                          <!-- <a title="Edit" type="button" href="'.base_url().'office/edit/'.$office['id'].'" class="btn btn-success btn-sm"><i class="ti ti-pencil"></i> </a>
+                                    <a title="View" type="button" href="'.base_url().'office/view/'.$office['id'].'" class="btn btn-primary btn-sm"><i class="ti ti-arrow-right"></i> </a>
+                                   <button title="Delete" type="button" onclick="delete_data('.$office["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button> -->
                     </tbody>
                   </table>
                 </div>
@@ -628,6 +181,34 @@
         }
         return false;
     }
+
+    
+      // datatable init
+      if ($('#company-table').length > 0) {
+        $('#company-table').DataTable({
+          "bFilter": false,
+          "bInfo": false,
+          "autoWidth": true,
+          "language": {
+            search: ' ',
+            sLengthMenu: '_MENU_',
+            searchPlaceholder: "Search",
+            info: "_START_ - _END_ of _TOTAL_ items",
+            "lengthMenu": "Show _MENU_ entries",
+            paginate: {
+              next: 'Next <i class=" fa fa-angle-right"></i> ',
+              previous: '<i class="fa fa-angle-left"></i> Prev '
+            },
+          },
+          initComplete: (settings, json) => {
+            $('.dataTables_paginate').appendTo('.datatable-paginate');
+            $('.dataTables_length').appendTo('.datatable-length');
+          },
+          "aoColumnDefs": [
+              { "bSortable": false, "aTargets": [0,4] } 
+          ]
+        });
+      }
 </script>
 </body>
 

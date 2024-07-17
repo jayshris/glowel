@@ -214,7 +214,10 @@
           initComplete: (settings, json) => {
             $('.dataTables_paginate').appendTo('.datatable-paginate');
             $('.dataTables_length').appendTo('.datatable-length');
-          }
+          },
+          "aoColumnDefs": [
+              { "bSortable": false, "aTargets": [ 1,7] } 
+          ]
         });
       }
     </script>

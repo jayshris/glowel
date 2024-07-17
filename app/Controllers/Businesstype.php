@@ -2,12 +2,12 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
 use App\Models\UserModel;
-use App\Models\BusinesstypeModel;
-use App\Models\FlagsModel;
-use App\Models\BusinesstypeFlagModel;
+use App\Models\FlagsModel; 
+use App\Models\BusinessTypeModel;
+use App\Controllers\BaseController;
+use App\Models\BusinessTypeFlagModel;
+use CodeIgniter\HTTP\ResponseInterface;
 
 class Businesstype extends BaseController
 {
@@ -28,23 +28,28 @@ class Businesstype extends BaseController
       $session->setFlashdata('error', 'You are not permitted to access this page');
       return $this->response->redirect(site_url('/dashboard'));
     } else {
-      $businestsypeModel = new BusinesstypeModel();
-      $data['businestsype_data'] = $businestsypeModel->select('business_type.*, MAX(business_type_flags.flags_id) as flags_id, GROUP_CONCAT(flags.title) as flags_names', false)
+      $businestsypeModel = new BusinessTypeModel();
+      if ($this->request->getPost('status') != '') {
+        $businestsypeModel->where('business_type.status', $this->request->getPost('status'));
+    }
+
+      $this->view['businestsype_data'] = $businestsypeModel->select('business_type.*, MAX(business_type_flags.flags_id) as flags_id, GROUP_CONCAT(flags.title) as flags_names', false)
 
         ->join('business_type_flags', 'business_type_flags.business_type_id = business_type.id', 'left')
 
         ->join('flags', 'flags.id = business_type_flags.flags_id', 'left')
 
-        ->where('business_type.status', 'Active')
+        // ->where('business_type.status', 'Active')
 
         ->groupBy('business_type.id')
-        ->orderBy('business_type.id', 'DESC')
-        ->paginate(10);
-      $data['pagination_link'] = $businestsypeModel->pager;
-      $data['page_data'] = [
+        ->orderBy('business_type.id', 'DESC')->findAll();
+
+        // ->paginate(10);
+      $this->view['pagination_link'] = $businestsypeModel->pager;
+      $this->view['page_data'] = [
         'page_title' => view('partials/page-title', ['title' => 'Business Type', 'li_1' => '123', 'li_2' => 'deals'])
       ];
-      return view('BusinessType/index', $data);
+      return view('BusinessType/index', $this->view);
     }
   }
 
@@ -57,10 +62,10 @@ class Businesstype extends BaseController
       return $this->response->redirect(site_url('/dashboard'));
     } else {
       $flags = new FlagsModel();
-      $data['flags'] = $flags->where('status', 'Active')->findAll();
+      $this->view['flags'] = $flags->where('status', 'Active')->findAll();
 
       helper(['form', 'url']);
-      $data['page_data'] = [
+      $this->view['page_data'] = [
         'page_title' => view('partials/page-title', ['title' => 'Add Driver', 'li_2' => 'profile'])
       ];
 
@@ -75,7 +80,7 @@ class Businesstype extends BaseController
         ]);
 
         if (!$error) {
-          $data['error']   = $this->validator;
+          $this->view['error']   = $this->validator;
         } else {
           $businestsypeModel = new BusinesstypeModel();
           $businestsypeModel->save([
@@ -87,9 +92,9 @@ class Businesstype extends BaseController
           $business_type_id = $businestsypeModel->getInsertID();
           $flags_array = $this->request->getVar('flags');
           if (!isset($flags_array) || empty($flags_array)) {
-            $data['error'] = "Please select atleast one flag";
+            $this->view['error'] = "Please select atleast one flag";
           } else {
-            $flagModel = new BusinesstypeFlagModel();
+            $flagModel = new BusinessTypeFlagModel();
             foreach ($flags_array as $key => $value) {
               $flagsData = [
                 'business_type_id' =>  $business_type_id,
@@ -105,7 +110,7 @@ class Businesstype extends BaseController
           return $this->response->redirect(site_url('/Businesstype'));
         }
       }
-      return view('BusinessType/create', $data);
+      return view('BusinessType/create', $this->view);
     }
   }
 
@@ -118,16 +123,16 @@ class Businesstype extends BaseController
       return $this->response->redirect(site_url('/dashboard'));
     } else {
       $businestsypeModel = new BusinesstypeModel();
-      $data['business_data'] = $businestsypeModel->where('id', $id)->first();
+      $this->view['business_data'] = $businestsypeModel->where('id', $id)->first();
 
       $flags = new FlagsModel();
-      $data['flags'] = $flags->where('status', 'Active')->findAll();
+      $this->view['flags'] = $flags->where('status', 'Active')->findAll();
 
       $businessFlags = new BusinesstypeFlagModel();
-      $data['businessFlags'] = $businessFlags->where('business_type_id', $id)->findAll();
+      $this->view['businessFlags'] = $businessFlags->where('business_type_id', $id)->findAll();
 
 
-      $data['BusinessFlagModel'] = $businessFlags;
+      $this->view['BusinessFlagModel'] = $businessFlags;
 
       $request = service('request');
       if ($this->request->getMethod() == 'POST') {
@@ -137,7 +142,7 @@ class Businesstype extends BaseController
           'flags' =>  'required',
         ]);
         if (!$error) {
-          $data['error']   = $this->validator;
+          $this->view['error']   = $this->validator;
         } else {
           $businestsypeModel = new BusinesstypeModel();
           $normalizedStr = strtolower(str_replace(' ', '', $this->request->getVar('company_structure_name')));
@@ -167,10 +172,10 @@ class Businesstype extends BaseController
             }
           } else {
             $this->validator->setError('company_structure_name', 'The field must contain a unique value.');
-            $data['error']  = $this->validator;
-            $data['businessFlags'] = $businessFlags->where('business_type_id', $id)->findAll();
-            $data['business_data'] = $businestsypeModel->where('id', $id)->first();
-            return view('BusinessType/edit', $data);
+            $this->view['error']  = $this->validator;
+            $this->view['businessFlags'] = $businessFlags->where('business_type_id', $id)->findAll();
+            $this->view['business_data'] = $businestsypeModel->where('id', $id)->first();
+            return view('BusinessType/edit', $this->view);
             return false;
           }
           $session = \Config\Services::session();
@@ -180,7 +185,7 @@ class Businesstype extends BaseController
       }
     }
 
-    return view('BusinessType/edit', $data);
+    return view('BusinessType/edit', $this->view);
   }
 
   public function delete($id = null)

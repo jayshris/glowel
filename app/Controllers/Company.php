@@ -24,7 +24,9 @@ class Company extends BaseController {
             return $this->response->redirect(site_url('/dashboard'));
           }else{
             $companyModel = new CompanyModel();
-  
+            if ($this->request->getPost('status') != '') {
+                $companyModel->where('status', $this->request->getPost('status'));
+            }
             $this->view['company_data'] = $companyModel->orderBy('id', 'DESC')->paginate(10);
   
             $this->view['pagination_link'] = $companyModel->pager;

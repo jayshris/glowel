@@ -24,6 +24,9 @@ class Partytype extends BaseController
             return $this->response->redirect(site_url('/dashboard'));
         }else{
             $partyModel = new PartytypeModel();
+            if ($this->request->getPost('status') != '') {
+              $partyModel->where('status', $this->request->getPost('status'));
+            }
             $this->view['partytype_data'] = $partyModel->orderBy('id', 'DESC')->paginate(50);
             $this->view['pagination_link'] = $partyModel->pager;
             $this->view['page_data'] = [

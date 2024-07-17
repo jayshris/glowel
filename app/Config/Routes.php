@@ -204,6 +204,7 @@ $routes->get('company/create', 'Company::create');
 $routes->post('company/save', 'Company::add_validation');
 $routes->get('office', 'Office::index');
 $routes->get('office/create', 'Office::create');
+$routes->get('office/preview/(:num)', 'Office::view/$1');
 
 // pankaj routes from 05 june 24
 // Product Types
@@ -217,6 +218,11 @@ $routes->match(['get', 'post'], 'product-categories', 'ProductCategory::index');
 $routes->match(['get', 'post'], 'product-categories/create', 'ProductCategory::create');
 $routes->match(['get', 'post'], 'product-categories/edit/(:num)', 'ProductCategory::edit/$1');
 $routes->get('product-categories-delete/(:num)', 'ProductCategory::delete/$1');
+
+$routes->match(['get', 'post'], 'productcategory', 'ProductCategory::index');
+$routes->match(['get', 'post'], 'productcategory/create', 'ProductCategory::create');
+$routes->match(['get', 'post'], 'productcategory/edit/(:num)', 'ProductCategory::edit/$1');
+$routes->get('productcategory/delete/(:num)', 'ProductCategory::delete/$1');
 
 // Products
 $routes->match(['get', 'post'], 'products', 'Products::index');
@@ -269,16 +275,24 @@ $routes->match(['get', 'post'], 'purchase/purchase-checkout-print/(:num)', 'Purc
 //Purchase/Inward Invoice listing
 $routes->match(['get', 'post'], 'purchase-invoices', 'PurchaseInvoices::index');
 $routes->match(['get', 'post'], 'purchase-invoices/edit/(:num)', 'PurchaseInvoices::edit/$1');
+$routes->match(['get', 'post'], 'purchaseinvoices', 'PurchaseInvoices::index');
+$routes->match(['get', 'post'], 'purchaseinvoices/edit/(:num)', 'PurchaseInvoices::edit/$1');
 
 $routes->match(['get', 'post'], 'purchase-invoices-verifivation', 'PurchaseInvoicesVerifivation::index');
-$routes->match(['get', 'post'], 'purchase-invoices-verifivation/edit/(:num)', 'PurchaseInvoicesVerifivation::edit/$1');
+$routes->match(['get', 'post'], 'purchase-invoices-verifivation/save/(:num)', 'PurchaseInvoicesVerifivation::save/$1');
+$routes->match(['get', 'post'], 'purchaseinvoicesverifivation', 'PurchaseInvoicesVerifivation::index');
+$routes->match(['get', 'post'], 'purchaseinvoicesverifivation/save/(:num)', 'PurchaseInvoicesVerifivation::save/$1');
 
 //Sales/Outward Invoice listing
 $routes->match(['get', 'post'], 'sales-invoices', 'SalesInvoices::index');
+$routes->match(['get', 'post'], 'salesinvoices', 'SalesInvoices::index');
 $routes->match(['get', 'post'], 'sales-invoices/edit/(:num)', 'SalesInvoices::edit/$1');
+$routes->match(['get', 'post'], 'salesinvoices/edit/(:num)', 'SalesInvoices::edit/$1');
 
 $routes->match(['get', 'post'], 'sales-invoices-verifivation', 'SalesInvoicesVerifivation::index');
 $routes->match(['get', 'post'], 'sales-invoices-verifivation/edit/(:num)', 'SalesInvoicesVerifivation::edit/$1');
+$routes->match(['get', 'post'], 'salesinvoicesverifivation', 'SalesInvoicesVerifivation::index');
+$routes->match(['get', 'post'], 'salesinvoicesverifivation/edit/(:num)', 'SalesInvoicesVerifivation::edit/$1');
 
 //Units listing
 $routes->match(['get', 'post'], 'units', 'Units::index');
@@ -293,6 +307,21 @@ $routes->get('party/preview/(:num)', 'Party::view/$1');
 
 //Reports
 $routes->match(['get', 'post'], 'stock-report-products', 'StockReportProducts::index'); 
+
+//UserType 
+$routes->match(['get', 'post'], 'usertype', 'UserType::index');
+$routes->match(['get', 'post'], 'usertype/create', 'UserType::create');
+$routes->match(['get', 'post'], 'usertype/edit/(:num)', 'UserType::edit/$1');
+$routes->match(['get', 'post'], 'usertype/view/(:num)', 'UserType::view/$1');
+$routes->match(['get', 'post'], 'usertype/preview/(:num)', 'UserType::view/$1');
+$routes->match(['get', 'post'], 'usertype/delete/(:num)', 'UserType::delete/$1');
+
+//role 
+$routes->match(['get', 'post'], 'role', 'Role::index');
+$routes->match(['get', 'post'], 'role/create', 'Role::create');
+$routes->match(['get', 'post'], 'role/edit/(:num)', 'Role::edit/$1'); 
+$routes->match(['get', 'post'], 'role/preview/(:num)', 'Role::view/$1');
+$routes->match(['get', 'post'], 'role/delete/(:num)', 'Role::delete/$1');
 
 // auto routes must be set false... for security
 $routes->setAutoRoute(true);
