@@ -129,8 +129,8 @@
                           <!-- <a href="<?= base_url('sales/edit/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >0) && (!in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-pencil"></i></a>
                           <a href="<?= base_url('sales/view/' . $pc['id']) ?>" class="btn btn-info btn-sm <?php if(($pc['edit_count'] >0) && (!in_array($pc['status'],PURCHASE_STATUS_EDIT_PERMITIONS))){ ?> disabled<?php }?>" role="button"><i class="ti ti-eye"></i></a>
                              <button type="button" onclick="delete_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button> -->
-                             <!-- <button type="button" onclick="print_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-printer"></i></button>  
-                             <button type="button" onclick="cancel_status('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm <?php if ($pc['status'] != ORDER_STATUS['open']) { ?> disabled <?php } ?>"> <i class="fa fa-close"></i></button>  -->
+                             <button type="button" onclick="print_data('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm"> <i class="ti ti-printer"></i></button>  
+                             <!-- <button type="button" onclick="cancel_status('<?= $pc['id'] ?>')" class="btn btn-secondary btn-sm <?php if ($pc['status'] != ORDER_STATUS['open']) { ?> disabled <?php } ?>"> <i class="fa fa-close"></i></button>   -->
                           </td>
                           <td><?= $pc['order_no'] ?></td>
                           <td><?= $pc['customer_name'] ?></td>

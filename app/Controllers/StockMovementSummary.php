@@ -2,16 +2,16 @@
 
 namespace App\Controllers;
 
-use App\Models\UserModel;   
+use App\Models\UserModel;
+use App\Models\InventoryModel;
 use App\Models\SalesOrderModel;
 use App\Models\SalesInvoiceModel;
 use App\Models\SalesProductModel;
 use App\Controllers\BaseController;
-use App\Models\InventoryModel;
 use App\Models\ProductCategoryModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
-class StockReportProducts extends BaseController
+class StockMovementSummary extends BaseController
 {
     public $access;
     public $session;
@@ -51,8 +51,8 @@ class StockReportProducts extends BaseController
             }    
 
             $this->view['product_categories'] = $this->PCModel->where('status', 1)->findAll();
-            // echo '<pre>';print_r($this->view['product_categories']s);exit;
-            return view('StockReportProducts/index', $this->view);
+            //  echo '<pre>';print_r($this->view['product_categories']);exit;
+            return view('StockMovementSummary/index', $this->view);
         }
     }
 }

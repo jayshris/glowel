@@ -307,6 +307,7 @@ $routes->get('party/preview/(:num)', 'Party::view/$1');
 
 //Reports
 $routes->match(['get', 'post'], 'stock-report-products', 'StockReportProducts::index'); 
+$routes->match(['get', 'post'], 'stock-movement-summary', 'StockMovementSummary::index'); 
 
 //UserType 
 $routes->match(['get', 'post'], 'usertype', 'UserType::index');

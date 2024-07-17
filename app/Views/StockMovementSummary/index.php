@@ -22,7 +22,7 @@
            .content{
             padding: 0 !important;
            }
-        }  
+        } 
     </style>
 </head>
  
@@ -31,7 +31,7 @@
   <!-- Main Wrapper -->
   <div class="main-wrapper">
 
-  <?= $this->include('partials/menu') ?>
+    <?= $this->include('partials/menu') ?>
 
     <!-- Page Wrapper -->
     <div class="page-wrapper">
@@ -44,18 +44,18 @@
             <div class="page-header">
               <div class="row align-items-center">
                 <div class="col-8">
-                  <h4 class="page-title">Stock Report Products</h4>
+                  <h4 class="page-title">Stock Report - Summary</h4>
                 </div>
                 <div class="col-4 text-end">
                   <div class="head-icons">
-                    <a href="<?= base_url('stock-report-products') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
+                    <a href="<?= base_url('stock-movement-summary') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
                   </div>
                 </div>
               </div>
             </div>
             <!-- /Page Header -->
 
-            <form method="post"  action="<?php echo base_url('stock-report-products'); ?>" class="noprint">
+            <form method="post"  action="<?php echo base_url('stock-movement-summary'); ?>" class="noprint">
               <div class="card main-card">
                 <div class="card-body">
                   <h4>Search / Filter</h4>
@@ -81,12 +81,12 @@
 
                     <div class="col-md-4">
                               <label class="col-form-label">To Date<span class="text-danger">*</span></label>
-                              <input type="date" required name="to_date" id="to" value="<?= isset($_POST['to_date']) ? $_POST['to_date'] :  date('Y-m-d')  ?>" class="form-control datepicker">
+                              <input type="date" required name="to_date" id="to" value="<?= isset($_POST['to_date']) ? $_POST['to_date'] : date('Y-m-d') ?>" class="form-control datepicker">
                     </div>
 
                     <div class="col-md-7">
                       <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;
-                      <a href="./stock-report-products" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp; 
+                      <a href="./stock-movement-summary" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp; 
                       <?php if(!empty($data)){ ?>
                         <button class="btn btn-info mt-4" onclick="window.print();">Print</button>&nbsp;&nbsp;
                       <?php }?>
@@ -122,9 +122,10 @@
                       <table class="table" id="report-table">
                         <thead class="thead-light">
                           <tr>
-                            <th>Sr. No</th>
-                            <th>Product Name</th> 
+                            <th>Sr. No</th> 
                             <th>Opening Balance Quantity</th> 
+                            <th>Stock In</th> 
+                            <th>Stock Out</th> 
                             <th>Closing Balance Quantity</th> 
                           </tr>
                         </thead>
@@ -132,20 +133,22 @@
                             <?php if(!empty($data)){ ?>
                                 <?php
                                 $i = 1;
-                                foreach ($data as $val) {
+                                foreach ($data as $val) {    
                                   $opening_balance= isset($val['opening_balance']) ? explode(',',$val['opening_balance']) : 0;
                                   $closing_balance= isset($val['closing_balance']) ? explode(',',$val['closing_balance']) : 0;
+                                  //  print_r($opening_balance);print_r($closing_balance);
                                    ?>
                                     <tr>
-                                      <td><?= $i++ ?>.</td>  
-                                      <td><?= ($val['product_name']) ? $val['product_name'] : '-'; ?></td>  
+                                      <td><?= $i++ ?>.</td>    
                                       <td><?= isset($opening_balance[1]) ? $opening_balance[1] : (isset($opening_balance[0]) ? $opening_balance[0] : 0) ?></td>
+                                      <td><?= ($val['stock_in']) ? $val['stock_in'] : 0; ?></td>
+                                      <td><?= ($val['stock_out']) ? $val['stock_out'] : 0; ?></td>   
                                       <td><?= isset($closing_balance[1]) ? $closing_balance[1] : (isset($closing_balance[0]) ? $closing_balance[0] : 0) ?></td>
                                     </tr>
                                 <?php } ?>
                             <?php }else{ ?>
                                 <tr>  
-                                  <td></td><td></td><td> <center>No records found!!!</center></td><td></td> 
+                                  <td></td><td></td><td> <center>No records found!!!</center></td><td></td> <td></td>
                                 </tr>
                             <?php }?>    
                         </tbody>

@@ -134,28 +134,32 @@
         }
       }
       
-      $.confirm = function() {
+      $.confirm = function() { 
+        var isConfirm = 0;
         if(confirm("Do you want to print & send for invoice?")){
-          if(confirm("Do you want to print & send for invoice?")){
-              // window.print();
-              print_data(<?= $token ?>);
+          if(confirm("Do you want to print & send for invoice?")){ 
               $.ajax({
                   type: "GET",
                   url: "<?= base_url('sales/sendToInvoice/' . $token ) ?>",
                   success: function(status) {
                       // console.log(status);
-                      if(status>0){
-                      window.location.replace("<?= base_url('sales') ?>");
+                      if(status>0){ 
+                        // window.print();
+                        print_data(<?= $token ?>); 
+                        setTimeout(function() { window.location.replace("<?= base_url('sales') ?>"); }, 5000); 
                       }else{
-                      alert('Something is wrong, please try again!!!');
+                        alert('Something is wrong, please try again!!!');
                       }
                   }
               });
+             isConfirm =1;
           }
         }
-        window.location.replace("<?= base_url('sales/add-products/' . $token) ?>");
+        if(isConfirm==0){
+          window.location.replace("<?= base_url('sales/add-products/' . $token) ?>");
+        }
       }
-
+      
       function print_data(id){
         var url = "<?php echo base_url('sales/sales-checkout-print/'); ?>" + id;  
 

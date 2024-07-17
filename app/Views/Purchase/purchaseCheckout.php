@@ -135,6 +135,7 @@
       }
       
       $.confirm = function() {
+        var isConfirm = 0;
         if(confirm("Do you want to print & send for invoice?")){
           if(confirm("Do you want to print & send for invoice?")){
               // window.print(); 
@@ -151,10 +152,12 @@
                       }
                   }
               });
+              isConfirm=1;
           } 
         }
-        window.location.replace("<?= base_url('purchase/add-products/' . $token) ?>");
-            
+        if(isConfirm==0){
+          window.location.replace("<?= base_url('purchase/add-products/' . $token) ?>");
+        }  
       }
 
       function print_data(id){
