@@ -21,35 +21,46 @@ class Permission
 		$this->viewData['logParent']  = ($this->session->get('PARENT')) ? $this->session->get('PARENT') : 0;
 		$this->viewData['logName']    = ($this->session->get('NAME')) ? $this->session->get('NAME') : '';
 
-		$this->viewData['currentController']  = strtolower(class_basename($this->router->controllerName()));
+		$this->viewData['curController']  = class_basename($this->router->controllerName());
+		$this->viewData['currentController']  = strtolower($this->viewData['curController']);
 		$this->viewData['currentMethod'] = $this->router->methodName();//echo __LINE__.'<pre>';print_r($this->viewData);die;
+		$this->viewData['page_title'] = ucwords(str_replace('_',' ',$this->viewData['currentMethod'])).' '.ucwords($this->viewData['currentController']);
+		if($this->viewData['currentMethod']=='index'){
+			$this->viewData['page_title'] = ucwords($this->viewData['currentController']).' List';
+		}		
 	}
 	
 	public function checkPrivileged($data=[]){
 		$roleID 	 = ($this->session->get('ROLE'))  ? trim($this->session->get('ROLE'))  : 0;
-		$controllers = (isset($data['controllers'])) ? $data['controllers'] : array();
-		$actions 	 = (isset($data['actions'])) 	 ? $data['actions'] 	: array();
+		$controllers = (isset($data['controllers'])) ? $data['controllers'] : [];
+		$actions 	 = (isset($data['actions'])) 	 ? $data['actions'] 	: [];
 		$controller  = (isset($data['controller']))  ? $data['controller']  : '';
 		$action 	 = (isset($data['action'])) 	 ? $data['action'] 	 	: '';
 		if($roleID != 1) {
 			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
-				return TRUE;
+				return 1;
 			}
 			else {
-				if((!in_array($controller,$controllers,TRUE)) || ($action != 'index' && !in_array($action,$actions[$controller],TRUE))) {
-					return FALSE;
+				$sectionNames = isset($actions[$controller]) ? array_column($actions[$controller],'section_name') : [];
+				if((!in_array($controller,$controllers,TRUE)) || ($action != 'index' && !in_array($action, $sectionNames, TRUE))) {
+					return 0;
 				}
 				else {
-					return TRUE;
+					return 1;
 				}
 			}
 		}
 		else {
-			return TRUE;
+			return 1;
 		}
 	}
 	
 	public function HeaderMenuItems($model=''){
+		if(!in_array($this->viewData['currentController'], ['home','login']) && empty($this->viewData['loggedIn'])){
+			$this->session->setFlashdata('error', LOGIN_MSG);//echo __LINE__.'<br>File: '.__FILE__.'<br>'.base_url();die;
+			header("Location: ".base_url());die;
+		}
+
 		$this->viewData['parent_menu'] = $this->getParentController();
 		$menuItems = ($this->viewData['logLevel']==1) ? $this->getSuperUserPrivileges() : $this->getUserPrivileges($this->viewData['loggedIn']);//echo __LINE__.'<pre>';print_r($menuItems);die;
 		$this->viewData['menus']= (isset($menuItems['Names'])) ? $menuItems['Names'] : [];
@@ -58,46 +69,48 @@ class Permission
 		$this->viewData['Action']  = (isset($Actions[$this->viewData['currentController']])) ? $Actions[$this->viewData['currentController']] : [];
 		$this->viewData['Actions'] = $Actions;
 
-		/*$condition = ['controllers'=>$Controllers,'actions'=>$Actions,'controller'=>$this->router->class,'action'=>$this->router->method];
-		if($this->router->class!='dashboard' && $this->checkPrivileged($condition) == FALSE) {
-			$messge = ['message'=>ACCESS_MSG,'class'=>DALERT];
-			$this->session->set_flashdata('flash',$messge);
-			redirect(PANEL.'dashboard');
+		$condition = ['controllers'=>$Controllers,'actions'=>$Actions,'controller'=>$this->viewData['currentController'],'action'=>$this->viewData['currentMethod']];
+		if(!in_array($this->viewData['currentController'], ['home','login','dashboard']) && $this->checkPrivileged($condition) == 0) {
+			$this->session->setFlashdata('error', ACCESS_MSG);//echo __LINE__.'<br>File: '.__FILE__;die;
+			header("Location: ".base_url()."dashboard");die;
+			return redirect()->back()->with('error', ACCESS_MSG);
+			return redirect()->to(site_url());
+            return redirect()->to('/dashboard');
 		}
 
-		$this->viewData['token']  = ($this->uri->segment(URI_SEGMENT)) ? $this->uri->segment(URI_SEGMENT) : 0;
+		$this->viewData['token']  = 0;//($this->uri->segment(URI_SEGMENT)) ? $this->uri->segment(URI_SEGMENT) : 0;
 		$this->viewData['detail'] = [];
-		if(!empty($model)){
+		/*if(!empty($model)){
 			if($this->viewData['token']>0){
 				$this->viewData['token'] = decryptToken($this->viewData['token']);
 			}
 
 			$this->viewData['detail'] = ($this->viewData['token']>0) ? $model->getDetail($this->viewData['token']) : [];
-			if(($this->router->method=='edit' || $this->router->method=='delete' || $this->router->method=='view') && isset($this->viewData['detail'])!=1){
+			if(($this->viewData['currentMethod']=='edit' || $this->viewData['currentMethod']=='delete' || $this->viewData['currentMethod']=='view') && isset($this->viewData['detail'])!=1){
 				$messge = ['message'=>ucwords(str_replace('_',' ',$this->router->class)).' not found!','class'=>DALERT];
 				$this->session->set_flashdata('flash',$messge);
 				redirect(PANEL.$this->router->class);
 			}
-		}
+		}*/
 		
-		$this->viewData['backlist'] = anchor(PANEL.$this->router->class, '<i class="fa fa-arrow-circle-left"></i> '.lang('back'), ['class'=>'btn btn-danger']);
-		$this->viewData['save'] 	= form_button(array('type'=>'submit','name'=>SAVE_BTN,'id'=>$this->router->method,'value'=>'true','content'=>SABE.ucwords(str_replace('_',' ',$this->router->method)).' '.ucwords(str_replace('_',' ',$this->router->class)),'class'=> 'btn btn-primary'));
-		$this->viewData['cancel']	= anchor(PANEL.$this->router->class, KANCEL, array('class'=>'btn btn-light'));
-		$this->viewData['reset'] 	= anchor(PANEL.$this->router->class.'/'.$this->router->method.(($this->viewData['token']>0) ? '/'.$this->viewData['token'] : ''), '<i class="fa fa-refresh"></i> '.lang('reset'), array('class'=>'btn btn-info'));
-		$this->viewData['print'] 	= form_button($this->router->method,PRNT,array('onclick'=>"window.print();",'class'=>'btn btn-info'));	
+		$this->viewData['backlist'] = anchor(PANEL.$this->viewData['currentController'], '<i class="fa fa-arrow-circle-left"></i> '.lang('back'), ['class'=>'btn btn-danger']);
+		$this->viewData['save'] 	= form_button(array('type'=>'submit','name'=>SAVE_BTN,'id'=>$this->viewData['currentMethod'],'value'=>'true','content'=>SABE.ucwords(str_replace('_',' ',$this->viewData['currentMethod'])).' '.ucwords(str_replace('_',' ',$this->viewData['currentController'])),'class'=> 'btn btn-primary'));
+		$this->viewData['cancel']	= anchor(PANEL.$this->viewData['currentController'], KANCEL, array('class'=>'btn btn-light'));
+		$this->viewData['reset'] 	= anchor(PANEL.$this->viewData['currentController'].'/'.$this->viewData['currentMethod'].(($this->viewData['token']>0) ? '/'.$this->viewData['token'] : ''), '<i class="fa fa-refresh"></i> '.lang('reset'), array('class'=>'btn btn-info'));
+		$this->viewData['print'] 	= form_button($this->viewData['currentMethod'],PRNT,array('onclick'=>"window.print();",'class'=>'btn btn-info'));	
 		$this->viewData['searchL'] 	= form_button(array('name'=>'search','id'=>'search','type'=>'submit','content'=>SEARCHL,'class'=>'btn btn-success'));
-		$this->viewData['reloadL'] 	= anchor(PANEL.$this->router->class,RELOADLIST, array('class'=>'btn btn-danger'));
+		$this->viewData['reloadL'] 	= anchor(PANEL.$this->viewData['currentController'],RELOADLIST, array('class'=>'btn btn-danger'));
 		
-		$this->viewData['status']  		= $this->droplist->getStatus();
+		$this->viewData['status']  		= [];//$this->droplist->getStatus();
 		$this->viewData['statusFilter'] = ['999'=>'All',1=>'Active',2=>'Inactive',3=>'Deleted'];
 		$this->viewData['statusList'] 	= [1=>'Active',2=>'Inactive',3=>'Deleted'];
-		$this->viewData['statusLabel'] 	= [1=>'success',2=>'warning',3=>'danger',4=>'danger',5=>'info'];*/
+		$this->viewData['statusLabel'] 	= [1=>'success',2=>'warning',3=>'danger',4=>'danger',5=>'info'];
 		
 		return $this->viewData;
 	}
 	
 	public function getUserPrivileges($UserID=0){
-		$sql = "SELECT t1.module_id, t2.parent_id, t2.module_name, t2.module_controller, t2.module_action, t2.module_icon  FROM ".USER_MODULE." t1 INNER JOIN ".MODULE." t2 ON t2.id=t1.module_id WHERE t1.user_id='".$UserID."' AND t2.status_id='1' ORDER BY t2.sort_order ASC";
+		$sql = "SELECT t1.module_id, t2.parent_id, t2.module_name, t2.module_controller, t2.module_action, t2.module_icon  FROM ".USER_MODULE." t1 INNER JOIN ".MODULE." t2 ON t2.id=t1.module_id WHERE t1.user_id='".$UserID."' AND t2.status_id='1' GROUP BY t1.module_id ORDER BY t2.sort_order ASC";
       	$query = $this->db->query($sql);
       	$rows = $query->getResult();//echo __LINE__.'<br>'.$sql.'<br><pre>';print_r($rows);die;
       	$modules 	= [];
@@ -135,7 +148,7 @@ class Permission
 		$UserID = (isset($data['UserID'])) ? trim($data['UserID']) : 0;
 		$Module = (isset($data['Module'])) ? trim($data['Module']) : 0;
 
-		$sql = "SELECT t3.id, t3.section_name, t3.alert_msg, t3.show_position, t3.section_icon, t2.page_modal  FROM ".USER_MODULE." t1 INNER JOIN ".MODULE_SECTION." t2 ON t2.module_id=t1.module_id INNER JOIN ".SECTION." t3 ON t3.id=t2.section_id WHERE t1.user_id='".$UserID."' AND t1.module_id='".$Module."' AND t3.status_id='1' AND t2.section_id=t1.section_id ORDER BY t3.sort_order ASC";
+		$sql = "SELECT t3.id, LOWER(t3.section_name) AS section_name, t3.alert_msg, t3.show_position, t3.section_icon, t2.page_modal  FROM ".USER_MODULE." t1 INNER JOIN ".MODULE_SECTION." t2 ON t2.module_id=t1.module_id INNER JOIN ".SECTION." t3 ON t3.id=t2.section_id WHERE t1.user_id='".$UserID."' AND t1.module_id='".$Module."' AND t3.status_id='1' AND t2.section_id=t1.section_id ORDER BY t3.sort_order ASC";
       	$query = $this->db->query($sql);
       	$rows = $query->getResult();//if($Module==4){ echo __LINE__.'<br>'.$sql.'<br><pre>';print_r($rows);die;}
 		$actions = [];

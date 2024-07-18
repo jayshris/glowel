@@ -24,6 +24,7 @@ class Company extends BaseController {
             return $this->response->redirect(site_url('/dashboard'));
           }else{
             $companyModel = new CompanyModel();
+  
             if ($this->request->getPost('status') != '') {
                 $companyModel->where('status', $this->request->getPost('status'));
             }
@@ -46,9 +47,8 @@ class Company extends BaseController {
             $session->setFlashdata('error', 'You are not permitted to access this page');
             return $this->response->redirect(site_url('/dashboard'));
           }else{
-              $this->view = [
-                'page_title' => view( 'partials/page-title', [ 'title' => 'Add Company','li_2' => 'profile' ] )
-                ];
+              $this->view['page_title']=view( 'partials/page-title', [ 'title' => 'Add Company','li_2' => 'profile' ] );
+                
               return view( 'Company/create',$this->view );
           }
         }

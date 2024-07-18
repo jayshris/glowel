@@ -6,13 +6,14 @@ use CodeIgniter\Model;
 
 class ModulesModel extends Model
 {
-    protected $table            = 'modules_old';
+    protected $table            = 'modules';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['name','status','created_at','updated_at','deleted_at'];
+    // protected $allowedFields    = ['name','status','created_at','updated_at','deleted_at'];
+    protected $allowedFields    = ['module_name','status_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -45,6 +46,6 @@ class ModulesModel extends Model
     protected $afterDelete    = [];
 
     public function getModelId($name){
-        return self::where('name',$name)->first();
+        return self::where('module_name',$name)->first();
     }
 }

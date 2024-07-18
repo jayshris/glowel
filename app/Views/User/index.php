@@ -1,6 +1,6 @@
 <?php
 use App\Models\OfficeModel;
-
+use App\Models\RoleModel;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +9,7 @@ use App\Models\OfficeModel;
   <?= $this->include('partials/title-meta') ?>
   <?= $this->include('partials/head-css') ?>
   <!-- Summernote CSS -->
-  <link rel="stylesheet" href="<?php echo base_url();?>assets/plugins/summernote/summernote-lite.min.css">
+  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/summernote/summernote-lite.min.css">
 </head>
 
 <body>
@@ -25,58 +25,9 @@ use App\Models\OfficeModel;
       <div class="content">
         <div class="row">
           <div class="col-md-12">
-          <?php //echo  $this->include('partials/page-title') ?>
-            <!-- Page Header -->
-            <div class="page-header">
-              <div class="row align-items-center">
-                <div class="col-8">
-                  <h4 class="page-title">Users</h4>
-                </div>
-                <div class="col-4 text-end">
-                  <div class="head-icons">
-                    <a href="<?= base_url('user') ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Refresh"><i class="ti ti-refresh-dot"></i></a>
-                    <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header"><i class="ti ti-chevrons-up"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- /Page Header -->
+            <?= $this->include('partials/page-title') ?>
 
-            <form method="post" enctype="multipart/form-data" action="<?php echo base_url('user'); ?>">
             <div class="card main-card">
-                <div class="card-body">
-                  <h4>Search / Filter</h4>
-                  <hr>
-                  <div class="row mt-2"> 
-
-                    <div class="col-md-2">
-                      <div class="form-wrap">
-                        <label class="col-form-label">Status</label>
-                        <select class="form-select" name="status" aria-label="Default select example">
-                          <option value="">Select Status</option>
-                          <option value="Active">Active</option>
-                          <option value="Inactive">Inactive</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="col-md-1">
-                      <button class="btn btn-info mt-4">Search</button>&nbsp;&nbsp;      
-                    </div>
-                    <div class="col-md-1 ">
-                      <a href="./user" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
-                    </div>
-                    
-                    <div class="col-md-1 mrg-sub-4">
-                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            </form>
-            
-              <div class="card main-card">
               <div class="card-body">
                 <!-- Search -->
                 <div class="search-section">
@@ -87,27 +38,28 @@ use App\Models\OfficeModel;
                         <input type="text" class="form-control" placeholder="Search Deals">
                       </div>
                     </div> -->
-                  
+                    <div class="col-md-12 mb-3">
+                      <?php echo makeListActions($currentController, $Action, 0, 1); ?>
+                    </div>
                     <?php
                     $session = \Config\Services::session();
-                    if($session->getFlashdata('success'))
-                    {
-                        echo '
-                        <div class="alert alert-success">'.$session->getFlashdata("success").'</div>
+                    if ($session->getFlashdata('success')) {
+                      echo '
+                        <div class="alert alert-success">' . $session->getFlashdata("success") . '</div>
                         ';
                     }
-                    ?>                    
+                    ?>
                   </div>
                 </div>
                 <!-- /Search -->
 
                 <!-- List -->
                 <div class="table-responsive custom-table">
-                  <table class="table" id="user-table">
+                  <table class="table" id="userTable">
                     <thead class="thead-light">
                       <tr>
                         <th>Action</th>
-                        <th>User Type</th>
+                        <th>User Role</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Mobile</th>
@@ -119,47 +71,50 @@ use App\Models\OfficeModel;
 
                     <tbody>
                       <?php
-                        if($user_data)
-                        {
-                          foreach($user_data as $user)
-                          {
-                            $token = isset($user['id']) ? $user['id'] : 0;  
-                            $officeModel = new OfficeModel();
-                            $office  = $officeModel->where('id', $user["home_branch"])->where('status',1)->first();
-                            if(isset($office['name']) && $office['name']!='' ){
-                              $office = $office['name'];
-                            }else{
-                              $office='';
-                            }
-                            if($user['status'] == 'Inactive'){
-                              $status= '<span class="badge badge-pill bg-danger">Inactive</span>';
-                            }else{
-                              $status ='<span class="badge badge-pill bg-success">Active</span>';
-                            }
-                            $strtime='';
-                            if(isset($user["created_at"]) && $user["created_at"] != NULL){
-                              $strtime = strtotime($user["created_at"]);
-                              $strtime = date('d-m-Y',$strtime);
-                            }
-                            ?>                            
-                              <tr>
-                              <td><?php echo makeListActions($currentController, $Action, $token, 2);?></td>
-                              <!-- <td>                              
+                      if ($user_data) {
+                        foreach ($user_data as $user) {
+                          $token = isset($user['id']) ? $user['id'] : 0;
+                          $officeModel = new OfficeModel();
+                          $office  = $officeModel->where('id', $user["home_branch"])->where('status', 1)->first();
+                          if (isset($office['name']) && $office['name'] != '') {
+                            $office = $office['name'];
+                          } else {
+                            $office = '';
+                          }
+                          if ($user['status'] == 'Inactive') {
+                            $status = '<span class="badge badge-pill bg-danger">Inactive</span>';
+                          } else {
+                            $status = '<span class="badge badge-pill bg-success">Active</span>';
+                          }
+                          $strtime = '';
+                          if (isset($user["created_at"]) && $user["created_at"] != NULL) {
+                            $strtime = strtotime($user["created_at"]);
+                            $strtime = date('d-m-Y', $strtime);
+                          }
+
+                          $roleModel = new RoleModel();
+                          $role  = $roleModel->where('id', $user["role_id"])->where('status_id', '1')->first();
+                          $roleName = isset($role['role_name']) ? $role['role_name'] : '';
+                      ?>
+                          <tr>
+                            <td><?php echo makeListActions($currentController, $Action, $token, 2); ?></td>
+                            <!-- <td>                              
                                 <a href="'.base_url().'user/edit/'.$user['id'].'" class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
                                 <a href="'.base_url().'user/permission/'.$user['id'].'" class="btn btn-secondary btn-sm" role="button" title="Manage Permission of '.$user["first_name"].' '.$user["last_name"].'"><i class="ti ti-settings-cog"></i></a>
 
                                 <button type="button" onclick="delete_data('.$user["id"].')" class="btn btn-danger btn-sm"> <i class="ti ti-trash"></i></>
-                                </td> -->
-                                <td><?php echo ucwords($user["usertype"]);?></td>
-                                <td><?php echo $user["first_name"].' '.$user["last_name"];?></td>
-                                <td><?php echo $user["email"];?></td>
-                                <td><?php echo $user["mobile"];?></td>
-                                <td><?php echo $office;?></td>
-                                <td><?php echo $status;?></td>
-                                <td><?php echo $strtime;?></td>
-                              </tr>
-                          <?php }
-                        }
+                                </td>
+                            <td><?php echo ucwords($user["usertype"]); ?></td> -->
+                            <td><?php echo ucwords($roleName); ?></td>
+                            <td><?php echo $user["first_name"] . ' ' . $user["last_name"]; ?></td>
+                            <td><?php echo $user["email"]; ?></td>
+                            <td><?php echo $user["mobile"]; ?></td>
+                            <td><?php echo $office; ?></td>
+                            <td><?php echo $status; ?></td>
+                            <td><?php echo $strtime; ?></td>
+                          </tr>
+                      <?php }
+                      }
                       ?>
                     </tbody>
                   </table>
@@ -184,41 +139,39 @@ use App\Models\OfficeModel;
 
   <?= $this->include('partials/vendor-scripts') ?>
 
-  <script src="<?php echo base_url();?>assets/plugins/summernote/summernote-lite.min.js"></script>
+  <script src="<?php echo base_url(); ?>assets/plugins/summernote/summernote-lite.min.js"></script>
   <script>
-    function delete_data(id)
-    {
-        if(confirm("Are you sure you want to remove it?"))
-        {
-            window.location.href="<?php echo base_url(); ?>/user/delete/"+id;
-        }
-        return false;
-    }
-    if ($('#user-table').length > 0) {
-        $('#user-table').DataTable({
-          "bFilter": false,
-          "bInfo": false,
-          "autoWidth": true,
-          "language": {
-            search: ' ',
-            sLengthMenu: '_MENU_',
-            searchPlaceholder: "Search",
-            info: "_START_ - _END_ of _TOTAL_ items",
-            "lengthMenu": "Show _MENU_ entries",
-            paginate: {
-              next: 'Next <i class=" fa fa-angle-right"></i> ',
-              previous: '<i class="fa fa-angle-left"></i> Prev '
-            },
-          },
-          initComplete: (settings, json) => {
-            $('.dataTables_paginate').appendTo('.datatable-paginate');
-            $('.dataTables_length').appendTo('.datatable-length');
-          },
-          "aoColumnDefs": [
-              { "bSortable": false, "aTargets": [0,6] } 
-          ]
-        });
+    function delete_data(id) {
+      if (confirm("Are you sure you want to remove it?")) {
+        window.location.href = "<?php echo base_url(); ?>/user/delete/" + id;
       }
+      return false;
+    }
+
+    // datatable init
+    if ($('#userTable').length > 0) {
+      $('#userTable').DataTable({
+        "bFilter": false,
+        "bInfo": false,
+        "autoWidth": true,
+        "language": {
+          search: ' ',
+          sLengthMenu: '_MENU_',
+          searchPlaceholder: "Search",
+          info: "_START_ - _END_ of _TOTAL_ items",
+          "lengthMenu": "Show _MENU_ entries",
+          paginate: {
+            next: 'Next <i class=" fa fa-angle-right"></i> ',
+            previous: '<i class="fa fa-angle-left"></i> Prev '
+          },
+        },
+        initComplete: (settings, json) => {
+          $('.dataTables_paginate').appendTo('.datatable-paginate');
+          $('.dataTables_length').appendTo('.datatable-length');
+        }
+      });
+    }
   </script>
 </body>
+
 </html>

@@ -40,7 +40,8 @@
                 <div class="card">
                   <div class="card-body">
                     <div class="settings-form">
-                      <form method="post" action="<?php echo base_url(); ?>user/update">
+                      <!-- <form method="post" action="<?php echo base_url(); ?>user/update"> -->
+                      <?php echo form_open_multipart(base_url().$currentController.'/'.$currentMethod.(($token>0) ? '/'.$token : ''), ['name'=>'actionForm', 'id'=>'actionForm']);?>
                         <div class="settings-sub-header">
                           <h6>Add User</h6>
                         </div>
@@ -54,23 +55,23 @@
                             <div class="col-md-6">
                               <div class="form-wrap">
                                   <label class="col-form-label">
-                                    User Type <span class="text-danger">*</span>
+                                    User Role <span class="text-danger">*</span>
                                   </label>
-                                  <input type="hidden" value="<?= $userdata['usertype']; ?>" name="user_type"/>
-                                  <select class="select" name = "user_type" disabled>
-                                    <option>Select</option>
+                                  <input type="hidden" value="<?= $userdata['role_id']; ?>" name="role_id"/>
+                                  <select class="select" name="role_id" disabled>
+                                    <option>Select User Role</option>
                                     <?php
-                                    if(isset($user_type)){
-                                      foreach($user_type as $row)
+                                    if(isset($roles)){
+                                      foreach($roles as $row)
                                       { ?>
-                                      <option value="<?php echo $row["user_type_name"] ?>" <?php 
+                                      <option value="<?php echo $row["id"] ?>" <?php 
                                       if(isset($userdata)){
-                                        if($userdata['usertype'] == $row['user_type_name']){
+                                        if($userdata['role_id'] == $row['id']){
                                           echo 'selected';
                                         }
                                       }
                                       ?>>
-                                        <?php echo ucwords($row["user_type_name"]); ?>
+                                        <?php echo ucwords($row["role_name"]); ?>
                                       </option>
                                       <?php
                                       }
@@ -272,8 +273,9 @@
                         </div>
                         <div class="submit-button">
                           <button type="submit" class="btn btn-primary">Save Changes</button>
-                          <button type="reset" class="btn btn-light">Reset</button>
-                          <a href="<?php echo base_url();?>company" class="btn btn-light">Cancel</a>
+                          <a href="<?php echo base_url().$currentController;?>" class="btn btn-light">Cancel</a>
+                          <!-- <button type="reset" class="btn btn-light">Reset</button>
+                          <a href="<?php echo base_url();?>company" class="btn btn-light">Cancel</a> -->
                         </div>
                       </form>
                     </div>

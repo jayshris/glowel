@@ -5,4 +5,4 @@
 <meta name="keywords" content="admin, estimates, bootstrap, business, html5, responsive, Projects">
 <meta name="author" content="Dreams technologies - Bootstrap Admin Template">
 <meta name="robots" content="noindex, nofollow">
-<title>GCM Group CRM</title>
+<title><?php echo getCompanyName(); ?></title>

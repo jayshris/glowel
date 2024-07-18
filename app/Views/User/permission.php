@@ -82,11 +82,9 @@
                                     </th>
                                     <th class="sorting" tabindex="0" aria-controls="permission_list" rowspan="1" colspan="1" style="width: 154px;" aria-label="Modules: activate to sort column ascending">Modules</th>
                                     <th class="sorting" tabindex="0" aria-controls="permission_list" rowspan="1" colspan="1" style="width: 210px;" aria-label="Sub Modules: activate to sort column ascending">Sub Modules</th>
-                                    <th class="no-sort">Create</th>
-                                    <th class="no-sort">Edit</th>
-                                    <th class="no-sort">Preview</th>
-                                    <th class="no-sort">Delete</th>
-                                    <th class="no-sort">Permission</th>
+                                    <?php if(!empty($sections)){ foreach($sections as $s){?>
+                                    <th class="no-sort"><?php echo ($s->section_name) ? $s->section_name : '';?></th>
+                                    <?php } } ?>
                                   </tr>
                                 </thead>
 
@@ -100,10 +98,11 @@
                                   }
 
                                   if(!empty($user_role_modules)){
-                                    foreach($user_role_modules as $r){//echo __LINE__.'<br><pre>';print_r($assignedModules);die;
+                                    foreach($user_role_modules as $r){//echo __LINE__.'<br><pre>';print_r($user_role_modules);die;
                                       $parentId = isset($r['module_id']) ? $r['module_id'] : '';
                                       $parentName = isset($r['parent_name']) ? $r['parent_name'] : '';
                                       $parentSection = isset($r['sections']) ? $r['sections'] : [];
+                                      $sub_module = isset($r['sub_module']) ? $r['sub_module'] : [];
                                       $parentChecked = isset($assignedModules[$parentId]) ? 'checked' : '';
                                   ?>
                                   <tr>
@@ -113,16 +112,29 @@
                                         <span class="checkmarks"></span>
                                       </label>
                                     </td>
+                                    <td><?php echo !empty($sub_module) ? '<b>'.$parentName.'</b>' : $parentName;?></td>
                                     <td><?php echo $parentName;?></td>
-                                    <td><?php echo $parentName;?></td>
-                                    <td><label class="checkboxs"><input type="checkbox"><span class="checkmarks"></span></label></td>
-                                    <td><label class="checkboxs"><input type="checkbox"><span class="checkmarks"></span></label></td>
-                                    <td><label class="checkboxs"><input type="checkbox"><span class="checkmarks"></span></label></td>
-                                    <td><label class="checkboxs"><input type="checkbox"><span class="checkmarks"></span></label></td>
+
+                                    <?php 
+                                    if(!empty($sections)){
+                                      foreach($sections as $ms){
+                                        $secId = ($ms->id) ? $ms->id : 0;
+                                    ?>
+                                    <td>
+                                      <?php 
+                                      if(isset($parentSection[$secId])){
+                                        $sectionChecked = (isset($assignedModules[$parentId]) && isset($assignedModules[$parentId][$secId])) ? 'checked' : '';
+                                      ?>
+                                      <label class="checkboxs">
+                                        <input type="checkbox" name="module[<?php echo $parentId;?>][sections][<?php echo $secId;?>]" value="<?php echo $secId;?>" <?php echo $sectionChecked;?>>
+                                        <span class="checkmarks"></span>
+                                      </label>
+                                      <?php } ?>
+                                    </td>
+                                    <?php } } ?>
                                   </tr>
 
                                   <?php 
-                                  $sub_module = isset($r['sub_module']) ? $r['sub_module'] : [];
                                   if(!empty($sub_module)){
                                     foreach($sub_module as $s){
                                       $moduleId = isset($s['module_id']) ? $s['module_id'] : '';
@@ -140,15 +152,20 @@
                                     <td><?php //echo $moduleName;?></td>
                                     <td><?php echo $moduleName;?></td>
                                     <?php 
-                                    if(!empty($moduleSection)){ 
-                                      foreach($moduleSection as $ms){
-                                        $sectionChecked = (isset($assignedModules[$moduleId]) && isset($assignedModules[$moduleId][$ms])) ? 'checked' : '';
+                                    if(!empty($sections)){ //moduleSection
+                                      foreach($sections as $ms){//moduleSection
+                                        $secId = ($ms->id) ? $ms->id : 0;//echo __LINE__.'<pre>';print_r($moduleSection);print_r($sections);
                                     ?>
                                     <td>
+                                      <?php 
+                                      if(isset($moduleSection[$secId])){
+                                        $sectionChecked = (isset($assignedModules[$moduleId]) && isset($assignedModules[$moduleId][$secId])) ? 'checked' : '';
+                                      ?>
                                       <label class="checkboxs">
-                                        <input type="checkbox" name="module[<?php echo $moduleId;?>][sections][<?php echo $ms;?>]" value="<?php echo $ms;?>" <?php echo $sectionChecked;?>>
+                                        <input type="checkbox" name="module[<?php echo $moduleId;?>][sections][<?php echo $secId;?>]" value="<?php echo $secId;?>" <?php echo $sectionChecked;?>>
                                         <span class="checkmarks"></span>
                                       </label>
+                                      <?php } ?>
                                     </td>
                                     <?php } } ?>
                                   </tr>

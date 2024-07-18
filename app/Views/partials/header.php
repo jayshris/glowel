@@ -2,11 +2,11 @@
 <div class="header">
 	<!-- Logo -->
 	<div class="header-left active">
-		<a href="<?php echo base_url(); ?>deals-dashboard" class="logo logo-normal">
+		<a href="<?php echo base_url(); ?>dashboard" class="logo logo-normal">
 			<img src="<?php echo base_url(); ?>public/assets/img/logo.svg" alt="Logo">
 			<img src="<?php echo base_url(); ?>public/assets/img/white-logo.svg" class="white-logo" alt="Logo">
 		</a>
-		<a href="<?php echo base_url(); ?>deals-dashboard" class="logo-small">
+		<a href="<?php echo base_url(); ?>dashboard" class="logo-small">
 			<img src="<?php echo base_url(); ?>public/assets/img/logo-small.svg" alt="Logo">
 		</a>
 		<a id="toggle_btn" href="javascript:void(0);">
@@ -326,7 +326,7 @@
 				</a>
 				<div class="dropdown-menu menu-drop-user">
 					<div class="profilename">
-						<a class="dropdown-item" href="<?php echo base_url(); ?>deals-dashboard">
+						<a class="dropdown-item" href="<?php echo base_url(); ?>dashboard">
 							<i class="ti ti-layout-2"></i> Dashboard
 						</a>
 						<a class="dropdown-item" href="<?php echo base_url(); ?>profile">
@@ -347,7 +347,7 @@
 	<div class="dropdown mobile-user-menu">
 		<a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
 		<div class="dropdown-menu">
-			<a class="dropdown-item" href="<?php echo base_url(); ?>deals-dashboard">
+			<a class="dropdown-item" href="<?php echo base_url(); ?>dashboard">
 				<i class="ti ti-layout-2"></i> Dashboard
 			</a>
 			<a class="dropdown-item" href="<?php echo base_url(); ?>profile">
