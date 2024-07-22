@@ -37,11 +37,7 @@ class Warehouses extends BaseController
     }
 
     public function index()
-    {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else {
+    { 
 
             $this->WModel->select('warehouses.*, company.name as company_name, office.name as office_name');
             $this->WModel->join('company', 'company.id = warehouses.company_id');
@@ -62,16 +58,12 @@ class Warehouses extends BaseController
             $this->view['offices'] = $this->OModel->select('id,name')->where('status', '1')->findAll();
             $this->view['post_data'] = $this->request->getPost();
 
-            return view('Warehouses/index', $this->view);
-        }
+            return view('Warehouses/index', $this->view); 
     }
 
     public function create()
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
 
             $error = $this->validate([
                 'warehouse_name' => [
@@ -127,10 +119,7 @@ class Warehouses extends BaseController
 
     public function edit($id)
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
 
             $error = $this->validate([
                 'warehouse_name' => [

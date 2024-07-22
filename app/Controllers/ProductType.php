@@ -29,23 +29,14 @@ class ProductType extends BaseController
     }
 
     public function index()
-    {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        } else {
-            $data['product_types'] = $this->PTModel->orderBy('id', 'desc')->findAll();
-
-            return view('ProductTypes/index', $data);
-        }
+    { 
+        $data['product_types'] = $this->PTModel->orderBy('id', 'desc')->findAll(); 
+        return view('ProductTypes/index', $data); 
     }
 
     public function create()
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+         if ($this->request->getPost()) {
 
             $error = $this->validate([
                 'type_name' => [
@@ -78,10 +69,7 @@ class ProductType extends BaseController
 
     public function edit($id)
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
 
             $error = $this->validate([
                 'type_name' => [

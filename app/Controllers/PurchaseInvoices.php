@@ -38,20 +38,15 @@ class PurchaseInvoices extends BaseController
     }
 
     public function index()
-    {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else {
-            if ($this->request->getPost('status') != '') {
-                $this->POModel->where('purchase_orders.status', $this->request->getPost('status'));
-            }
-            $this->view['orders'] = $this->POModel
-            ->select('purchase_orders.id,purchase_orders.status,pi.invoice_no,pi.status as pi_status,purchase_orders.added_date,purchase_orders.customer_name,purchase_orders.order_no')
-            ->join('purchase_invoices pi','pi.purchase_order_id = purchase_orders.id', 'left')
-            ->whereIn('purchase_orders.status',[1,2,5])->orderBy('purchase_orders.id', 'desc')->findAll(); 
-            return view('PurchaseInvoices/index', $this->view);
+    { 
+        if ($this->request->getPost('status') != '') {
+            $this->POModel->where('purchase_orders.status', $this->request->getPost('status'));
         }
+        $this->view['orders'] = $this->POModel
+        ->select('purchase_orders.id,purchase_orders.status,pi.invoice_no,pi.status as pi_status,purchase_orders.added_date,purchase_orders.customer_name,purchase_orders.order_no')
+        ->join('purchase_invoices pi','pi.purchase_order_id = purchase_orders.id', 'left')
+        ->whereIn('purchase_orders.status',[1,2,5])->orderBy('purchase_orders.id', 'desc')->findAll(); 
+        return view('PurchaseInvoices/index', $this->view); 
     }
 
     public function edit($id)

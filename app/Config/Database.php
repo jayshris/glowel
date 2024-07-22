@@ -29,7 +29,7 @@ class Database extends Config
         'hostname'     => 'localhost',
         // 'username'     => 'aubadetech_gcm_dev',
         // 'password'     => 'ezi9E!l90SEt#q-{H;e!xm7u',
-        // 'username'     => 'aubadetech_glowUsr_dev',
+ // 'username'     => 'aubadetech_glowUsr_dev',
         // 'password'     => 'lzi9E!l90SEt#q-0H@e!xm0o',
         'username'     => 'root',
         'password'     => '',

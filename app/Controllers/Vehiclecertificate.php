@@ -18,31 +18,18 @@ class Vehiclecertificate extends BaseController
         $this->_access = $access; 
     }
     public function index()
-    {
-        $access = $this->_access; 
-        if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        }else{
-            $vcModel = new VehicleCertificateModel();
-            $data['certificate_data'] = $vcModel->orderBy('id', 'DESC')->paginate(50);
-            $data['pagination_link'] = $vcModel->pager;
-            $data['page_data'] = [
-                'page_title' => view( 'partials/page-title', [ 'title' => 'Vehicle Certificate','li_1' => '123','li_2' => 'deals' ] )
-            ];
-            return view('VehicleCertificate/index',$data);
-        }
+    { 
+        $vcModel = new VehicleCertificateModel();
+        $data['certificate_data'] = $vcModel->orderBy('id', 'DESC')->paginate(50);
+        $data['pagination_link'] = $vcModel->pager;
+        $data['page_data'] = [
+            'page_title' => view( 'partials/page-title', [ 'title' => 'Vehicle Certificate','li_1' => '123','li_2' => 'deals' ] )
+        ];
+        return view('VehicleCertificate/index',$data); 
     }
 
     public function create()
-    {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    { 
               helper(['form', 'url']);
               $data ['page_data']= [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Add Vehicle Certificate','li_2' => 'profile' ] )
@@ -66,18 +53,11 @@ class Vehiclecertificate extends BaseController
                     return $this->response->redirect(site_url('/vehiclecertificate'));
                   }
                 }
-                return view( 'VehicleCertificate/create',$data );
-          }
+                return view( 'VehicleCertificate/create',$data ); 
     }
 
     public function edit($id=null)
-    {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    { 
             $vcModel = new VehicleCertificateModel();
             $data['vc_data'] = $vcModel->where('id', $id)->first();
             
@@ -100,25 +80,17 @@ class Vehiclecertificate extends BaseController
                 $session->setFlashdata('success', 'Vehicle Certificate Updated');
                 return $this->response->redirect(site_url('/vehiclecertificate'));
               }
-            }
-          }
+            } 
 
         return view('VehicleCertificate/edit', $data);
 
     }
 
-    public function delete($id){
-        $access = $this->_access; 
-        if($access === 'false'){
-        $session = \Config\Services::session();
-        $session->setFlashdata('error', 'You are not permitted to access this page');
-        return $this->response->redirect(site_url('/dashboard'));
-        }else{
-            $vcModel = new VehicleCertificateModel();
-            $vcModel->where('id', $id)->delete($id);
-            $session = \Config\Services::session();
-            $session->setFlashdata('success', 'Vehicle Certificate Deleted');
-            return $this->response->redirect(site_url('/vehiclecertificate'));
-        }
+    public function delete($id){ 
+          $vcModel = new VehicleCertificateModel();
+          $vcModel->where('id', $id)->delete($id);
+          $session = \Config\Services::session();
+          $session->setFlashdata('success', 'Vehicle Certificate Deleted');
+          return $this->response->redirect(site_url('/vehiclecertificate')); 
     }
 }

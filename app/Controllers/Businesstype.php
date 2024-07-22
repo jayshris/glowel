@@ -21,17 +21,11 @@ class Businesstype extends BaseController
   }
 
   public function index()
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $businestsypeModel = new BusinessTypeModel();
       if ($this->request->getPost('status') != '') {
         $businestsypeModel->where('business_type.status', $this->request->getPost('status'));
-    }
+     }
 
       $this->view['businestsype_data'] = $businestsypeModel->select('business_type.*, MAX(business_type_flags.flags_id) as flags_id, GROUP_CONCAT(flags.title) as flags_names', false)
 
@@ -50,17 +44,11 @@ class Businesstype extends BaseController
         'page_title' => view('partials/page-title', ['title' => 'Business Type', 'li_1' => '123', 'li_2' => 'deals'])
       ];
       return view('BusinessType/index', $this->view);
-    }
+    
   }
 
   public function create()
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $flags = new FlagsModel();
       $this->view['flags'] = $flags->where('status', 'Active')->findAll();
 
@@ -110,18 +98,11 @@ class Businesstype extends BaseController
           return $this->response->redirect(site_url('/Businesstype'));
         }
       }
-      return view('BusinessType/create', $this->view);
-    }
+      return view('BusinessType/create', $this->view); 
   }
 
   public function edit($id = null)
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $businestsypeModel = new BusinesstypeModel();
       $this->view['business_data'] = $businestsypeModel->where('id', $id)->first();
 
@@ -182,37 +163,22 @@ class Businesstype extends BaseController
           $session->setFlashdata('success', 'Business type updated');
           return $this->response->redirect(site_url('/Businesstype'));
         }
-      }
-    }
+      } 
 
     return view('BusinessType/edit', $this->view);
   }
 
   public function delete($id = null)
-  {
-
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $BusinesstypeModel = new BusinesstypeModel();
       $BusinesstypeModel->where('id', $id)->delete($id);
       $session = \Config\Services::session();
       $session->setFlashdata('success', 'Business type Deleted');
-      return $this->response->redirect(site_url('/Businesstype'));
-    }
+      return $this->response->redirect(site_url('/Businesstype')); 
   }
 
   public function statusupdate($id = null)
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $businesstypeModel = new BusinesstypeModel();
       $model = $businesstypeModel->where('id', $id)->first();
       if ($model['condition'] == 'Enable') {
@@ -226,7 +192,6 @@ class Businesstype extends BaseController
       ]);
       $session = \Config\Services::session();
       $session->setFlashdata('success', 'Business type status changed');
-      return $this->response->redirect(site_url('/Businesstype'));
-    }
+      return $this->response->redirect(site_url('/Businesstype')); 
   }
 }

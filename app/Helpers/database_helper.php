@@ -7,6 +7,7 @@ $ci->load->database();
 $ci->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
 $ci->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'NO_ZERO_DATE', ''));");*/
 
+define('PROJECT', 'Glowel');
 define('PANEL', base_url() . '');//panel/
 define('PANEL_F', '');//panel/
 define('PANEL_HEADER', PANEL_F . 'layout/header');
@@ -20,7 +21,7 @@ define('PER_PAGE', 50);
 define('URI_SEGMENT', 4);
 define('PURCHASE_ORDER_NO_FIRST', "PO/" . date("Ymd") . "/0001");
 define('CURRENCY', 'US $');
-define('LOGIN_MSG', 'You are not authorized!!');
+define('LOGIN_MSG', 'Please sign-in in your account to continue!!');
 define('ACCESS_MSG', "You don't have access, please contact to administrator!!");
 define('droplist', "Getlist");
 define('BTL', '<i class="fa fa-arrow-circle-left"></i> Back');
@@ -73,25 +74,15 @@ function makeListActions($module='', $actions=[], $token=0, $pos='2'){
 		foreach($actions as $act){
 			if(isset($act->show_position) && $act->show_position==$pos){
 				$secName  = isset($act->section_name) ? $act->section_name : '';
+				$secLink  = strtolower(str_replace(' ','_',$secName));
 				$cssClass = isset($act->section_icon) ? $act->section_icon : '';
-				$confirm = '';
-				if($act->alert_msg=='1'){
-					$confirm  = "return confirm('Are you sure want to delete this record?')";
-				}
-				// $confirm  = ($act->alert_msg=='1') ? "return confirm('Are you sure want to delete this record?')" : '';
-				if($act->alert_msg=='3'){
-					$confirm  = "print_data($token)";
-				} 
+				$confirm  = ($act->alert_msg=='1') ? "return confirm('Are you sure want to delete this record?')" : '';
 				
 				if($pos==1){
-					$menu .= '<li>'.anchor(PANEL.$module.'/'.strtolower($secName),'<i class="'.$cssClass.'"></i> &nbsp;'.ucfirst($secName), ['class'=>'btn btn-primary']).'</li>';
+					$menu .= '<li>'.anchor(PANEL.$module.'/'.$secLink,'<i class="'.$cssClass.'"></i> &nbsp;'.ucfirst($secName), ['class'=>'btn btn-primary']).'</li>';
 				}
 				elseif($pos==2 && !empty($token)){
-					if($act->alert_msg=='3'){
-						$menu .= '<a href="#" class="dropdown-item" onclick="'.$confirm.'"><i class="ti ti-trash text-danger"></i> '.ucfirst($secName).'</a>';
-					}else{
-						$menu .= anchor(PANEL.$module.'/'.strtolower($secName).'/'.$token,'<i class="'.$cssClass.'"></i> '.ucfirst($secName), ['class'=>'dropdown-item', 'onclick'=>$confirm]);
-					}
+					$menu .= anchor(PANEL.$module.'/'.$secLink.'/'.$token,'<i class="'.$cssClass.'"></i> '.ucfirst($secName), ['class'=>'dropdown-item', 'onclick'=>$confirm]);
 				}
 			}
 		}

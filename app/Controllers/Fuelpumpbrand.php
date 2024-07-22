@@ -19,8 +19,8 @@ use App\Models\ModulesModel;
 class Fuelpumpbrand extends BaseController {
 
       public $_access;
-
-
+      public $fuelpumpbrandModel;
+      public $fuelpumpbrandtypeModel;
 
       public function __construct()
 
@@ -42,19 +42,7 @@ class Fuelpumpbrand extends BaseController {
 
         public function index()
 
-        {
-
-          $access = $this->_access; 
-
-          if($access === 'false'){
-
-            $session = \Config\Services::session();
-
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-
-            return $this->response->redirect(site_url('/dashboard'));
-
-          }else{
+        { 
 
           $data['fuelpumpbrand_data'] = $this->fuelpumpbrandModel->select('fuel_pump_brand.*, MAX(fuel_pump_brand_type.fuel_type_id) as fuel_type_id, GROUP_CONCAT(fuel_type.fuel_name) as fuel_type_names', false)
 
@@ -79,8 +67,7 @@ class Fuelpumpbrand extends BaseController {
             ];
 
           return view('FuelPumpBrand/index',$data);
-
-          }
+ 
 
         }
 
@@ -88,21 +75,7 @@ class Fuelpumpbrand extends BaseController {
 
         public function create()
 
-        {
-
-
-
-        $access = $this->_access; 
-
-        if($access === 'false'){
-
-          $session = \Config\Services::session();
-
-          $session->setFlashdata('error', 'You are not permitted to access this page');
-
-          return $this->response->redirect(site_url('/dashboard'));
-
-        }else{
+        { 
 
           helper(['form', 'url']);
 
@@ -194,27 +167,13 @@ class Fuelpumpbrand extends BaseController {
 
           }
 
-        }
+         
 
 
 
          public function edit($id=null)
 
-         {
-
-          $access = $this->_access; 
-
-          if($access === 'false'){
-
-            $session = \Config\Services::session();
-
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-
-            return $this->response->redirect(site_url('/dashboard'));
-
-          }else{
-
-
+         {  
 
           $fueltypeModel = new FueltypeModel();
 
@@ -330,27 +289,14 @@ class Fuelpumpbrand extends BaseController {
 
           }
 
-          return view('FuelPumpBrand/edit_fuelpumpbrand', $data);
-
-         }
+          return view('FuelPumpBrand/edit_fuelpumpbrand', $data);  
 
          }
 
 
 
          public function delete($id){
-
-          $access = $this->_access; 
-
-          if($access === 'false'){
-
-            $session = \Config\Services::session();
-
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-
-            return $this->response->redirect(site_url('/dashboard'));
-
-            }else{
+ 
 
             $this->fuelpumpbrandModel->where('id', $id)->delete($id);
 
@@ -358,9 +304,7 @@ class Fuelpumpbrand extends BaseController {
 
             $session->setFlashdata('success', 'Fuel Pump Brand Deleted');
 
-            return $this->response->redirect(site_url('/fuelpumpbrand'));
-
-           }
+            return $this->response->redirect(site_url('/fuelpumpbrand')); 
 
          }
 

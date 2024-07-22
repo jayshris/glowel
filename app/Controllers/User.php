@@ -29,13 +29,7 @@ class User extends BaseController
         }
 
         public function index()
-        {
-                $access = $this->_access;
-                if ($access === 'false') {
-                        $session = \Config\Services::session();
-                        $session->setFlashdata('error', 'You are not permitted to access this page');
-                        return $this->response->redirect(site_url('/dashboard'));
-                } else {
+        { 
                         $userModel = new UserModel();
                         $this->view['user_data'] = $userModel->orderBy('id', 'DESC')->paginate(10);
                         $this->view['pagination_link'] = $userModel->pager;
@@ -43,18 +37,11 @@ class User extends BaseController
                                 'page_title' => view('partials/page-title', ['title' => 'Company', 'li_1' => '123', 'li_2' => 'deals'])
                         ];
 
-                        return view('User/index', $this->view);
-                }
+                        return view('User/index', $this->view); 
         }
 
         public function create()
-        {
-                $access = $this->_access;
-                if ($access === 'false') {
-                        $session = \Config\Services::session();
-                        $session->setFlashdata('error', 'You are not permitted to access this page');
-                        return $this->response->redirect(site_url('/dashboard'));
-                } else {
+        { 
                         $roleModel = new RoleModel();
                         $this->view['roles'] = $roleModel->where('id!=1')->where('status_id', '1')->orderBy('role_name', 'ASC')->findAll();
 
@@ -123,18 +110,11 @@ class User extends BaseController
                                         return view('User/add_user', $this->view);
                                 }
                         }
-                        return view('User/add_user', $this->view);
-                }
+                        return view('User/add_user', $this->view); 
         }
 
         public function edit($id = null)
-        {
-                $access = $this->_access;
-                if ($access === 'false') {
-                        $session = \Config\Services::session();
-                        $session->setFlashdata('error', 'You are not permitted to access this page');
-                        return $this->response->redirect(site_url('/dashboard'));
-                } else {
+        { 
                         if ($this->request->getMethod() == 'POST') {
                                 $id = $this->request->getVar('id');
                                 $rules = [
@@ -213,25 +193,16 @@ class User extends BaseController
                         $userBranches = new UserBranchModel();
                         $this->view['branches'] = $userBranches->where('user_id', $id)->findAll();
 
-                        return view('User/edit', $this->view);
-                }
+                        return view('User/edit', $this->view); 
         }
 
         public function delete($id = null)
-        {
-
-                $access = $this->_access;
-                if ($access === 'false') {
-                        $session = \Config\Services::session();
-                        $session->setFlashdata('error', 'You are not permitted to access this page');
-                        return $this->response->redirect(site_url('/dashboard'));
-                } else {
-                        $userModel = new UserModel();
-                        $userModel->where('id', $id)->delete($id);
-                        $session = \Config\Services::session();
-                        $session->setFlashdata('success', 'User Deleted');
-                        return $this->response->redirect(site_url('/user'));
-                }
+        { 
+                $userModel = new UserModel();
+                $userModel->where('id', $id)->delete($id);
+                $session = \Config\Services::session();
+                $session->setFlashdata('success', 'User Deleted');
+                return $this->response->redirect(site_url('/user')); 
         }
 
         public function getHomeBranch()
@@ -267,38 +238,27 @@ class User extends BaseController
                 exit;
         }
 
-        public function permission($id = 0)
+        public function permission($id=0)
         {
                 $this->view['token'] = $id;
-                $access = $this->_access;
-                if ($access === 'false') {
-                        $session = \Config\Services::session();
-                        $session->setFlashdata('error', 'You are not permitted to access this page');
-                        return $this->response->redirect(site_url('/dashboard'));
-                } else {
-                        $userModule = new UserModulesModel();
-                        $request = service('request');
-                        if ($this->request->getMethod() == 'POST') {
-                                //echo __LINE__.'<pre>';print_r($this->request->getVar());die;
-                                $rules = [
-                                        'user_type'        => 'required',
-                                        'first_name'        => 'required',
-                                        'last_name'        => 'required',
-                                        'email'                => 'required|valid_email|is_unique[users.email]',
-                                        'mobile'        => 'required|is_unique[users.mobile]',
-                                        'home_branch'   => 'required',
-                                ];
+                $userModule = new UserModulesModel(); 
+                $request = service('request');
+                if($this->request->getMethod()=='POST'){
+                        //echo __LINE__.'<pre>';print_r($this->request->getVar());die;
+                        $rules = [
+                                'user_type'	=>'required'
+                        ];
 
-                                //if($this->validate($rules)){
+                        //if($this->validate($rules)){
                                 //Delete all assigned access
                                 $userModule->where('user_id', $id)->delete();
 
                                 $modules = ($this->request->getVar('module')) ? $this->request->getVar('module') : [];
                                 //echo __LINE__.'<pre>';print_r($modules);die;
-                                if (!empty($modules)) {
-                                        foreach ($modules as $k => $m) { //echo __LINE__.'<pre>';print_r($m);print_r($modules);die;
-                                                $sections = isset($m['sections']) ? $m['sections'] : [0 => 0];
-                                                foreach ($sections as $s) {
+                                if(!empty($modules)){
+                                        foreach($modules as $k=>$m){//echo __LINE__.'<pre>';print_r($m);print_r($modules);die;
+                                                $sections = isset($m['sections']) ? $m['sections'] : [0=>0];
+                                                foreach($sections as $s){
                                                         $data = [
                                                                 'user_id' => $id,
                                                                 'module_id' => $k,
@@ -314,20 +274,20 @@ class User extends BaseController
                                 $session = \Config\Services::session();
                                 $session->setFlashdata('success', 'User permission added!');
                                 return redirect()->to('/user');
-                                /*}else{
-                                        $this->view['validation'] = $this->validator;
-                                        return view('User/add_user', $this->view);
-                                }*/
-                        }
-
-                        $this->view['userdata'] = $this->model->where('id', $id)->first();
-                        $roleID = (isset($this->view['userdata']['role_id']) && $this->view['userdata']['role_id'] > 0) ? $this->view['userdata']['role_id'] : 0;
-                        $this->view['user_role_modules'] = $this->model->getUserRoleModules($roleID);
-                        $this->view['user_modules'] = $userModule->where('user_id', $id)->findAll();
-                        //echo '<pre>';print_r($this->view['user_modules']);die;
-
-                        return view('User/permission', $this->view);
+                        /*}else{
+                                $this->view['validation'] = $this->validator;
+                                return view('User/add_user', $this->view);
+                        }*/
                 }
+
+                $this->view['userdata'] = $this->model->where('id', $id)->first();
+                $roleID = (isset($this->view['userdata']['role_id']) && $this->view['userdata']['role_id']>0) ? $this->view['userdata']['role_id'] : 0;
+                $this->view['user_role_modules'] = $this->model->getUserRoleModules($roleID);
+                $this->view['sections'] = $this->model->getSections();
+                $this->view['user_modules'] = $userModule->where('user_id', $id)->findAll();
+                //echo '<pre>';print_r($this->view['sections']);die;
+
+                return view('User/permission',$this->view);
         }
 
         public function getEmployeess()

@@ -80,9 +80,9 @@
                       <a href="./product-categories" class="btn btn-warning mt-4">Reset</a>&nbsp;&nbsp;
                     </div>
                     <div class="col-md-1 mrg-sub-4">
-                      <?php echo makeListActions($currentController, $Action, 0, 1);?>
+                      <?php  echo makeListActions($currentController, $Action, 0, 1);?>
                     </div>
-                    
+
                   </div>
                 </div>
               </div>
@@ -217,7 +217,7 @@
           paginate: {
             next: 'Next <i class=" fa fa-angle-right"></i> ',
             previous: '<i class="fa fa-angle-left"></i> Prev '
-          } 
+          }
         },
         initComplete: (settings, json) => {
           $('.dataTables_paginate').appendTo('.datatable-paginate');

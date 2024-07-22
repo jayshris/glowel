@@ -12,7 +12,8 @@ class Login extends BaseController
 {
     public function index()
     {
-        if (session()->get('isLoggedIn')) {
+        $logedId = ($this->view['loggedIn']) ? $this->view['loggedIn'] : 0;
+        if ($logedId>0) {
             return $this->response->redirect(site_url('/dashboard'));
         }else{
             return view('index');
@@ -54,7 +55,7 @@ class Login extends BaseController
             'NAME' => $user['first_name'].' '.$user['last_name']
         ];
  
-        $session->set($ses_data);
+        $session->set($ses_data);//echo __LINE__.'<pre>';print_r($session->get("id"));die;
         $agent = $this->request->getUserAgent();
 
         if ($agent->isBrowser()) {
@@ -79,11 +80,10 @@ class Login extends BaseController
         return redirect()->to('/dashboard');
     }
  
-    public function logout() {
-        
+    public function logout() {        
         try {
             if (session()->get('isLoggedIn')){
-                $userid= session()->get('id');
+                $userid = session()->get('ACCESS');
                 $websiteConfig = new LoginLogModel();
                 $data = array('logout_at'  =>  date("Y-m-d h:i:sa"));            
             
@@ -92,15 +92,13 @@ class Login extends BaseController
                     ->set( $data)
                     ->update();
                 session_destroy();
-                return redirect()->to('/login/index');
+                return redirect()->to(base_url());
             }else{
-                return redirect()->to('/login/index');
-            }
-                    
-            } catch (\ReflectionException $e) {
-                return $e;
-            }
-        
+                return redirect()->to(base_url());
+            }                    
+        } catch (\ReflectionException $e) {
+            return $e;
+        }        
     }
 
     public function getUserAgentInfo()

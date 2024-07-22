@@ -49,28 +49,20 @@ class Purchase extends BaseController
     }
 
     public function index()
-    {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else {
-            // echo '<pre>';print_r($this->request->getPost());exit;
-            if ($this->request->getPost('status') != '') {
-                $this->POModel->where('status', $this->request->getPost('status'));
-            }
-
-            $this->view['orders'] = $this->POModel->orderBy('id', 'desc')->findAll();
-
-            return view('Purchase/index', $this->view);
+    { 
+        // echo '<pre>';print_r($this->request->getPost());exit;
+        if ($this->request->getPost('status') != '') {
+            $this->POModel->where('status', $this->request->getPost('status'));
         }
+
+        $this->view['orders'] = $this->POModel->orderBy('id', 'desc')->findAll();
+
+        return view('Purchase/index', $this->view); 
     }
 
     public function create()
     {   
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
             $error = $this->validate([
                 'customer_name' => [
                     // 'rules' => 'trim|regex_match[/^[a-z\d\s]+$/i]', 
@@ -121,10 +113,7 @@ class Purchase extends BaseController
      }
     public function edit($id)
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
             $error = $this->validate([
                 'customer_name' => [
                     // 'rules' => 'trim|regex_match[/^[a-z\d\s]+$/i]', 

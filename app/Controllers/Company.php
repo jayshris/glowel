@@ -16,13 +16,7 @@ class Company extends BaseController {
         }
 
         public function index()
-        {
-          $access = $this->_access; //echo __LINE__.'<pre>';print_r($this->view);die;
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+        { 
             $companyModel = new CompanyModel();
   
             if ($this->request->getPost('status') != '') {
@@ -35,32 +29,18 @@ class Company extends BaseController {
             $this->view['page_data'] = [
               'page_title' => view( 'partials/page-title', [ 'title' => 'Company','li_1' => '123','li_2' => 'deals' ] )
               ];
-            return view('Company/index',$this->view);
-          }
+            return view('Company/index',$this->view); 
         }
 
         public function create()
-        {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+        { 
               $this->view['page_title']=view( 'partials/page-title', [ 'title' => 'Add Company','li_2' => 'profile' ] );
                 
-              return view( 'Company/create',$this->view );
-          }
+              return view( 'Company/create',$this->view ); 
         }
 
         public function add_validation()
-        {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+        { 
               helper(['form', 'url']);
               $error = $this->validate([
                 'company_name'	=>	'required|min_length[3]|trim|is_unique[company.name]',
@@ -89,17 +69,11 @@ class Company extends BaseController {
 
                 return $this->response->redirect(site_url('/company'));
               }
-          }
+           
         }
 
         public function edit($id=null)
-        {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+        { 
             $companyModel = new CompanyModel();
             $this->view['company_data'] = $companyModel->where('id', $id)->first();
             
@@ -127,25 +101,18 @@ class Company extends BaseController {
                 return $this->response->redirect(site_url('/company'));
               }
             }
-          }
+           
 
           return view('Company/edit', $this->view);
 
         }
 
-        public function delete($id){
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+        public function delete($id){ 
               $companyModel = new CompanyModel();
               $companyModel->where('id', $id)->delete($id);
               $session = \Config\Services::session();
               $session->setFlashdata('success', 'Company Deleted');
-              return $this->response->redirect(site_url('/company'));
-          }
+              return $this->response->redirect(site_url('/company')); 
         }
 }
 

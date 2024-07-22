@@ -52,26 +52,18 @@ class Sales extends BaseController
     }
 
     public function index()
-    {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else {
-            if ($this->request->getPost('status') != '') {
-                $this->SOModel->where('status', $this->request->getPost('status'));
-            }
-            $this->view['orders'] = $this->SOModel->orderBy('id', 'desc')->findAll();
-
-            return view('Sales/index', $this->view);
+    { 
+        if ($this->request->getPost('status') != '') {
+            $this->SOModel->where('status', $this->request->getPost('status'));
         }
+        $this->view['orders'] = $this->SOModel->orderBy('id', 'desc')->findAll();
+
+        return view('Sales/index', $this->view); 
     } 
      
     public function create()
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
             $error = $this->validate([
                 'customer_name' => [ 
                     'rules' => 'trim|regex_match[^[a-zA-Z0-9\s]*$]', 
@@ -113,10 +105,7 @@ class Sales extends BaseController
      }
     public function edit($id)
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
             $error = $this->validate([
                 'customer_name' => [ 
                     'rules' => 'trim|regex_match[^[a-zA-Z0-9\s]*$]', 
@@ -279,7 +268,7 @@ class Sales extends BaseController
                 $this->session->setFlashdata('danger', 'Home branch not set for user');
             } 
             if($this->request->getPost('sales_invoice_verification_form')){
-                return redirect()->to('/sales-invoices-verifivation/save/' . $id);
+                return redirect()->to('/sales-invoices-verifivation/edit/' . $id);
             }else{
                 return redirect()->to('/sales/add-products/' . $id);
             }
@@ -300,7 +289,7 @@ class Sales extends BaseController
     //     $this->view['products'] = $this->PModel->where('category_id', $category_id)->where('status', '1')->where('is_deleted', '0')->findAll();
     //     return view('Sales/productTable', $this->view);
     // }
-    
+
     public function getProducts()
     {
         $category_id = $this->request->getPost('category_id'); 
@@ -471,23 +460,16 @@ class Sales extends BaseController
         return view('Sales/salesCheckoutPrint', $this->view);
     }
 
-    public function delete($id){
-        $access = $this->access; 
-        if($access === 'false'){
-          $session = \Config\Services::session();
-          $session->setFlashdata('error', 'You are not permitted to access this page');
-          return $this->response->redirect(site_url('/dashboard'));
-        }else{ 
-            //delete inventory
-            $this->InventoryModel->where('sales_order_id', $id)->delete();
+    public function delete($id){ 
+        //delete inventory
+        $this->InventoryModel->where('sales_order_id', $id)->delete();
 
-            //delete order product first 
-            $this->SOPModel->where('order_id', $id)->delete();
-            //delete order
-            $this->SOModel->delete($id);
-            $this->session->setFlashdata('success', 'Order deleted succefully.');
+        //delete order product first 
+        $this->SOPModel->where('order_id', $id)->delete();
+        //delete order
+        $this->SOModel->delete($id);
+        $this->session->setFlashdata('success', 'Order deleted succefully.');
 
-            return $this->response->redirect(base_url('sales'));
-        }
-      }
+        return $this->response->redirect(base_url('sales')); 
+    }
 }

@@ -26,13 +26,7 @@ class Party extends BaseController
   }
 
   public function index()
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $partyModel = new PartyModel();
       
       if ($this->request->getPost('status') != '') {
@@ -43,18 +37,11 @@ class Party extends BaseController
       $this->view['page_data'] = [
         'page_title' => view('partials/page-title', ['title' => 'Party', 'li_1' => '123', 'li_2' => 'deals'])
       ];
-      return view('Party/index', $this->view);
-    }
+      return view('Party/index', $this->view); 
   }
 
   public function edit($id = null)
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $pcModel = new PartyModel();
       $this->view['pc_data'] = $pcModel->where('id', $id)->first();
 
@@ -286,21 +273,14 @@ class Party extends BaseController
           $session->setFlashdata('success', 'Party  Updated');
           return $this->response->redirect(site_url('/party'));
         }
-      }
-    }
+      } 
 
     return view('Party/edit', $this->view);
   }
   
 
   public function approve($id = null)
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $pcModel = new PartyModel();
       $this->view['pc_data'] = $pcModel->where('id', $id)->first();
 
@@ -474,20 +454,14 @@ class Party extends BaseController
           return $this->response->redirect(site_url('/party'));
         }
       }
-    }
+     
 
     return view('Party/approval', $this->view);
   }
 
 
   public function create()
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       helper(['form', 'url']);
       $this->view['page_data'] = [
         'page_title' => view('partials/page-title', ['title' => 'Add Party', 'li_2' => 'profile'])
@@ -604,24 +578,16 @@ class Party extends BaseController
         }
       }
       return view('Party/create', $this->view);
-    }
+     
   }
 
   public function delete($id = null)
-  {
-
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $partyModel = new PartyModel();
       $partyModel->where('id', $id)->delete($id);
       $session = \Config\Services::session();
       $session->setFlashdata('success', 'Party Deleted');
-      return $this->response->redirect(site_url('/party'));
-    }
+      return $this->response->redirect(site_url('/party')); 
   }
 
   public function get_flags_fields_bk()
@@ -675,13 +641,7 @@ class Party extends BaseController
   }
 
   public function status($id = null)
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $status = '';
       $partyModel = new PartyModel();
       $pModel = $partyModel->where('id', $id)->first();
@@ -699,8 +659,7 @@ class Party extends BaseController
       ]);
       $session = \Config\Services::session();
       $session->setFlashdata('success', 'Party Status updated');
-      return $this->response->redirect(site_url('/party'));
-    }
+      return $this->response->redirect(site_url('/party')); 
   }
 
   public function searchByStatus()

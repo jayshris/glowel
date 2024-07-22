@@ -7,6 +7,7 @@ use App\Models\ModulesModel;
 
 class Vehicletype extends BaseController {
       public $_access;
+      public $vehicletypeModel;
 
       public function __construct()
       {
@@ -17,33 +18,18 @@ class Vehicletype extends BaseController {
       }
 
         public function index()
-        {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
-
+        {  
           $data['vehicletype_data'] = $this->vehicletypeModel->where(['status'=>'Active'])->orderBy('id', 'DESC')->paginate(10);
           $data['pagination_link'] = $this->vehicletypeModel->pager;
 
           $data['page_data'] = [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Vehicle Type','li_1' => '123','li_2' => 'deals' ] )
             ];
-          return view('VehicleType/index',$data);
-          }
+          return view('VehicleType/index',$data); 
         }
 
         public function create()
-        {
-
-        $access = $this->_access; 
-        if($access === 'false'){
-          $session = \Config\Services::session();
-          $session->setFlashdata('error', 'You are not permitted to access this page');
-          return $this->response->redirect(site_url('/dashboard'));
-        }else{
+        { 
           helper(['form', 'url']);
           $data ['page_data']= [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Add Vehicle Type','li_2' => 'profile' ] )
@@ -80,18 +66,11 @@ class Vehicletype extends BaseController {
     
               
             }
-            return view( 'VehicleType/create',$data );
-          }
+            return view( 'VehicleType/create',$data ); 
         }
 
          public function edit($id=null)
-         {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+         { 
           $request = service('request');
           $data['vehicletype_data'] = $this->vehicletypeModel->where('id', $id)->first();
           if($this->request->getMethod()=='POST'){
@@ -123,22 +102,14 @@ class Vehicletype extends BaseController {
   
             
           }
-          return view('VehicleType/edit', $data);
-         }
+          return view('VehicleType/edit', $data); 
          }
 
-         public function delete($id){
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-            }else{
+         public function delete($id){ 
             $this->vehicletypeModel->where('id', $id)->delete($id);
             $session = \Config\Services::session();
             $session->setFlashdata('success', 'Vehicle Type Deleted');
-            return $this->response->redirect(site_url('/vehicletype'));
-           }
+            return $this->response->redirect(site_url('/vehicletype')); 
          }
 
          

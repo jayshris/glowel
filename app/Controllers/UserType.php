@@ -20,13 +20,7 @@ class UserType extends BaseController
         $this->_access = $access; 
     }
     public function index()
-    {
-      $access = $this->_access; 
-      if($access === 'false'){
-        $session = \Config\Services::session();
-        $session->setFlashdata('error', 'You are not permitted to access this page');
-        return $this->response->redirect(site_url('/dashboard'));
-      }else{  
+    { 
         $userTypeModel = new UserTypeModel();
         
         if ($this->request->getPost('status') != '') {
@@ -37,18 +31,11 @@ class UserType extends BaseController
         $this->view['page_data'] = [
           'page_title' => view( 'partials/page-title', [ 'title' => 'User Types','li_1' => '123','li_2' => 'deals' ] )
           ];
-        return view('UserType/index',$this->view);
-      }
+        return view('UserType/index',$this->view); 
     }
 
     public function create(){
-        
-      $access = $this->_access; 
-      if($access === 'false'){
-        $session = \Config\Services::session();
-        $session->setFlashdata('error', 'You are not permitted to access this page');
-        return $this->response->redirect(site_url('/dashboard'));
-      }else{ 
+         
         $modules = new ModulesModel();
         $this->view['modules'] = $modules->where('status','Active')->findAll();
 
@@ -87,18 +74,11 @@ class UserType extends BaseController
             }
           }
 
-        return view('UserType/create', $this->view);
-      }
+        return view('UserType/create', $this->view); 
     }
 
     public function edit($id=null){
-      
-      $access = $this->_access; 
-      if($access === 'false'){
-        $session = \Config\Services::session();
-        $session->setFlashdata('error', 'You are not permitted to access this page');
-        return $this->response->redirect(site_url('/dashboard'));
-      }else{ 
+       
         $userTypeModel = new UserTypeModel();
         $this->view['usertype_data'] = $userTypeModel->where('id', $id)->first();
         
@@ -139,23 +119,15 @@ class UserType extends BaseController
             return $this->response->redirect(site_url('/usertype'));
           }
         }
-        return view('UserType/edit', $this->view);
-      }
+        return view('UserType/edit', $this->view); 
     }
 
-    public function delete($id){
-      $access = $this->_access; 
-      if($access === 'false'){
-        $session = \Config\Services::session();
-        $session->setFlashdata('error', 'You are not permitted to access this page');
-        return $this->response->redirect(site_url('/dashboard'));
-      }else{ 
+    public function delete($id){ 
         $usertypeModel = new UserTypeModel();
         $usertypeModel->where('id', $id)->delete($id);
         $session = \Config\Services::session();
         $session->setFlashdata('success', 'User Type Deleted');
-        return $this->response->redirect(site_url('/usertype'));
-      }
+        return $this->response->redirect(site_url('/usertype')); 
     }
 
 

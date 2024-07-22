@@ -31,11 +31,7 @@ class Invoices extends BaseController
     }
 
     public function index()
-    {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else {
+    { 
             if ($this->request->getPost('status') != '') {
                 $this->SOModel->where('status', $this->request->getPost('status'));
             }
@@ -43,8 +39,7 @@ class Invoices extends BaseController
             ->select('sales_orders.id,sales_orders.status,i.invoice_no,sales_orders.added_date,sales_orders.customer_name,sales_orders.order_no')
             ->join('invoices i','i.sales_order_id = sales_orders.id', 'left')
             ->whereIn('sales_orders.status',[1,2,5])->orderBy('sales_orders.id', 'desc')->findAll(); 
-            return view('Invoices/index', $data);
-        }
+            return view('Invoices/index', $data); 
     }
 
     public function create($id)

@@ -71,9 +71,8 @@
                                 <tr>
                                     <td>'
                                     // <a href="'.base_url().'partyclassification/edit/'.$party['id'].'"  class="btn btn-info btn-sm" role="button"><i class="ti ti-pencil"></i></a>
-
                                     // <button type="button"   onclick="delete_data('.$party["id"].')" class="btn btn-secondary btn-sm"> <i class="ti ti-trash"></i></button>
-                                       .makeListActions($currentController, $Action, $party['id'], 2)
+                                        .makeListActions($currentController, $Action, $party['id'], 2)
                                     .'</td>
                                     
                                     <td>'.$party['name'].'</td>

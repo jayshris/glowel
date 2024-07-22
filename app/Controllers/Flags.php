@@ -17,38 +17,24 @@ class Flags extends BaseController {
       }
 
         public function index()
-        {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
-
-            if ($this->request->getPost('status') != '') {
-              $this->flagsModel->where('status', $this->request->getPost('status'));
-            }else{
-              $this->flagsModel->where(['status'=>'Active']);
-            }
-          $this->view['flags_data'] = $this->flagsModel->orderBy('id', 'DESC')->findAll();
+        {  
+          // $this->view['flags_data'] = $this->flagsModel->where(['status'=>'Active'])->orderBy('id', 'DESC')->paginate(10);
           // $this->view['pagination_link'] = $this->flagsModel->pager;
-
+          if ($this->request->getPost('status') != '') {
+            $this->flagsModel->where('status', $this->request->getPost('status'));
+          }else{
+            $this->flagsModel->where(['status'=>'Active']);
+          }
+          $this->view['flags_data'] = $this->flagsModel->orderBy('id', 'DESC')->findAll();
           $this->view['page_data'] = [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Flags','li_1' => '123','li_2' => 'deals' ] )
             ];
-          return view('Flags/index',$this->view);
-          }
+          return view('Flags/index',$this->view); 
         }
 
         public function create()
         {
-
-        $access = $this->_access; 
-        if($access === 'false'){
-          $session = \Config\Services::session();
-          $session->setFlashdata('error', 'You are not permitted to access this page');
-          return $this->response->redirect(site_url('/dashboard'));
-        }else{
+ 
           helper(['form', 'url']);
           $this->view ['page_data']= [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Add Flags','li_2' => 'profile' ] )
@@ -81,18 +67,11 @@ class Flags extends BaseController {
     
               
             }
-            return view( 'Flags/create',$this->view );
-          }
+            return view( 'Flags/create',$this->view ); 
         }
 
          public function edit($id=null)
-         {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+         { 
           $request = service('request');
           $this->view['flags_data'] = $this->flagsModel->where('id', $id)->first();
           if($this->request->getMethod()=='POST'){
@@ -120,22 +99,14 @@ class Flags extends BaseController {
   
             
           }
-          return view('Flags/edit', $this->view);
-         }
+          return view('Flags/edit', $this->view); 
          }
 
-         public function delete($id){
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-            }else{
+         public function delete($id){ 
             $this->flagsModel->where('id', $id)->delete($id);
             $session = \Config\Services::session();
             $session->setFlashdata('success', 'Flag Deleted');
-            return $this->response->redirect(site_url('/flags'));
-           }
+            return $this->response->redirect(site_url('/flags')); 
          }
 
          

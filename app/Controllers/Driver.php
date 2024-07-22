@@ -33,13 +33,7 @@ class Driver extends BaseController
     }
 
     public function create()
-    {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    { 
               helper(['form', 'url']);
               $data ['page_data']= [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Add Driver','li_2' => 'profile' ] )
@@ -163,17 +157,11 @@ class Driver extends BaseController
                   }
                 }
                 return view( 'Driver/create',$data );
-          }
+           
     }
 
     public function edit($id=null)
-    {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    { 
             $stateModel = new StateModel();
             $data['state'] = $stateModel->where(['isStatus'=>'1'])->orderBy('state_id')->findAll();
             
@@ -320,45 +308,27 @@ class Driver extends BaseController
               }
 
               return view('Driver/edit', $data);
-          }
+           
 }
 
     public function delete($id){
-      $access = $this->_access; 
-      if($access === 'false'){
-        $session = \Config\Services::session();
-        $session->setFlashdata('error', 'You are not permitted to access this page');
-        return $this->response->redirect(site_url('/dashboard'));
-      }else{ 
+       
         $driverModel = new DriverModel();
         $driverModel->where('id', $id)->delete($id);
         $session = \Config\Services::session();
         $session->setFlashdata('success', 'Driver Deleted');
         return $this->response->redirect(site_url('/driver'));
-      }
+       
     }
 
-    public function view($id=null){
-      $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    public function view($id=null){ 
               $driverModel = new DriverModel();
               $data['driver_data'] = $driverModel->where('id', $id)->first();
               
-              return view('Driver/view', $data);
-          }
+              return view('Driver/view', $data); 
     }
 
-    public function approve($id=null){
-      $access = $this->_access; 
-      if($access === 'false'){
-          $session = \Config\Services::session();
-          $session->setFlashdata('error', 'You are not permitted to access this page');
-          return $this->response->redirect(site_url('/dashboard'));
-      }else{
+    public function approve($id=null){ 
           if (session()->get('isLoggedIn')) {
               $login_id= session()->get('id');
           }
@@ -375,7 +345,6 @@ class Driver extends BaseController
           
           $session = \Config\Services::session();
           $session->setFlashdata('success', 'Driver Approved');
-          return $this->response->redirect(site_url('/foreman'));
-      }
+          return $this->response->redirect(site_url('/foreman')); 
   }
 }

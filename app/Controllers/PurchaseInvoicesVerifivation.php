@@ -38,18 +38,13 @@ class PurchaseInvoicesVerifivation extends BaseController
     }
 
     public function index()
-    {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else {
-            if ($this->request->getPost('status') != '') {
-                $this->PurchaseInvoiceModel->where('status', $this->request->getPost('status'));
-            }
-            $this->view['orders'] = $this->PurchaseInvoiceModel 
-            ->whereIn('purchase_invoices.status',invoice_status_verify)->orderBy('purchase_invoices.id', 'desc')->findAll();  
-            return view('PurchaseInvoicesVerifivation/index', $this->view);
+    { 
+        if ($this->request->getPost('status') != '') {
+            $this->PurchaseInvoiceModel->where('status', $this->request->getPost('status'));
         }
+        $this->view['orders'] = $this->PurchaseInvoiceModel 
+        ->whereIn('purchase_invoices.status',invoice_status_verify)->orderBy('purchase_invoices.id', 'desc')->findAll();  
+        return view('PurchaseInvoicesVerifivation/index', $this->view); 
     }
 
     public function edit($id)

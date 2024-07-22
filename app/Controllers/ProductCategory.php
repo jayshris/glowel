@@ -34,37 +34,29 @@ class ProductCategory extends BaseController
 
     public function index()
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else {
-            // $this->PCModel->select('product_categories.*,product_types.type_name');
-            // $this->PCModel->join('product_types', 'product_types.id = product_categories.prod_type_id');
+        // $this->PCModel->select('product_categories.*,product_types.type_name');
+        // $this->PCModel->join('product_types', 'product_types.id = product_categories.prod_type_id');
 
-            // if ($this->request->getPost('product_type') != '') {
-            //     $this->PCModel->where('product_categories.prod_type_id', $this->request->getPost('product_type'));
-            // }
+        // if ($this->request->getPost('product_type') != '') {
+        //     $this->PCModel->where('product_categories.prod_type_id', $this->request->getPost('product_type'));
+        // }
 
-            if ($this->request->getPost('status') != '') {
-                $this->PCModel->where('product_categories.status', $this->request->getPost('status'));
-            }
-
-            $this->PCModel->orderBy('product_categories.id', 'desc');
-            $this->view['product_categories'] =  $this->PCModel->findAll();
-
-            // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-            $this->view['post_data'] = $this->request->getPost();
-
-            return view('ProductCategory/index', $this->view);
+        if ($this->request->getPost('status') != '') {
+            $this->PCModel->where('product_categories.status', $this->request->getPost('status'));
         }
+
+        $this->PCModel->orderBy('product_categories.id', 'desc');
+        $this->view['product_categories'] =  $this->PCModel->findAll();
+
+        // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+        $this->view['post_data'] = $this->request->getPost();
+
+        return view('ProductCategory/index', $this->view);
     }
 
     public function create()
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+         if ($this->request->getPost()) {
 
             $error = $this->validate([
                 'category_name' => [
@@ -127,10 +119,7 @@ class ProductCategory extends BaseController
 
     public function edit($id)
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
 
             $error = $this->validate([
                 'category_name' => [

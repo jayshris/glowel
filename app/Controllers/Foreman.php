@@ -23,31 +23,18 @@ class Foreman extends BaseController
     }
 
     public function index()
-    {
-        $access = $this->_access; 
-        if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        }else{  
+    {  
             $foremanModel = new ForemanModel();
             $data['foreman_data'] = $foremanModel->orderBy('id', 'DESC')->paginate(50);
             $data['pagination_link'] = $foremanModel->pager;
             $data['page_data'] = [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Foreman','li_1' => '123','li_2' => 'deals' ] )
             ];
-            return view('Foreman/index',$data);
-        }
+            return view('Foreman/index',$data); 
     }
 
     public function create()
-    {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    { 
               helper(['form', 'url']);
               $data ['page_data']= [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Add Driver','li_2' => 'profile' ] )
@@ -156,17 +143,11 @@ class Foreman extends BaseController
                   }
                 }
                 return view( 'Foreman/create',$data );
-          }
+           
     }
 
     public function edit($id = null)
-    {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    { 
                 $foremanModel = new ForemanModel();
                 $data['foreman_data'] = $foremanModel->where('id', $id)->first();
 
@@ -306,16 +287,10 @@ class Foreman extends BaseController
                 }
             }
                 return view( 'Foreman/edit',$data );
-        }
+        
     }
 
-    public function approve($id=null){
-        $access = $this->_access; 
-        if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        }else{
+    public function approve($id=null){ 
             if (session()->get('isLoggedIn')) {
                 $login_id= session()->get('id');
             }
@@ -333,21 +308,14 @@ class Foreman extends BaseController
             $session = \Config\Services::session();
             $session->setFlashdata('success', 'Foreman Approved');
             return $this->response->redirect(site_url('/foreman'));
-        }
+         
     }
 
-    public function delete($id){
-        $access = $this->_access; 
-        if($access === 'false'){
-          $session = \Config\Services::session();
-          $session->setFlashdata('error', 'You are not permitted to access this page');
-          return $this->response->redirect(site_url('/dashboard'));
-        }else{ 
+    public function delete($id){ 
             $foremanModel = new ForemanModel();
             $foremanModel->where('id', $id)->delete($id);
           $session = \Config\Services::session();
           $session->setFlashdata('success', 'Foreman Deleted');
-          return $this->response->redirect(site_url('/foreman'));
-        }
+          return $this->response->redirect(site_url('/foreman')); 
       }
 }

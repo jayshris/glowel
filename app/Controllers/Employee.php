@@ -36,34 +36,19 @@ class Employee extends BaseController
 
 
   public function index()
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       if ($this->request->getPost('status') != '') {
           $this->employeeModel->where('status', $this->request->getPost('status'));
       }
       $this->view['employee_data'] = $this->employeeModel->orderBy('id', 'DESC')->paginate(10);
       $this->view['pagination_link'] = $this->employeeModel->pager;
       $this->view['page_data'] = ['page_title' => view('partials/page-title', ['title' => 'Employee', 'li_1' => '123', 'li_2' => 'deals'])];
-      return view('Employee/index', $this->view);
-    }
+      return view('Employee/index', $this->view); 
   }
 
 
   public function create()
-  {
-    $access = $this->_access;
-
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
-
+  {  
       helper(['form', 'url']);
       $this->view['page_data'] = ['page_title' => view('partials/page-title', ['title' => 'Add Employee', 'li_2' => 'profile'])];
       $this->view['company'] = $this->companyModel->where(['status' => 'Active'])->orderBy('name')->findAll();
@@ -215,20 +200,12 @@ class Employee extends BaseController
           return $this->response->redirect(base_url('employee'));
         }
       }
-      return view('Employee/create', $this->view);
-    }
+      return view('Employee/create', $this->view); 
   }
 
 
   public function edit($id = null)
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
-
+  {  
       $this->view['employee_detail'] = $this->employeeModel->where('id', $id)->first();
 
       $this->view['company'] = $this->companyModel->where(['status' => 'Active'])->orderBy('name')->findAll();
@@ -376,20 +353,12 @@ class Employee extends BaseController
           return $this->response->redirect(base_url('employee'));
         }
       }
-      return view('Employee/edit_employee', $this->view);
-    }
+      return view('Employee/edit_employee', $this->view); 
   }
 
 
   public function approve($id = null)
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
-
+  {  
       $this->view['employee_detail'] = $this->employeeModel->where('id', $id)->first();
 
       $this->view['company'] = $this->companyModel->where(['status' => 'Active'])->orderBy('name')->findAll();
@@ -537,34 +506,20 @@ class Employee extends BaseController
           return $this->response->redirect(base_url('employee'));
         }
       }
-      return view('Employee/approve', $this->view);
-    }
+      return view('Employee/approve', $this->view); 
   }
 
 
   public function delete($id)
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(site_url('/dashboard'));
-    } else {
+  { 
       $this->employeeModel->where('id', $id)->delete($id);
       $session = \Config\Services::session();
       $session->setFlashdata('success', 'Employee Deleted');
-      return $this->response->redirect(site_url('/employee'));
-    }
+      return $this->response->redirect(site_url('/employee')); 
   }
 
   public function status($id = null)
-  {
-    $access = $this->_access;
-    if ($access === 'false') {
-      $session = \Config\Services::session();
-      $session->setFlashdata('error', 'You are not permitted to access this page');
-      return $this->response->redirect(base_url('/dashboard'));
-    } else {
+  { 
       $status = '';
       $emeModel = new EmployeeModel();
       $eModel = $emeModel->where('id', $id)->first();
@@ -582,8 +537,7 @@ class Employee extends BaseController
       ]);
       $session = \Config\Services::session();
       $session->setFlashdata('success', 'Employee Status Updated');
-      return $this->response->redirect(base_url('employee'));
-    }
+      return $this->response->redirect(base_url('employee')); 
   }
 
   public function getOfficeLocations()

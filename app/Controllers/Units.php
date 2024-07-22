@@ -25,25 +25,16 @@ class Units extends BaseController
     
     public function index()
     { 
-        if($this->access === 'false'){
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        }else{
-            
-            if ($this->request->getPost('unit') != '') {
-                $this->UnitModel->where('unit', $this->request->getPost('unit'));
-            }  
-           
-            $this->view['data'] =  $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
-            return view('Unit/index',$this->view);
-        }
+        if ($this->request->getPost('unit') != '') {
+            $this->UnitModel->where('unit', $this->request->getPost('unit'));
+        }  
+        
+        $this->view['data'] =  $this->UnitModel->where(['status'=>1])->orderBy('id', 'desc')->findAll();
+        return view('Unit/index',$this->view);
     }
     public function create()
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
 
             $error = $this->validate([
                 'unit' => [
@@ -72,11 +63,8 @@ class Units extends BaseController
     }
 
     public function edit($id)
-    {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+    { 
+        if ($this->request->getPost()) {
 
             $error = $this->validate([
                 'unit' => [
@@ -107,14 +95,8 @@ class Units extends BaseController
     }
 
     function view($id){
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        }else {
-            $this->view['data'] = $this->UnitModel->where('id', $id)->first();
-
-            return view('Unit/view', $this->view);
-        }
+        $this->view['data'] = $this->UnitModel->where('id', $id)->first();
+        return view('Unit/view', $this->view); 
     }
 
     public function delete($id)

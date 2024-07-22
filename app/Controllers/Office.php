@@ -19,13 +19,7 @@ class Office extends BaseController {
         }
 
         public function index()
-        {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+        { 
               $officeModel = new OfficeModel();
               if ($this->request->getPost('status') != '') {
                   $officeModel->where('status', $this->request->getPost('status'));
@@ -36,18 +30,11 @@ class Office extends BaseController {
               $this->view['page_data'] = [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Company','li_1' => '123','li_2' => 'deals' ] )
                 ];
-              return view('Office/index',$this->view);
-          }
+              return view('Office/index',$this->view); 
         }
 
         public function create()
-        {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+        { 
               helper(['form', 'url']);
               $this->view['page_data']= [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Add Office','li_2' => 'profile' ] )
@@ -98,17 +85,11 @@ class Office extends BaseController {
                   
                 }
                 return view( 'Office/create',$this->view );
-          }
+           
         }
 
          public function edit($id=null)
-         {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+         { 
               $companyModel = new CompanyModel();
               $stateModel = new StateModel();
                 
@@ -160,35 +141,22 @@ class Office extends BaseController {
               }
 
               return view('Office/edit_office', $this->view);
-          }
+           
 
          }
 
          public function delete($id){
-          
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+           
               $companyModel = new OfficeModel();
               $companyModel->where('id', $id)->delete($id);
               $session = \Config\Services::session();
               $session->setFlashdata('success', 'Office Deleted');
-              return $this->response->redirect(site_url('/office'));
-          }
+              return $this->response->redirect(site_url('/office')); 
          }
 
          
         public function view($id=null){
-          
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+           
               $companyModel = new CompanyModel();
               $stateModel = new StateModel();
                 
@@ -198,8 +166,7 @@ class Office extends BaseController {
               $officeModel = new OfficeModel();
               $this->view['office_data'] = $officeModel->where('id', $id)->first();
               
-              return view('Office/details', $this->view);
-          }
+              return view('Office/details', $this->view); 
         }
 }
 ?>

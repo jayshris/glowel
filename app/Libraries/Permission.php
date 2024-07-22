@@ -2,12 +2,13 @@
 namespace App\Libraries;
 
 use CodeIgniter\Model;
+use CodeIgniter\I18n\Time;
 
 class Permission
 {
-	protected $session;
 	protected $db;
 	protected $router;
+	public $session;
 	public $viewData = [];
 	
 	public function __construct() {
@@ -16,10 +17,13 @@ class Permission
 		
 		$this->db = \Config\Database::connect();
 
+		$this->viewData['session']   = $this->session;
 		$this->viewData['loggedIn']   = ($this->session->get('ACCESS')) ? $this->session->get('ACCESS') : 0;
 		$this->viewData['logLevel']   = ($this->session->get('ROLE')) ? $this->session->get('ROLE') : 3;
 		$this->viewData['logParent']  = ($this->session->get('PARENT')) ? $this->session->get('PARENT') : 0;
 		$this->viewData['logName']    = ($this->session->get('NAME')) ? $this->session->get('NAME') : '';
+		$this->viewData['actionTime'] = new Time('now', 'Asia/Kolkata', 'en_US');
+		$this->viewData['loggedIP']   = $_SERVER['REMOTE_ADDR'];
 
 		$this->viewData['curController']  = class_basename($this->router->controllerName());
 		$this->viewData['currentController']  = strtolower($this->viewData['curController']);
@@ -41,7 +45,8 @@ class Permission
 				return 1;
 			}
 			else {
-				$sectionNames = isset($actions[$controller]) ? array_column($actions[$controller],'section_name') : [];
+				$sectionNames = isset($actions[$controller]) ? array_column($actions[$controller],'section_link') : [];
+				//echo __LINE__.'<pre>';print_r($sectionNames);print_r($action);die;
 				if((!in_array($controller,$controllers,TRUE)) || ($action != 'index' && !in_array($action, $sectionNames, TRUE))) {
 					return 0;
 				}
@@ -56,7 +61,7 @@ class Permission
 	}
 	
 	public function HeaderMenuItems($model=''){
-		if(!in_array($this->viewData['currentController'], ['home','login']) && empty($this->viewData['loggedIn'])){
+		if(!in_array($this->viewData['currentController'], ['home','login','kyc']) && empty($this->viewData['loggedIn'])){
 			$this->session->setFlashdata('error', LOGIN_MSG);//echo __LINE__.'<br>File: '.__FILE__.'<br>'.base_url();die;
 			header("Location: ".base_url());die;
 		}
@@ -70,12 +75,9 @@ class Permission
 		$this->viewData['Actions'] = $Actions;
 
 		$condition = ['controllers'=>$Controllers,'actions'=>$Actions,'controller'=>$this->viewData['currentController'],'action'=>$this->viewData['currentMethod']];
-		if(!in_array($this->viewData['currentController'], ['home','login','dashboard']) && $this->checkPrivileged($condition) == 0) {
+		if($this->checkPrivileged($condition)==0 && !in_array($this->viewData['currentController'], ['home','login','dashboard','kyc']) && !in_array($this->viewData['currentMethod'], ['add-products','addProducts'])) {
 			$this->session->setFlashdata('error', ACCESS_MSG);//echo __LINE__.'<br>File: '.__FILE__;die;
 			header("Location: ".base_url()."dashboard");die;
-			return redirect()->back()->with('error', ACCESS_MSG);
-			return redirect()->to(site_url());
-            return redirect()->to('/dashboard');
 		}
 
 		$this->viewData['token']  = 0;//($this->uri->segment(URI_SEGMENT)) ? $this->uri->segment(URI_SEGMENT) : 0;
@@ -148,7 +150,7 @@ class Permission
 		$UserID = (isset($data['UserID'])) ? trim($data['UserID']) : 0;
 		$Module = (isset($data['Module'])) ? trim($data['Module']) : 0;
 
-		$sql = "SELECT t3.id, LOWER(t3.section_name) AS section_name, t3.alert_msg, t3.show_position, t3.section_icon, t2.page_modal  FROM ".USER_MODULE." t1 INNER JOIN ".MODULE_SECTION." t2 ON t2.module_id=t1.module_id INNER JOIN ".SECTION." t3 ON t3.id=t2.section_id WHERE t1.user_id='".$UserID."' AND t1.module_id='".$Module."' AND t3.status_id='1' AND t2.section_id=t1.section_id ORDER BY t3.sort_order ASC";
+		$sql = "SELECT t3.id, LOWER(t3.section_name) AS section_name, LOWER(REPLACE(t3.section_name, ' ', '_')) AS section_link, t3.alert_msg, t3.show_position, t3.section_icon, t2.page_modal  FROM ".USER_MODULE." t1 INNER JOIN ".MODULE_SECTION." t2 ON t2.module_id=t1.module_id INNER JOIN ".SECTION." t3 ON t3.id=t2.section_id WHERE t1.user_id='".$UserID."' AND t1.module_id='".$Module."' AND t3.status_id='1' AND t2.section_id=t1.section_id ORDER BY t3.sort_order ASC";
       	$query = $this->db->query($sql);
       	$rows = $query->getResult();//if($Module==4){ echo __LINE__.'<br>'.$sql.'<br><pre>';print_r($rows);die;}
 		$actions = [];

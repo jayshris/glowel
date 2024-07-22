@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Exception;
 use CodeIgniter\Model;
-use App\Models\ModulesModel;
 use App\Models\UserTypeModel;
 use App\Models\UserTypePermissionModel;
+use App\Models\ModulesModel;
+use Exception;
 
 class UserModel extends Model
 {
@@ -16,7 +16,7 @@ class UserModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['email','usertype','first_name','last_name','login_expiry','mobile','company_id','home_branch','password','status','created_at','updated_at','deleted_at'];
+    protected $allowedFields    = ['role_id','email','usertype','first_name','last_name','login_expiry','mobile','company_id','home_branch','password','status','created_at','updated_at','deleted_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -115,7 +115,7 @@ class UserModel extends Model
           }
     }
 
-	public function getUserRoleModules($roleID=3){
+  public function getUserRoleModules($roleID=3){
     try{
       $sql = "SELECT t2.module_name, t1.* FROM ".ROLE_MODULE." t1 INNER JOIN ".MODULE." t2 ON t2.id=t1.module_id WHERE t1.role_id='".$roleID."' AND t2.status_id='1' AND t2.parent_id=0 ORDER BY t2.sort_order ASC";
       $query = $this->db->query($sql);
@@ -125,6 +125,7 @@ class UserModel extends Model
         foreach($rows as $r){
           $parentId = ($r->module_id) ? $r->module_id : 0;
           $parentName = ($r->module_name) ? $r->module_name : '';
+          $parentSection  = ($r->section_id) ? $r->section_id : 0;
           $result[$parentId]['module_id'] = $parentId;
           $result[$parentId]['parent_name'] = $parentName;
 
@@ -138,16 +139,38 @@ class UserModel extends Model
               $sectionId  = ($sr->section_id) ? $sr->section_id : 0;
               $result[$parentId]['sub_module'][$moduleId]['module_id']   = $moduleId;
               $result[$parentId]['sub_module'][$moduleId]['module_name'] = $moduleName;
-              $result[$parentId]['sub_module'][$moduleId]['sections'][]  = $sectionId;
+              $result[$parentId]['sub_module'][$moduleId]['sections'][$sectionId]  = $sectionId;
             }
           }
           else{
-            $result[$parentId]['sections'] = [];
+            $result[$parentId]['sections'][$parentSection]  = $parentSection;
           }
         }
       }
       //echo __LINE__.'<pre>';print_r($result);die;
       return $result;
+    }
+    catch(Exception $e){
+      echo 'FILE: '.__FILE__.'<br>LINE: '.__LINE__.'<br><pre>';print_r($e->getMessage());die;
+    }
+  }
+
+  public function getSections(){
+    try{
+      $sql = "SELECT t1.* FROM ".SECTION." t1 WHERE t1.status_id='1' ORDER BY t1.sort_order, t1.section_name ASC";
+      $query = $this->db->query($sql);
+      return $rows = $query->getResult();
+    }
+    catch(Exception $e){
+      echo 'FILE: '.__FILE__.'<br>LINE: '.__LINE__.'<br><pre>';print_r($e->getMessage());die;
+    }
+  }
+
+  public function saveUserModules($userID=0, $roleID=0){
+    try{
+      $sql = "INSERT INTO ".USER_MODULE." (user_id,module_id,section_id) SELECT ".$userID.",module_id,section_id FROM ".ROLE_MODULE." WHERE role_id=".$roleID;
+      $query = $this->db->query($sql);
+      return $userID;
     }
     catch(Exception $e){
       echo 'FILE: '.__FILE__.'<br>LINE: '.__LINE__.'<br><pre>';print_r($e->getMessage());die;

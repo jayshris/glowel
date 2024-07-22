@@ -50,41 +50,33 @@ class Products extends BaseController
     }
 
     public function index()
-    {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else {
-            $this->PModel->select('products.*,product_categories.cat_name,u.first_name as added_by,u1.first_name as modify_by');
-            // $this->PModel->join('product_types', 'product_types.id = products.type_id');
-            $this->PModel->join('users u', 'u.id = products.added_by','left');
-            $this->PModel->join('users u1', 'u1.id = products.modify_by','left');
-            $this->PModel->join('product_categories', 'product_categories.id = products.category_id');
+    { 
+        $this->PModel->select('products.*,product_categories.cat_name,u.first_name as added_by,u1.first_name as modify_by');
+        // $this->PModel->join('product_types', 'product_types.id = products.type_id','left');
+        $this->PModel->join('users u', 'u.id = products.added_by','left');
+        $this->PModel->join('users u1', 'u1.id = products.modify_by','left');
+        $this->PModel->join('product_categories', 'product_categories.id = products.category_id');
 
-            // if ($this->request->getPost('product_type') != '') {
-            //     $this->PModel->where('products.type_id', $this->request->getPost('product_type'));
-            // }
+        // if ($this->request->getPost('product_type') != '') {
+        //     $this->PModel->where('products.type_id', $this->request->getPost('product_type'));
+        // }
 
-            if ($this->request->getPost('status') != '') {
-                $this->PModel->where('products.status', $this->request->getPost('status'));
-            }
-
-            $this->PModel->where('is_deleted', '0')->orderBy('products.id', 'desc');
-            $this->view['products'] =  $this->PModel->findAll();
-            // echo '<pre>';print_r($this->view);exit;
-            // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
-            $this->view['post_data'] = $this->request->getPost();
-
-            return view('Products/index', $this->view);
+        if ($this->request->getPost('status') != '') {
+            $this->PModel->where('products.status', $this->request->getPost('status'));
         }
+
+        $this->PModel->where('is_deleted', '0')->orderBy('products.id', 'desc');
+        $this->view['products'] =  $this->PModel->findAll();
+        // echo '<pre>';print_r($this->view);exit;
+        // $this->view['product_types'] = $this->PTModel->select('id,type_name')->where('status', 1)->findAll();
+        $this->view['post_data'] = $this->request->getPost();
+
+        return view('Products/index', $this->view); 
     }
 
     public function create()
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
 
             $error = $this->validate([
                 'product_name' => [
@@ -240,10 +232,7 @@ class Products extends BaseController
 
     public function edit($id)
     {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else if ($this->request->getPost()) {
+        if ($this->request->getPost()) {
 
             $error = $this->validate([
                 'product_name' => [

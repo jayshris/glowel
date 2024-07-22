@@ -16,13 +16,7 @@ class Partytype extends BaseController
         $this->_access = $access; 
     }
     public function index()
-    { 
-        $access = $this->_access; 
-        if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        }else{
+    {  
             $partyModel = new PartytypeModel();
             if ($this->request->getPost('status') != '') {
               $partyModel->where('status', $this->request->getPost('status'));
@@ -32,18 +26,11 @@ class Partytype extends BaseController
             $this->view['page_data'] = [
             'page_title' => view( 'partials/page-title', [ 'title' => 'Party Type','li_1' => '123','li_2' => 'deals' ] )
             ];
-            return view('Partytype/index',$this->view);
-        }
+            return view('Partytype/index',$this->view); 
     }
 
     public function create()
-    {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    { 
               helper(['form', 'url']);
               $this->view ['page_data']= [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Add Driver','li_2' => 'profile' ] )
@@ -69,18 +56,11 @@ class Partytype extends BaseController
                     return $this->response->redirect(site_url('/partytype'));
                   }
                 }
-                return view( 'Partytype/create',$this->view );
-          }
+                return view( 'Partytype/create',$this->view ); 
     }
 
     public function edit($id=null)
-    {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    { 
             $partyModel = new PartytypeModel();
             $this->view['partytype_data'] = $partyModel->where('id', $id)->first();
             
@@ -103,25 +83,17 @@ class Partytype extends BaseController
                 $session->setFlashdata('success', 'Party type updated');
                 return $this->response->redirect(site_url('/partytype'));
               }
-            }
-          }
+            } 
 
         return view('Partytype/edit', $this->view);
 
     }
 
-    public function delete($id){
-        $access = $this->_access; 
-        if($access === 'false'){
-        $session = \Config\Services::session();
-        $session->setFlashdata('error', 'You are not permitted to access this page');
-        return $this->response->redirect(site_url('/dashboard'));
-        }else{
+    public function delete($id){ 
             $partyModel = new PartytypeModel();
             $partyModel->where('id', $id)->delete($id);
             $session = \Config\Services::session();
             $session->setFlashdata('success', 'Party type Deleted');
-            return $this->response->redirect(site_url('/partytype'));
-        }
+            return $this->response->redirect(site_url('/partytype')); 
     }
 }

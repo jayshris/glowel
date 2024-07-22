@@ -19,31 +19,18 @@ class Partyclassification extends BaseController
     }
 
     public function index()
-    {
-        $access = $this->_access; 
-        if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        }else{
+    { 
             $partyclassModel = new PartyClassificationModel();
             $this->view['partyclass_data'] = $partyclassModel->orderBy('id', 'DESC')->paginate(10);
             $this->view['pagination_link'] = $partyclassModel->pager;
             $this->view['page_data'] = [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Party','li_1' => '123','li_2' => 'deals'])
             ];
-            return view('Partyclassification/index',$this->view);
-        }
+            return view('Partyclassification/index',$this->view); 
     }
 
     public function create()
-    {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    { 
               helper(['form', 'url']);
               $this->view ['page_data']= [
                 'page_title' => view( 'partials/page-title', [ 'title' => 'Add Vehicle Certificate','li_2' => 'profile' ] )
@@ -67,18 +54,11 @@ class Partyclassification extends BaseController
                     return $this->response->redirect(site_url('/partyclassification'));
                   }
                 }
-                return view('Partyclassification/create',$this->view);
-          }
+                return view('Partyclassification/create',$this->view); 
     }
 
     public function edit($id=null)
-    {
-          $access = $this->_access; 
-          if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-          }else{
+    { 
             $pcModel = new PartyClassificationModel();
             $this->view['pc_data'] = $pcModel->where('id', $id)->first();
             
@@ -100,25 +80,17 @@ class Partyclassification extends BaseController
                 $session->setFlashdata('success', 'Party classification Updated');
                 return $this->response->redirect(site_url('/partyclassification'));
               }
-            }
-          }
+            } 
 
         return view('Partyclassification/edit', $this->view);
 
     }
 
-    public function delete($id){
-        $access = $this->_access; 
-        if($access === 'false'){
-            $session = \Config\Services::session();
-            $session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(site_url('/dashboard'));
-        }else{
+    public function delete($id){ 
             $pcModel = new PartyClassificationModel();
             $pcModel->where('id', $id)->delete($id);
             $session = \Config\Services::session();
             $session->setFlashdata('success', 'Party classification Deleted');
-            return $this->response->redirect(site_url('/partyclassification'));
-        }
+            return $this->response->redirect(site_url('/partyclassification')); 
     }
 }

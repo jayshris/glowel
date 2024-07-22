@@ -12,8 +12,7 @@ use App\Models\ProductCategoryModel;
 use CodeIgniter\HTTP\ResponseInterface; 
 
 class SalesInvoicesVerifivation extends BaseController
-{
-    public $access;
+{ 
     public $session;
     public $added_by;
     public $added_ip; 
@@ -30,25 +29,19 @@ class SalesInvoicesVerifivation extends BaseController
         $this->SOModel = new SalesOrderModel();
         $this->PCModel = new ProductCategoryModel(); 
         $this->SOPModel = new SalesProductModel();
-        $user = new UserModel();
-        $this->access = $user->setPermission();
+        $user = new UserModel(); 
         $this->added_by = isset($_SESSION['id']) > 0 ? $_SESSION['id'] : '0';
         $this->added_ip = isset($_SERVER['REMOTE_ADDR']) > 0 ? $_SERVER['REMOTE_ADDR'] : '';
     }
 
     public function index()
-    {
-        if ($this->access === 'false') {
-            $this->session->setFlashdata('error', 'You are not permitted to access this page');
-            return $this->response->redirect(base_url('/dashboard'));
-        } else {
-            if ($this->request->getPost('status') != '') {
-                $this->SalesInvoiceModel->where('status', $this->request->getPost('status'));
-            }
-            $this->view['orders'] = $this->SalesInvoiceModel 
-            ->whereIn('sales_invoices.status',invoice_status_verify)->orderBy('sales_invoices.id', 'desc')->findAll();  
-            return view('SalesInvoicesVerifivation/index', $this->view);
+    { 
+        if ($this->request->getPost('status') != '') {
+            $this->SalesInvoiceModel->where('status', $this->request->getPost('status'));
         }
+        $this->view['orders'] = $this->SalesInvoiceModel 
+        ->whereIn('sales_invoices.status',invoice_status_verify)->orderBy('sales_invoices.id', 'desc')->findAll();  
+        return view('SalesInvoicesVerifivation/index', $this->view); 
     }
 
     public function edit($id)
