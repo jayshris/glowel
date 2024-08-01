@@ -33,7 +33,7 @@
 						?>
 							<div class="row align-items-center ">
 								<div class="col-md-4">
-									<h3 class="page-title">Deals Dashboard</h3>
+									<h3 class="page-title">Dashboard</h3>
 								</div>
 								<div class="col-md-8 float-end ms-auto">
 									<div class="d-flex title-head">
@@ -52,7 +52,98 @@
 							</div>
 						</div>
 
+						<!--change start -->  
 						<div class="row">
+							<div class="col-md-12">
+							<div class="card">
+									<div class="card-body pb-0">
+										<div class="settings-header">
+											<h4>Top Links</h4>
+										</div>
+										<div class="row">
+											<!-- App -->
+											<div class="col-md-6 col-sm-6"> 
+												<div class="integration-grid">  
+													<div class="card-header justify-content-between">
+														<div class="card-title">
+															SALES / OUTWARD
+														</div>
+													</div>
+													<div class="card-body">	 
+														<ul>
+															<?php if($controllerPermissions['sales'] == 1){?>
+															<li class="mt-2">
+																<a href="<?php echo base_url(); ?>sales" class="col-md-12 btn btn-outline-primary btn-lg">
+																	<span>ORDERS</span>
+																</a> 
+															</li>
+															<?php }?>
+															<?php if($controllerPermissions['salesinvoices'] == 1){?>
+															<li class="mt-2">
+																<a href="<?php echo base_url(); ?>sales-invoices" class="col-md-12 btn btn-outline-success btn-lg">
+																	</i><span>INVOICES</span>
+																</a>
+															</li>
+															<?php }?>
+															<?php if($controllerPermissions['salesinvoicesverifivation'] == 1){?>
+															<li class="mt-2">
+																<a href="<?php echo base_url(); ?>sales-invoices-verifivation" class="col-md-12 btn btn-outline-info btn-lg">
+																	</i><span>VERIFICATION</span>
+																</a>
+															</li>
+															<?php }?>
+														</ul>
+													</div>
+												</div>	
+											</div>
+											<!-- /App -->
+
+											<!-- App -->
+											<div class="col-md-6 col-sm-6"> 
+												<div class="integration-grid">  
+													<div class="card-header justify-content-between">
+														<div class="card-title">
+															PURCHASE / INWARD
+														</div>
+													</div>
+													<div class="card-body">	 
+														<ul>
+															<?php if($controllerPermissions['purchase'] == 1){?>
+															<li class="mt-2">
+																<a href="<?php echo base_url(); ?>purchase" class="col-md-12 btn btn-outline-primary btn-lg">
+																	<span>ORDERS</span>
+																</a>
+															</li>
+															<?php }?>
+															<?php if($controllerPermissions['PurchaseInvoices'] == 1){?>
+															<li class="mt-2">
+																<a href="<?php echo base_url(); ?>purchase-invoices" class="col-md-12 btn btn-outline-success btn-lg">
+																	</i><span>INVOICES</span>
+																</a>
+															</li>
+															<?php }?>
+															<?php if($controllerPermissions['PurchaseInvoicesVerifivation'] == 1){?>
+															<!-- <li class="task-wrap pending"> -->
+															<li class="mt-2">
+																<a href="<?php echo base_url(); ?>purchase-invoices-verifivation"  class="col-md-12 btn btn-outline-info btn-lg">
+																	</i><span>VERIFICATION</span>
+																</a>
+															</li>
+															<?php }?>
+														</ul>
+													</div>
+												</div>	
+											</div>
+											<!-- /App -->
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--change end -->
+
+						<!-- <div class="row">
 							<div class="col-md-6 d-flex">		
 								<div class="card flex-fill">
 									<div class="card-body">
@@ -316,7 +407,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> -->
 
 					</div>
 				</div>

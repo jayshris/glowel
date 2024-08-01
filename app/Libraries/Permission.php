@@ -75,8 +75,9 @@ class Permission
 		$this->viewData['Actions'] = $Actions;
 
 		$condition = ['controllers'=>$Controllers,'actions'=>$Actions,'controller'=>$this->viewData['currentController'],'action'=>$this->viewData['currentMethod']];
-		if($this->checkPrivileged($condition)==0 && !in_array($this->viewData['currentController'], ['home','login','dashboard','kyc']) && !in_array($this->viewData['currentMethod'], ['add-products','addProducts'])) {
-			$this->session->setFlashdata('error', ACCESS_MSG);//echo __LINE__.'<br>File: '.__FILE__;die;
+		if($this->checkPrivileged($condition)==0 && !in_array($this->viewData['currentController'], ['home','login','dashboard','kyc','sales','purchase']) && !in_array($this->viewData['currentMethod'], ['add-products','addProducts','sales-checkout','salesCheckout'])) {
+			// echo __LINE__.'<br>File: '.__FILE__.'<br>'.$this->viewData['currentController'].'/'.$this->viewData['currentMethod'];die;
+			$this->session->setFlashdata('error', ACCESS_MSG);
 			header("Location: ".base_url()."dashboard");die;
 		}
 
@@ -283,4 +284,17 @@ class Permission
 		}
 	   	return $filename;	
  	}*/
+
+	function checkModulePermission($currentController,$currentMethod){
+		$menuItems = ($this->viewData['logLevel']==1) ? $this->getSuperUserPrivileges() : $this->getUserPrivileges($this->viewData['loggedIn']);//echo __LINE__.'<pre>';print_r($menuItems);die;
+		$Controllers 			= (isset($menuItems['Controllers'])) ? $menuItems['Controllers'] : [];
+		$Actions 				= (isset($menuItems['Actions'])) ? $menuItems['Actions'] : [];
+		 
+		$condition = ['controllers'=>$Controllers,'actions'=>$Actions,'controller'=>$currentController,'action'=>$currentMethod];
+		if($this->checkPrivileged($condition)==0 && !in_array($currentController, ['home','login','dashboard','kyc']) && !in_array($currentMethod, ['add-products','addProducts'])) {
+			return 0;
+		}else{
+			return 1;
+		}
+	}
 }

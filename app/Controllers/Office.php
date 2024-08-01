@@ -22,7 +22,7 @@ class Office extends BaseController {
         { 
               $officeModel = new OfficeModel();
               if ($this->request->getPost('status') != '') {
-                  $officeModel->where('status', $this->request->getPost('status'));
+                  $officeModel->where('office.status', $this->request->getPost('status'));
               }
               $officeModel->select('office.*,c.name as cname')->join('company c','office.company_id = c.id'); 
               $this->view['office_data'] = $officeModel->orderBy('id', 'DESC')->paginate(10);

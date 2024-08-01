@@ -204,7 +204,7 @@
 
                               $updated_at_str='';
 
-                              if(isset($row["created_at"])){
+                              if(isset($row["created_at"]) && (strtotime($row["created_at"]) > 0)){
 
                                 $created_at_str = strtotime($row["created_at"]) ;
 
@@ -212,7 +212,7 @@
 
                               }
 
-                              if(isset($row["updated_at"])){
+                              if(isset($row["updated_at"]) && (strtotime($row["updated_at"]) > 0)){
 
                                 $updated_at_str = strtotime($row["updated_at"]);
 
